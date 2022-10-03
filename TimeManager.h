@@ -1,0 +1,19 @@
+#pragma once
+#include <Windows.h>
+#include <mmsystem.h>
+#pragma comment(lib,"winmm.lib")
+
+namespace TimeManager
+{
+	extern float targetFPS;
+	extern float fps;
+	extern float deltaTime;
+	extern LARGE_INTEGER timeFreq;
+	extern LARGE_INTEGER timeStart;
+	extern LARGE_INTEGER timeEnd;
+	
+	void Init();
+
+	void Update();
+};
+

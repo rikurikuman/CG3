@@ -1,0 +1,305 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\2D">
+      <UniqueIdentifier>{a56b53ff-127e-4dd2-93fc-979b3bd6817c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3D">
+      <UniqueIdentifier>{fe148dfe-3668-4580-b7ba-970cfaa015e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Math">
+      <UniqueIdentifier>{9ea50085-7aab-4b60-b085-f25c3886432b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\2D">
+      <UniqueIdentifier>{06acedc7-c36d-4bfc-8fd5-93aa96826e08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3D">
+      <UniqueIdentifier>{72e12c23-c205-48da-9973-6f434a265451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Math">
+      <UniqueIdentifier>{30a7b000-74fa-478d-87e8-7cfaf02e203a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Buffer">
+      <UniqueIdentifier>{0845dcf5-419d-4a64-8a7c-3a8809a09699}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Buffer">
+      <UniqueIdentifier>{cf1fdf10-f8dc-4fb5-9bde-8769e4da290c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Base">
+      <UniqueIdentifier>{b27070c4-23dc-4076-b30f-9947b44fd42e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Base">
+      <UniqueIdentifier>{ee6f13aa-2102-4c9b-a670-8bf7f732387c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Collision">
+      <UniqueIdentifier>{6b232ac8-1bbe-40b3-84c1-36cbb0b58c52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Collision">
+      <UniqueIdentifier>{84e95d2c-deff-42f4-a4dc-7baec9113430}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3D\Model">
+      <UniqueIdentifier>{248fcb4b-568c-41dc-bf5a-07f0f192641e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\3D\Model">
+      <UniqueIdentifier>{18a0b5bf-8815-410d-a355-8ac81a920635}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\SimpleDrawer">
+      <UniqueIdentifier>{39c962b0-68ef-4d0c-9acf-67776bad7487}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\SimpleDrawer">
+      <UniqueIdentifier>{102c77aa-8df9-40d1-ab2b-367cab6d81bc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>ソース ファイル\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Image3D.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Obj3D.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Transform.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewProjection.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4.cpp">
+      <Filter>ソース ファイル\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>ソース ファイル\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>ソース ファイル\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardImage.cpp">
+      <Filter>ソース ファイル\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="RDirectX.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsPipeline.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="RInput.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="RWindow.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="TextDrawer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="SphereCollision.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Raycast.cpp">
+      <Filter>ソース ファイル\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>ソース ファイル\3D\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelObj.cpp">
+      <Filter>ソース ファイル\3D\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Mtllib.cpp">
+      <Filter>ソース ファイル\3D\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleDrawer.cpp">
+      <Filter>ソース ファイル\SimpleDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="SimpleDrawInfo.cpp">
+      <Filter>ソース ファイル\SimpleDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="RAudio.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\BasicPS.hlsl" />
+    <FxCompile Include="Shader\BasicVS.hlsl" />
+    <FxCompile Include="Shader\TestGS.hlsl" />
+    <FxCompile Include="Shader\TestPS.hlsl" />
+    <FxCompile Include="Shader\TestVS.hlsl" />
+    <FxCompile Include="Shader\GridVS.hlsl" />
+    <FxCompile Include="Shader\GridPS.hlsl" />
+    <FxCompile Include="Shader\SpritePS.hlsl" />
+    <FxCompile Include="Shader\SpriteVS.hlsl" />
+    <FxCompile Include="Shader\SimpleVS.hlsl" />
+    <FxCompile Include="Shader\SimplePS.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Texture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>ヘッダー ファイル\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Image3D.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Obj3D.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewProjection.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4.h">
+      <Filter>ヘッダー ファイル\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="RConstBuffer.h">
+      <Filter>ヘッダー ファイル\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>ヘッダー ファイル\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>ヘッダー ファイル\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugCamera.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BillboardImage.h">
+      <Filter>ヘッダー ファイル\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="RDirectX.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="RInput.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsPipeline.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="RWindow.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="TextDrawer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SphereCollision.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Raycast.h">
+      <Filter>ヘッダー ファイル\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>ヘッダー ファイル\3D\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelObj.h">
+      <Filter>ヘッダー ファイル\3D\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Mtllib.h">
+      <Filter>ヘッダー ファイル\3D\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleDrawer.h">
+      <Filter>ヘッダー ファイル\SimpleDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleDrawInfo.h">
+      <Filter>ヘッダー ファイル\SimpleDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="RAudio.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shader\Basic.hlsli" />
+    <None Include="Shader\Test.hlsli" />
+    <None Include="Shader\Grid.hlsli" />
+    <None Include="Shader\Sprite.hlsli" />
+    <None Include="Shader\Simple.hlsli" />
+  </ItemGroup>
+</Project>
