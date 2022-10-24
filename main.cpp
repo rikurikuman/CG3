@@ -112,7 +112,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	///////////////////
 
 	ModelObj skydome(Model::Load("Resources/skydome/", "skydome.obj"));
-	ModelObj testObj(Model::Load("Resources/Model/VicViper/", "VicViper.obj"));
 
 	Sprite controlDescText1(TextDrawer::CreateStringTexture("ESC:I—¹", "", 24), { 0, 1 });
 	Sprite controlDescText2(TextDrawer::CreateStringTexture("WASD:ˆÚ“®, ƒ}ƒEƒX‚ÅŽ‹“_‘€ì", "", 24), { 0, 1 });
@@ -127,6 +126,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	TextureHandle tex = TextureManager::Load("Resources/conflict.jpg");
 	Cube cubeA(tex);
 	cubeA.transform.position = { 0, 0, 10 };
+
+	BillboardImage billImg(tex);
+	billImg.transform.position = { -1, 0, 0 };
+	BillboardImage billImg2(tex);
+	billImg2.transform.position = { 1, 0, 0 };
+	billImg2.billboardY = true;
 
 	Image3D text(TextDrawer::CreateStringTexture("hogehoge‚ ‚¢‚¤‚¦int‚Ù‚°", "‚l‚r ‚o–¾’©", 128), { 3.0f, 3.0f });
 	text.transform.position = { 0, 0, 20 };
@@ -216,51 +221,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			Util::debugBool = !Util::debugBool;
 		}
 
-		float moveSpeed = 0.1f;
-
-		if (RInput::GetKey(DIK_NUMPAD8)) {
-			testObj.transform.scale.y += moveSpeed;
-		}
-		if (RInput::GetKey(DIK_NUMPAD2)) {
-			testObj.transform.scale.y -= moveSpeed;
-		}
-		if (RInput::GetKey(DIK_NUMPAD6)) {
-			testObj.transform.scale.x += moveSpeed;
-		}
-		if (RInput::GetKey(DIK_NUMPAD4)) {
-			testObj.transform.scale.x -= moveSpeed;
-		}
-		if (RInput::GetKey(DIK_NUMPAD9)) {
-			testObj.transform.scale.z += moveSpeed;
-		}
-		if (RInput::GetKey(DIK_NUMPAD1)) {
-			testObj.transform.scale.z -= moveSpeed;
-		}
-
-		if (RInput::GetKey(DIK_NUMPAD5)) {
-			testObj.transform.rotation.z += Util::AngleToRadian(5);
-		}
-
-		if (RInput::GetKey(DIK_RIGHT)) {
-			testObj.transform.position.x += moveSpeed;
-		}
-		if (RInput::GetKey(DIK_LEFT)) {
-			testObj.transform.position.x -= moveSpeed;
-		}
-		if (RInput::GetKey(DIK_UP)) {
-			testObj.transform.position.z += moveSpeed;
-		}
-		if (RInput::GetKey(DIK_DOWN)) {
-			testObj.transform.position.z -= moveSpeed;
-		}
-
-		testObj.transform.UpdateMatrix();
-
 		cubeA.transform.rotation.y += Util::AngleToRadian(1);
 		cubeA.transform.UpdateMatrix();
 		cubeA.UpdateFaces();
 
 		camera.Update();
+
+		billImg.Update(camera.viewProjection);
+		billImg2.Update(camera.viewProjection);
+
 		text.TransferBuffer(camera.viewProjection);
 
 		cubeA.TransferBuffer(camera.viewProjection);
@@ -268,8 +237,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		skydome.transform.scale = { 4,4,4 };
 		skydome.transform.UpdateMatrix();
 		skydome.TransferBuffer(camera.viewProjection);
-
-		testObj.TransferBuffer(camera.viewProjection);
 
 		gridViewProjectionBuff.constMap->matrix = camera.viewProjection.matrix;
 
@@ -303,7 +270,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		cubeA.DrawCommands();
 		skydome.DrawCommands();
-		testObj.DrawCommands();
+		billImg.DrawCommands();
+		billImg2.DrawCommands();
 
 		RDirectX::GetInstance()->cmdList->SetPipelineState(TextDrawer::GetInstance()->pipeline.ptr.Get());
 		text.DrawCommands();
