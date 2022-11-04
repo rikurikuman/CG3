@@ -1,6 +1,7 @@
 #pragma once
 #include "Texture.h"
 #include "GraphicsPipeline.h"
+#include <mutex>
 
 struct FontTexture {
 	Texture texture;
@@ -20,6 +21,8 @@ public:
 	static FontTexture GetFontTexture(std::wstring glyph, std::wstring fontTypeFace, UINT fontSize, bool useAlign = false);
 
 	static TextureHandle CreateStringTexture(std::string text, std::string fontTypeFace, UINT fontSize, std::string handle = "");
+
+	static bool LoadFontFromFile(std::string path);
 
 	//static void DrawString(int x, int y, std::string text, std::string fontTypeFace, UINT fontSize);
 
@@ -56,11 +59,12 @@ private:
 		Init();
 	};
 	~TextDrawer() = default;
-	TextDrawer(const TextDrawer& a) {};
-	TextDrawer& operator=(const TextDrawer&) { return *this; }
+	TextDrawer(const TextDrawer& a) = delete;
+	TextDrawer& operator=(const TextDrawer&) = delete;
 
 	void Init();
 
+	std::recursive_mutex mutex;
 	std::map<Glyph, FontTexture> glyphMap; //グリフテクスチャのマップ
 };
 

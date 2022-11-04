@@ -39,11 +39,12 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle)
         handle = "NoNameHandle_" + model.path;
     }
 
+    std::unique_lock<std::recursive_mutex> lock(instance->mutex);
     if (instance->modelMap.find(handle) != instance->modelMap.end()
         && instance->modelMap[handle].path == (filepath + filename)) {
         return handle;
     }
-
+    lock.unlock();
     ModelData loading;
 
     vector<Material> materialList;
@@ -205,13 +206,16 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle)
     loading.material.Transfer(loading.materialBuff.constMap);
     model.data.emplace_back(std::make_shared<ModelData>(loading));
 
+    lock.lock();
     instance->modelMap[handle] = model;
+    lock.unlock();
     return handle;
 }
 
 ModelHandle Model::Register(ModelHandle handle, Model model)
 {
     ModelManager* instance = ModelManager::GetInstance();
+    std::lock_guard<std::recursive_mutex> lock(instance->mutex);
 
     instance->modelMap[handle] = model;
     return handle;
@@ -220,6 +224,7 @@ ModelHandle Model::Register(ModelHandle handle, Model model)
 Model* ModelManager::Get(ModelHandle handle)
 {
     ModelManager* instance = GetInstance();
+    std::lock_guard<std::recursive_mutex> lock(instance->mutex);
 
     if (instance->modelMap.find(handle) == instance->modelMap.end()) {
         return &instance->modelMap["PreRegisteredModel_Empty"];

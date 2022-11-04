@@ -14,6 +14,7 @@ FontTexture TextDrawer::GetFontTexture(std::string glyph, std::string fontTypeFa
 FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontTypeFace, UINT fontSize, bool useAlign)
 {
 	TextDrawer* drawer = GetInstance();
+	lock_guard<recursive_mutex> lock(drawer->mutex);
 
 	if (glyph.length() != 1) {
 		return FontTexture();
@@ -87,7 +88,9 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 		imageData[access].a = (grayScale * 255.0f / 16) / 255.0f;
 	}
 
-	Texture texture = Texture();
+	FontTexture ftex;
+	ftex.tm = tm;
+	ftex.gm = gm;
 
 	// テクスチャバッファ
 	// ヒープ設定
@@ -106,31 +109,29 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 	textureResourceDesc.MipLevels = 1;
 	textureResourceDesc.SampleDesc.Count = 1;
 
+	HRESULT result;
 	//生成
-	RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetInstance()->device->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&texture.resource)
+		IID_PPV_ARGS(&ftex.texture.resource)
 	);
+	assert(SUCCEEDED(result));
 
-	texture.resource->WriteToSubresource(
+	result = ftex.texture.resource->WriteToSubresource(
 		0,
 		nullptr,
 		imageData,
 		sizeof(Color) * fontWidth,
 		sizeof(Color) * fontDataCount
 	);
+	assert(SUCCEEDED(result));
 
 	delete[] ptr;
 	delete[] imageData;
-
-	FontTexture ftex;
-	ftex.texture = texture;
-	ftex.tm = tm;
-	ftex.gm = gm;
 
 	drawer->glyphMap[glyphData] = ftex;
 
@@ -222,8 +223,9 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 	textureResourceDesc.MipLevels = 1;
 	textureResourceDesc.SampleDesc.Count = 1;
 
+	HRESULT result;
 	//生成
-	RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetInstance()->device->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -231,14 +233,16 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 		nullptr,
 		IID_PPV_ARGS(&texture.resource)
 	);
+	assert(SUCCEEDED(result));
 
-	texture.resource->WriteToSubresource(
+	result = texture.resource->WriteToSubresource(
 		0,
 		nullptr,
 		imageData,
 		sizeof(Color) * (UINT)textureWidth,
 		sizeof(Color) * (UINT)imageDataCount
 	);
+	assert(SUCCEEDED(result));
 
 	delete[] imageData;
 
@@ -247,6 +251,11 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 		_handle = "NoNameStringTextureHandle_" + text;
 	}
 	return TextureManager::Register(texture, _handle);
+}
+
+bool TextDrawer::LoadFontFromFile(std::string path)
+{
+	return AddFontResourceEx(Util::ConvertStringToWString(path).c_str(), FR_PRIVATE, NULL) != 0;
 }
 
 void TextDrawer::Init()

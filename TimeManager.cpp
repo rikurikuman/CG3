@@ -7,6 +7,8 @@ namespace TimeManager
 	float targetFPS = 60;
 	float fps = 0;
 	float deltaTime = 0;
+	float deltaMiliTime = 0;
+	float deltaFrame = 0;
 	LARGE_INTEGER timeFreq;
 	LARGE_INTEGER timeStart;
 	LARGE_INTEGER timeEnd;
@@ -42,6 +44,8 @@ void TimeManager::Update()
 	}
 
 	deltaTime = (float)(timeEnd.QuadPart - timeStart.QuadPart) / (float)timeFreq.QuadPart;
+	deltaMiliTime = deltaTime * 1000.0f;
+	deltaFrame = deltaTime / ((1.0f / targetFPS));
 
 	if (deltaTime > 0) {
 		fpsSamples.push_back(1.0f / deltaTime);

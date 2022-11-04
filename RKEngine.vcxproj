@@ -153,10 +153,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BillboardImage.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="ColPrimitive2D.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="GraphicsPipeline.cpp" />
     <ClCompile Include="Image3D.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
@@ -173,9 +176,13 @@
     <ClCompile Include="RInput.cpp" />
     <ClCompile Include="RootSignature.cpp" />
     <ClCompile Include="RWindow.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneTransition.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SimpleDrawer.cpp" />
     <ClCompile Include="SimpleDrawInfo.cpp" />
+    <ClCompile Include="SimpleSceneTransition.cpp" />
     <ClCompile Include="SphereCollision.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TextDrawer.cpp" />
@@ -281,10 +288,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BillboardImage.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="ColPrimitive2D.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="GraphicsPipeline.h" />
     <ClInclude Include="Image3D.h" />
     <ClInclude Include="IndexBuffer.h" />
@@ -301,9 +311,13 @@
     <ClInclude Include="RInput.h" />
     <ClInclude Include="RootSignature.h" />
     <ClInclude Include="RWindow.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneTransition.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SimpleDrawer.h" />
     <ClInclude Include="SimpleDrawInfo.h" />
+    <ClInclude Include="SimpleSceneTransition.h" />
     <ClInclude Include="SphereCollision.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TextDrawer.h" />

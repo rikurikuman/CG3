@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <mutex>
 #include "Vertex.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
@@ -55,6 +56,7 @@ public:
 	static Model* Get(ModelHandle handle);
 
 	std::map<ModelHandle, Model> modelMap;
+	std::recursive_mutex mutex;
 
 private:
 	void Init();

@@ -59,6 +59,10 @@ void Sprite::TransferBuffer()
 
 void Sprite::DrawCommands()
 {
+	//パイプラインセット
+	RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
+	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
+
 	//頂点バッファビューの設定コマンド
 	RDirectX::GetInstance()->cmdList->IASetVertexBuffers(0, 1, &vertBuff.view);
 
@@ -83,6 +87,19 @@ void SpriteManager::Init()
 {
 	rootSignature = RDirectX::GetInstance()->rootSignature;
 
+	StaticSamplerDesc samplerDesc{};
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK; //ボーダーの時は黒
+	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; //リニア補間
+	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; //ミップマップ最大値
+	samplerDesc.MinLOD = 0.0f; //ミップマップ最小値
+	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //ピクセルシェーダーからだけ見える
+	rootSignature.desc.StaticSamplers = StaticSamplerDescs{ samplerDesc };
+	rootSignature.Create();
+
 	pipelineState = RDirectX::GetInstance()->pipelineState;
 
 	pipelineState.desc.VS = Shader("./Shader/SpriteVS.hlsl", "main", "vs_5_0");
@@ -92,8 +109,10 @@ void SpriteManager::Init()
 	pipelineState.desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	pipelineState.desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 	pipelineState.desc.RasterizerState.DepthClipEnable = false;
+	pipelineState.desc.BlendState.AlphaToCoverageEnable = false;
 
 	pipelineState.desc.DepthStencilState.DepthEnable = false;
+	pipelineState.desc.pRootSignature = rootSignature.ptr.Get();
 
 	pipelineState.Create();
 }

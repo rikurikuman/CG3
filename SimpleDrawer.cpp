@@ -67,19 +67,19 @@ void SimpleDrawer::DrawBox(float x1, float y1, float x2, float y2, Color color, 
 	RDirectX::GetInstance()->cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0); // 全ての頂点を使って描画
 }
 
-void SimpleDrawer::DrawString(float x, float y, std::string text, std::string fontTypeFace, UINT fontSize, Vector2 anchor)
+void SimpleDrawer::DrawString(float x, float y, std::string text, Color color, std::string fontTypeFace, UINT fontSize, Vector2 anchor)
 {
 	SimpleDrawer* instance = GetInstance();
-
 	shared_ptr<DrawStringInfo> info = make_shared<DrawStringInfo>();
 	TextureHandle tex = TextDrawer::CreateStringTexture(text, fontTypeFace, fontSize);
 	info->sprite = Sprite(tex, anchor);
 	info->sprite.transform.position = { x, y, 0 };
 	info->sprite.transform.UpdateMatrix();
+	info->sprite.material.color = color;
 	info->sprite.TransferBuffer();
 
-	RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
+	RDirectX::GetInstance()->cmdList->SetPipelineState(instance->pipelineStateForString.ptr.Get());
+	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(instance->rootSignatureForString.ptr.Get());
 
 	info->sprite.DrawCommands();
 
@@ -122,4 +122,24 @@ void SimpleDrawer::Init()
 	pipelineState.desc.pRootSignature = rootSignature.ptr.Get();
 
 	pipelineState.Create();
+
+	//DrawString用
+	rootSignatureForString = SpriteManager::GetInstance()->GetRootSignature();
+
+	StaticSamplerDesc samplerDesc{};
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	samplerDesc.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK; //ボーダーの時は黒
+	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR; //リニア補間
+	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX; //ミップマップ最大値
+	samplerDesc.MinLOD = 0.0f; //ミップマップ最小値
+	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //ピクセルシェーダーからだけ見える
+	rootSignatureForString.desc.StaticSamplers = StaticSamplerDescs{ samplerDesc };
+	rootSignatureForString.Create();
+
+	pipelineStateForString = SpriteManager::GetInstance()->GetGraphicsPipeline();
+	pipelineStateForString.desc.pRootSignature = rootSignatureForString.ptr.Get();
+	pipelineStateForString.Create();
 }

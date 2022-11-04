@@ -27,6 +27,9 @@ public:
 	/// <param name="texture"></param>
 	void SetAllTexture(TextureHandle texture);
 
+
+	void SetAllAlpha(float alpha);
+
 	//–Ê‚ÌTransform‚Æ‚©‚ğXV‚·‚é
 	void UpdateFaces();
 

@@ -51,6 +51,10 @@ void Image3D::TransferBuffer(ViewProjection viewprojection)
 
 void Image3D::DrawCommands()
 {
+	//パイプラインセット
+	RDirectX::GetInstance()->cmdList->SetPipelineState(RDirectX::GetInstance()->pipelineState.ptr.Get());
+	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(RDirectX::GetInstance()->rootSignature.ptr.Get());
+
 	//頂点バッファビューの設定コマンド
 	RDirectX::GetInstance()->cmdList->IASetVertexBuffers(0, 1, &vertBuff.view);
 

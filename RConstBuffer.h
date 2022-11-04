@@ -5,25 +5,32 @@
 #include "RDirectX.h"
 #include "Util.h"
 #include <chrono>
+#include <mutex>
 
 template <typename T>
 class RConstBuffer
 {
 private:
+	static std::recursive_mutex mutex;
 	static std::map<void*, size_t> countMap;
 
 	static void AddCount(void* p) {
+		std::lock_guard<std::recursive_mutex> lock(mutex);
 		countMap[p]++;
 
-#ifdef _DEBUG
+#ifdef _RCONSTBUFFER_DEBUG_
 		OutputDebugString((std::wstring(L"RConstBuffer(") + Util::ConvertStringToWString(Util::StringFormat("%p", p)) + L") Add      : " + std::to_wstring(countMap[p]) + L"\n").c_str());
 #endif
 	}
 
 	static void SubtractCount(void* p) {
+		std::lock_guard<std::recursive_mutex> lock(mutex);
+		if (countMap[p] == 0) {
+			int hoge = 0;
+		}
 		countMap[p]--;
 
-#ifdef _DEBUG
+#ifdef _RCONSTBUFFER_DEBUG_
 		OutputDebugString((std::wstring(L"RConstBuffer(") + Util::ConvertStringToWString(Util::StringFormat("%p", p)) + L") Subtract : " + std::to_wstring(countMap[p]) + L"\n").c_str());
 #endif
 
@@ -33,6 +40,7 @@ private:
 	}
 
 	static size_t GetCount(void* p) {
+		std::lock_guard<std::recursive_mutex> lock(mutex);
 		auto itr = countMap.find(p);
 		if (itr == countMap.end()) {
 			return 0;
@@ -77,17 +85,20 @@ public:
 		Map();
 		RConstBuffer::AddCount(constBuff.Get());
 	}
-	~RConstBuffer() {
-		RConstBuffer::SubtractCount(constBuff.Get());
-		if (RConstBuffer::GetCount(constBuff.Get()) == 0) {
-			UnMap();
-		}
-	}
 	RConstBuffer(const RConstBuffer& o) {
 		constBuff = o.constBuff;
 		constMap = o.constMap;
 		RConstBuffer::AddCount(constBuff.Get());
 	}
+	~RConstBuffer() {
+		if (constBuff != nullptr) {
+			RConstBuffer::SubtractCount(constBuff.Get());
+			if (RConstBuffer::GetCount(constBuff.Get()) == 0) {
+				UnMap();
+			}
+		}
+	}
+	
 	RConstBuffer& operator=(const RConstBuffer& o) {
 		if (this != &o) {
 			if (constBuff != nullptr) {
@@ -114,3 +125,6 @@ public:
 
 template<typename T>
 std::map<void*, size_t> RConstBuffer<T>::countMap = std::map<void*, size_t>();
+
+template<typename T>
+std::recursive_mutex RConstBuffer<T>::mutex;

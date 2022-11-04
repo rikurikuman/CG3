@@ -32,8 +32,8 @@ Texture TextureManager::GetEmptyTexture()
 
 	Texture texture = Texture();
 
-	const size_t textureWidth = 1;
-	const size_t textureHeight = 1;
+	const size_t textureWidth = 100;
+	const size_t textureHeight = 100;
 	const size_t imageDataCount = textureWidth * textureHeight;
 	Color* imageData = new Color[imageDataCount];
 
@@ -150,6 +150,7 @@ Texture TextureManager::GetHogeHogeTexture()
 
 TextureHandle TextureManager::LoadInternal(const std::string filepath, const std::string handle)
 {
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 	HRESULT result;
 
 	//一回読み込んだことがあるファイルはそのまま返す
@@ -174,7 +175,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 		&imgMetadata, scratchImg
 	);
 	if (FAILED(result)) {
-		return "";
+		return "FailedTextureHandle";
 	}
 
 	// ミップマップ生成
@@ -188,7 +189,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 		imgMetadata = scratchImg.GetMetadata();
 	}
 	else {
-		return "";
+		return "FailedTextureHandle";
 	}
 
 	//読み込んだディフューズテクスチャをSRGBとして扱う
@@ -221,7 +222,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 		IID_PPV_ARGS(&texture.resource)
 	);
 	if (FAILED(result)) {
-		return "";
+		return "FailedTextureHandle";
 	}
 
 	//てんそー
@@ -236,7 +237,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 			(UINT)img->slicePitch //1枚サイズ
 		);
 		if (FAILED(result)) {
-			return "";
+			return "FailedTextureHandle";
 		}
 	}
 
@@ -245,6 +246,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 
 Texture& TextureManager::GetInternal(const TextureHandle& handle)
 {
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 	if (handle.empty()) {
 		return textureMap["PreRegisteredTex_Empty"];
 	}
@@ -257,10 +259,11 @@ Texture& TextureManager::GetInternal(const TextureHandle& handle)
 	return textureMap["PreRegisteredTex_HogeHoge"];
 }
 
-TextureHandle TextureManager::RegisterInternal(Texture& texture, TextureHandle handle)
+TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle handle)
 {
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 	UINT useIndex = -1; 
-	
+
 	auto itr = textureMap.find(handle);
 	if (itr != textureMap.end()) {
 		useIndex = itr->second.heapIndex;
@@ -318,16 +321,19 @@ TextureHandle TextureManager::RegisterInternal(Texture& texture, TextureHandle h
 
 void TextureManager::UnRegisterInternal(const TextureHandle& handle)
 {
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 	textureMap.erase(handle);
 }
 
 void TextureManager::UnRegisterAtEndFrameInternal(const TextureHandle& handle)
 {
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 	unregisterScheduledList.push_back(handle);
 }
 
 void TextureManager::EndFrameProcessInternal()
 {
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 	for (TextureHandle& handle : unregisterScheduledList) {
 		UnRegisterInternal(handle);
 	}
@@ -347,7 +353,7 @@ Texture& TextureManager::Get(const TextureHandle& handle)
 	return manager->GetInternal(handle);
 }
 
-TextureHandle TextureManager::Register(Texture& texture, TextureHandle handle)
+TextureHandle TextureManager::Register(Texture texture, TextureHandle handle)
 {
 	TextureManager* manager = TextureManager::GetInstance();
 	return manager->RegisterInternal(texture, handle);

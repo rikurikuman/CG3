@@ -5,6 +5,7 @@
 #include <wrl.h>
 #include <memory>
 #include <map>
+#include <mutex>
 
 typedef std::string TextureHandle;
 
@@ -58,7 +59,7 @@ public:
 	/// <param name="texture">登録するテクスチャ</param>
 	/// <param name="handle">登録先のテクスチャハンドル</param>
 	/// <returns>登録先のテクスチャハンドル</returns>
-	static TextureHandle Register(Texture& texture, TextureHandle handle = "");
+	static TextureHandle Register(Texture texture, TextureHandle handle = "");
 
 	/// <summary>
 	/// 登録済みのテクスチャを即座に破棄する
@@ -95,11 +96,12 @@ private:
 	
 	TextureHandle LoadInternal(const std::string filepath, const std::string handle = "");
 	Texture& GetInternal(const TextureHandle& handle);
-	TextureHandle RegisterInternal(Texture& texture, TextureHandle handle = "");
+	TextureHandle RegisterInternal(Texture texture, TextureHandle handle = "");
 	void UnRegisterInternal(const TextureHandle& handle);
 	void UnRegisterAtEndFrameInternal(const TextureHandle& handle);
 	void EndFrameProcessInternal();
 
+	std::recursive_mutex mutex;
 	static const UINT numSRVDescritors = 2048; //デスクリプタヒープの数
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap; //テクスチャ用SRVデスクリプタヒープ
 	std::map<TextureHandle, Texture> textureMap;

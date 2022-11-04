@@ -9,6 +9,9 @@ namespace Util {
     extern int debugInt;
 	constexpr float PI = 3.1415926535897932384626f;
 
+    const int WIN_WIDTH = 1280;
+    const int WIN_HEIGHT = 720;
+
 	//DegreeからRadianへ変換する
 	float AngleToRadian(float angle);
 
@@ -94,11 +97,14 @@ namespace Util {
         if (itr == vector.end()) {
             return -1;
         }
-        return std::distance(vector.begin(), itr);
+        return static_cast<int>(std::distance(vector.begin(), itr));
     }
 
     //stringをwstringに変換する（MultiByteToWideChar)
     std::wstring ConvertStringToWString(std::string str);
+
+    //乱数生成(一様分布)
+    int GetRand(int min, int max);
 
     //乱数生成(一様分布)
     float GetRand(float min, float max);

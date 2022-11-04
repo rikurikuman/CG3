@@ -52,6 +52,13 @@ void Cube::SetAllTexture(TextureHandle texture)
 	}
 }
 
+void Cube::SetAllAlpha(float alpha)
+{
+	for (int i = 0; i < 6; i++) {
+		faces[i].material.color.a = alpha;
+	}
+}
+
 void Cube::UpdateFaces()
 {
 	for (int i = 0; i < 6; i++) {

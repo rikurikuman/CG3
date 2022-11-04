@@ -76,8 +76,8 @@ public:
 private:
 	RDirectX() {};
 	~RDirectX() = default;
-	RDirectX(const RDirectX& a) {};
-	RDirectX& operator=(const RDirectX&) { return *this; }
+	RDirectX(const RDirectX& a) = delete;
+	RDirectX& operator=(const RDirectX&) = delete;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE nowRtvHandle = {};
 

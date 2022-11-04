@@ -317,6 +317,7 @@ void RDirectX::InitInternal() {
 	pipelineState.desc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK; //背面カリング
 	pipelineState.desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 	pipelineState.desc.RasterizerState.DepthClipEnable = true;
+	pipelineState.desc.BlendState.AlphaToCoverageEnable = true;
 
 	// ブレンドステート(半透明合成)
 	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = pipelineState.desc.BlendState.RenderTarget[0];

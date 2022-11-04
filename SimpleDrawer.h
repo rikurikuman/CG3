@@ -1,6 +1,7 @@
 #pragma once
 #include "RDirectX.h"
 #include "SimpleDrawInfo.h"
+#include <mutex>
 
 class SimpleDrawer
 {
@@ -15,7 +16,7 @@ public:
 	}
 
 	static void DrawBox(float x1, float y1, float x2, float y2, Color color, bool fillFlag);
-	static void DrawString(float x, float y, std::string text, std::string fontTypeFace = "", UINT fontSize = 20, Vector2 anchor = {0, 0});
+	static void DrawString(float x, float y, std::string text, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), std::string fontTypeFace = "", UINT fontSize = 20, Vector2 anchor = {0, 0});
 
 private:
 	SimpleDrawer() {
@@ -28,6 +29,11 @@ private:
 	std::list<std::shared_ptr<SimpleDrawInfo>> infoList;
 	RootSignature rootSignature;
 	GraphicsPipeline pipelineState;
+
+	RootSignature rootSignatureForString;
+	GraphicsPipeline pipelineStateForString;
+
+	std::mutex mutex;
 
 	void Init();
 };
