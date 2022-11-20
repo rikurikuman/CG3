@@ -4,11 +4,14 @@
 #include "Sprite.h"
 #include "Cube.h"
 #include "DebugCamera.h"
+#include "ParticleManager.h"
+#include "ParticleEmitter.h"
 
 class GameScene : public Scene
 {
 public:
 	GameScene();
+	~GameScene();
 
 	void Init() override;
 	void Update() override;
@@ -17,6 +20,7 @@ public:
 private:
 	ModelObj skydome;
 
+	Sprite controlDescText0;
 	Sprite controlDescText1;
 	Sprite controlDescText2;
 	Sprite controlDescText3;
@@ -24,6 +28,11 @@ private:
 	Cube cube;
 
 	Image3D text;
+
+	ParticleManager particleManager;
+	ParticleEmitter* patEmitterA = nullptr;
+	ParticleEmitter* patEmitterB = nullptr;
+	ParticleEmitter* patEmitterC = nullptr;
 
 	DebugCamera camera = DebugCamera({0, 0, 0});
 

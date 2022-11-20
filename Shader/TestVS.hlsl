@@ -1,9 +1,11 @@
 #include "Test.hlsli"
 
-VSOutput main(float4 pos : POSITION)
+VSOutput main(float4 pos : POSITION, float3 scale : SCALE, float4 color : COLOR)
 {
 	VSOutput output; // ピクセルシェーダーに渡す値
 
 	output.pos = pos;
+	output.scale = scale;
+	output.color = color;
 	return output;
 }

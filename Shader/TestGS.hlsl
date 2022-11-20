@@ -27,9 +27,15 @@ void main(
 	GSOutput element;
 
 	for (uint i = 0; i < vnum; i++) {
-		element.svpos = input[0].pos + offset_array[i];
+		float4 offset = offset_array[i];
+		offset.x = offset.x * input[0].scale.x;
+		offset.y = offset.y * input[0].scale.y;
+		element.svpos = offset;
+		element.svpos = mul(matBillBoard, element.svpos);
+		element.svpos = element.svpos + input[0].pos;
 		element.svpos = mul(matViewProjection, element.svpos);
 		element.uv = uv_array[i];
+		element.color = input[0].color;
 		output.Append(element);
 	}
 }

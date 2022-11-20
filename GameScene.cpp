@@ -1,17 +1,24 @@
 #include "GameScene.h"
 #include "TextDrawer.h"
 #include "RWindow.h"
+#include "RInput.h"
+#include "SceneManager.h"
+#include "PolygonScene.h"
+#include "SimpleSceneTransition.h"
 
 GameScene::GameScene()
 {
 	skydome = ModelObj(Model::Load("Resources/skydome/", "skydome.obj"));
 
-	controlDescText1 = Sprite(TextDrawer::CreateStringTexture("ESC:終了", "", 24), { 0, 1 });
+	controlDescText0 = Sprite(TextDrawer::CreateStringTexture("ESC:終了", "", 24), { 0, 1 });
+	controlDescText1 = Sprite(TextDrawer::CreateStringTexture("R: シーンチェンジ", "", 24), { 0, 1 });
 	controlDescText2 = Sprite(TextDrawer::CreateStringTexture("WASD:移動, マウスで視点操作", "", 24), { 0, 1 });
 	controlDescText3 = Sprite(TextDrawer::CreateStringTexture("Space:上昇, LShift:下降", "", 24), { 0, 1 });
+	controlDescText0.transform.position = { 0, (float)RWindow::GetHeight() - 72, 0 };
 	controlDescText1.transform.position = { 0, (float)RWindow::GetHeight() - 48, 0 };
 	controlDescText2.transform.position = { 0, (float)RWindow::GetHeight() - 24, 0 };
 	controlDescText3.transform.position = { 0, (float)RWindow::GetHeight(), 0 };
+	controlDescText0.transform.UpdateMatrix();
 	controlDescText1.transform.UpdateMatrix();
 	controlDescText2.transform.UpdateMatrix();
 	controlDescText3.transform.UpdateMatrix();
@@ -74,6 +81,40 @@ GameScene::GameScene()
 
 	gridMaterial.color = Color(0, 1, 1, 0.25f);
 	gridMaterial.Transfer(gridMaterialBuff.constMap);
+
+	patEmitterA = new ParticleEmitter(&particleManager);
+	patEmitterB = new ParticleEmitter(&particleManager);
+	patEmitterC = new ParticleEmitter(&particleManager);
+
+	patEmitterA->spawnCount = 10;
+	patEmitterA->spawnInterval = 4.5f;
+	patEmitterA->timer = 4.5f;
+	patEmitterA->minAliveTime = 5.0f;
+	patEmitterA->maxAliveTime = 5.0f;
+
+	patEmitterB->pos = { -5, 0, 0 };
+	patEmitterB->spawnAreaSize = { 0, 0, 0 };
+	patEmitterB->minVelocity = { -0.1f, -0.1f, -0.1f };
+	patEmitterB->maxVelocity = { 0.1f, 0.1f, 0.1f };
+	patEmitterB->color = { 1, 0.1f, 0.1f, 1 };
+	patEmitterB->endColor = { 0.1f, 0.1f, 1, 1 };
+	patEmitterB->spawnInterval = 0.1f;
+	patEmitterB->spawnCount = 20;
+
+	patEmitterC->pos = { 5, 0, 0 };
+	patEmitterC->spawnAreaSize = { 0.2f, 0.2f, 0.2f };
+	patEmitterC->minVelocity = { -0.01f, 0.01f, -0.01f };
+	patEmitterC->maxVelocity = { 0.01f, 0.05f, 0.01f };
+	patEmitterC->color = { 1, 0.3f, 0.1f, 1 };
+	patEmitterC->endColor = { 1, 0.3f, 0.1f, 1 };
+	patEmitterC->spawnInterval = 0.01f;
+	patEmitterC->spawnCount = 5;
+}
+
+GameScene::~GameScene() {
+	delete patEmitterA;
+	delete patEmitterB;
+	delete patEmitterC;
 }
 
 void GameScene::Init()
@@ -83,6 +124,12 @@ void GameScene::Init()
 
 void GameScene::Update()
 {
+	if (RInput::GetInstance()->GetKeyDown(DIK_R)) {
+		if (!SceneManager::IsSceneChanging()) {
+			SceneManager::Change<PolygonScene, SimpleSceneTransition>();
+		}
+	}
+
 	cube.transform.rotation.y += Util::AngleToRadian(1);
 	cube.transform.UpdateMatrix();
 	cube.UpdateFaces();
@@ -98,6 +145,11 @@ void GameScene::Update()
 	skydome.TransferBuffer(camera.viewProjection);
 
 	gridViewProjectionBuff.constMap->matrix = camera.viewProjection.matrix;
+
+	patEmitterA->Update();
+	patEmitterB->Update();
+	patEmitterC->Update();
+	particleManager.Update();
 }
 
 void GameScene::Draw()
@@ -114,12 +166,16 @@ void GameScene::Draw()
 	RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
 	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
 
+	controlDescText0.TransferBuffer();
 	controlDescText1.TransferBuffer();
 	controlDescText2.TransferBuffer();
 	controlDescText3.TransferBuffer();
+	controlDescText0.DrawCommands();
 	controlDescText1.DrawCommands();
 	controlDescText2.DrawCommands();
 	controlDescText3.DrawCommands();
+
+	particleManager.Draw();
 
 	//グリッド
 	RDirectX::GetInstance()->cmdList->SetPipelineState(gridPSO.ptr.Get());

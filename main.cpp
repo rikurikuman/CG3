@@ -104,12 +104,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	RAudio::Load("Resources/Sound/BossBreak.wav", "BossBreak");
 	RAudio::Load("Resources/Sound/Start.wav", "Start");
 
-	SceneManager::Set<GameScene>();
-	Image3D text(TextDrawer::CreateStringTexture("hogehoge‚ ‚¢‚¤‚¦int‚Ù‚°", "‚l‚r ‚o–¾’©", 128), { 3.0f, 3.0f });
-	text.transform.position = { 0, 0, 20 };
-	text.transform.UpdateMatrix();
+	TextureManager::Load("Resources/shutter.png", "shutter");
 
-	DebugCamera camera({ 0, 0, -10 });
+	SceneManager::Set<GameScene>();
 
 	//////////////////////////////////////
 
@@ -166,9 +163,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//•`‰æƒRƒ}ƒ“ƒh
 		
 		SceneManager::Draw();
-
-		RDirectX::GetInstance()->cmdList->SetPipelineState(TextDrawer::GetInstance()->pipeline.ptr.Get());
-		text.DrawCommands();
 
 		if (Util::debugBool) {
 			SimpleDrawer::DrawString(100, 80, Util::StringFormat("FPS: %f", TimeManager::fps));

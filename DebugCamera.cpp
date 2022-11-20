@@ -19,7 +19,7 @@ void DebugCamera::Update()
 		viewProjection.eye.x += -moveSpeed * cosf(Util::PI / 180 * (angle.x + 90));
 		viewProjection.eye.z += moveSpeed * sinf(Util::PI / 180 * (angle.x + 90));
 	}
-	if (RInput::GetKey(DIK_C)) {
+	if (RInput::GetKey(DIK_SPACE)) {
 		viewProjection.eye.y += moveSpeed;
 	}
 	if (RInput::GetKey(DIK_LSHIFT)) {

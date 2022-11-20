@@ -27,6 +27,23 @@ public:
 
 	bool operator==(const Color& o) const;
 
+	Color operator+(const Color& o) const {
+		Color temp = *this;
+		temp.r += o.r;
+		temp.g += o.g;
+		temp.b += o.b;
+		temp.a += o.a;
+		return temp;
+	}
+	Color operator*(const float& f) const {
+		Color temp = *this;
+		temp.r *= f;
+		temp.g *= f;
+		temp.b *= f;
+		temp.a *= f;
+		return temp;
+	}
+
 	static Color convertFromHSVA(HSVA hsva) {
 		return convertFromHSVA(hsva.h, hsva.s, hsva.v, hsva.a);
 	}
