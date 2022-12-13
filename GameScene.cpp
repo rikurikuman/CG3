@@ -1,6 +1,9 @@
 #include "GameScene.h"
 #include "TextDrawer.h"
 #include "RWindow.h"
+#include "RInput.h"
+#include "SceneManager.h"
+#include "SimpleSceneTransition.h"
 
 GameScene::GameScene()
 {
@@ -83,6 +86,10 @@ void GameScene::Init()
 
 void GameScene::Update()
 {
+	if (RInput::GetKeyDown(DIK_R)) {
+		SceneManager::Change<GameScene, SimpleSceneTransition>();
+	}
+
 	cube.transform.rotation.y += Util::AngleToRadian(1);
 	cube.transform.UpdateMatrix();
 	cube.UpdateFaces();

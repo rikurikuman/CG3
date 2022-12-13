@@ -4,6 +4,7 @@
 #include <vector>
 #include "Scene.h"
 #include "SceneTransition.h"
+#include "Sprite.h"
 
 class SceneManager
 {
@@ -33,7 +34,12 @@ private:
 	std::vector<SceneChange> runningSceneChange;
 	bool gameEnd = false;
 
-	SceneManager() = default;
+	float loadingTimer = 0;
+	float loadingAngle = 0;
+	float loadingAlpha = 0;
+	Sprite loadingMark;
+
+	SceneManager();
 	~SceneManager() = default;
 	SceneManager(const SceneManager& a) = delete;
 	SceneManager& operator=(const SceneManager&) = delete;

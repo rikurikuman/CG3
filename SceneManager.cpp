@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 #include "Util.h"
+#include "RWindow.h"
+#include "TimeManager.h"
 
 SceneManager* SceneManager::GetInstance() {
 	static SceneManager instance;
@@ -25,6 +27,11 @@ bool SceneManager::CheckGameEndFlag()
 void SceneManager::GameEnd()
 {
 	GetInstance()->gameEnd = true;
+	GetInstance()->runningSceneChange.clear();
+}
+
+SceneManager::SceneManager() {
+	loadingMark = Sprite(TextureManager::Load("Resources/loadingMark.png", "LoadingMark"));
 }
 
 void SceneManager::Update() {
@@ -60,6 +67,7 @@ void SceneManager::Update() {
 			std::lock_guard<std::mutex> lock(instance->mutex);
 			std::swap(instance->nowScene, instance->changeScene);
 			instance->nowScene->Init();
+			instance->loadingTimer = 0;
 			sc.transition->Open();
 			sc.increment++;
 		}
@@ -68,6 +76,47 @@ void SceneManager::Update() {
 			&& sc.transition->IsOpened()) {
 			instance->runningSceneChange.erase(instance->runningSceneChange.begin());
 		}
+
+		//ローディングマーク
+		if (sc.increment == 1 && sc.transition->IsClosed()) {
+			instance->loadingTimer += TimeManager::deltaTime;
+			if (instance->loadingTimer >= 0.5f) {
+				float t = min(1, instance->loadingTimer - 0.5f / 0.5f);
+				float fx = 1 - powf(1 - t, 5);
+
+				instance->loadingAngle += Util::AngleToRadian(5);
+				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 0 };
+				instance->loadingMark.transform.rotation = { 0, 0, instance->loadingAngle };
+				instance->loadingMark.transform.UpdateMatrix();
+				instance->loadingMark.material.color.a = 1.0f * fx;
+				instance->loadingAlpha = 1.0f * fx;
+			}
+			else {
+				instance->loadingAngle = 0;
+				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 0 };
+				instance->loadingMark.transform.rotation = { 0, 0, 0 };
+				instance->loadingMark.transform.UpdateMatrix();
+				instance->loadingMark.material.color.a = 0;
+			}
+		}
+		if (sc.increment == 3) {
+			if (instance->loadingAngle != 0) {
+				instance->loadingTimer += TimeManager::deltaTime;
+				float t = min(1, instance->loadingTimer / 0.5f);
+				float fx = 1 - powf(1 - t, 5);
+
+				instance->loadingAngle += Util::AngleToRadian(5);
+				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 0 };
+				instance->loadingMark.transform.rotation = { 0, 0, instance->loadingAngle };
+				instance->loadingMark.transform.UpdateMatrix();
+				instance->loadingMark.material.color.a = instance->loadingAlpha * (1 - fx);
+			}
+		}
+	}
+	else {
+		instance->loadingTimer = 0;
+		instance->loadingAngle = 0;
+		instance->loadingAlpha = 0;
 	}
 
 	if (instance->nowScene != nullptr) {
@@ -83,5 +132,10 @@ void SceneManager::Draw() {
 	if (!instance->runningSceneChange.empty()) {
 		SceneChange& sc = *instance->runningSceneChange.begin();
 		sc.transition->Draw();
+
+		if (instance->loadingAlpha != 0 && ((sc.increment == 1 && sc.transition->IsClosed()) || sc.increment == 2 || sc.increment == 3)) {
+			instance->loadingMark.TransferBuffer();
+			instance->loadingMark.DrawCommands();
+		}
 	}
 }

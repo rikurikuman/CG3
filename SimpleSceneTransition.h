@@ -9,7 +9,8 @@ private:
 
 	bool inProgress = false;
 	float timer = 0;
-	float shutterPos = 0;
+	float shutterScale = 0;
+	float shutterAlpha = 0;
 	float shutterElapsedTime = 0;
 
 public:

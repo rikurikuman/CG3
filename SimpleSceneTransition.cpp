@@ -4,52 +4,52 @@
 #include "SimpleDrawer.h"
 
 SimpleSceneTransition::SimpleSceneTransition() {
-	shutter = Sprite(TextureManager::Load("Resources/shutter.png"), {0.0f, 1.0f});
+	shutter = Sprite("", {0.5f, 0.5f});
 }
 
 void SimpleSceneTransition::Update()
 {
 	if (closeFlag) {
-		if (shutterPos >= 1) {
+		if (shutterScale >= 1) {
 			inProgress = false;
-			shutterPos = 1;
+			shutterScale = 1;
+			shutterAlpha = 1;
 		}
 		else {
 			inProgress = true;
-			if (timer == 0) {
-				//PlaySE("ShutterClose");
-			}
 			timer += TimeManager::deltaTime;
 			float t = min(1.0f, timer / 0.8f);
 
-			shutterPos = (1.0f - powf(1 - t, 5));
+			shutterScale = (1.0f - powf(1 - t, 5));
+			shutterAlpha = 1;
 		}
 	}
 	else {
-		if (shutterPos <= 0) {
+		if (shutterAlpha <= 0) {
 			inProgress = false;
-			shutterPos = 0;
+			shutterAlpha = 0;
 		}
 		else {
 			inProgress = true;
-			if (timer == 0) {
-				//PlaySE("ShutterOpen");
-			}
 			timer += TimeManager::deltaTime;
 			float t = min(1.0f, timer / 0.8f);
 
-			shutterPos = 1 - (1.0f - powf(1 - t, 5));
+			shutterAlpha = 1 - (1.0f - powf(1 - t, 5));
 		}
 	}
 
-	shutter.transform.position = { 0, RWindow::GetHeight() * shutterPos, 0 };
+	float scale = 15.0f * shutterScale;
+	shutter.transform.position = { RWindow::GetWidth() / 2.0f, RWindow::GetHeight() / 2.0f, 0 };
+	shutter.transform.rotation = { 0, 0, Util::AngleToRadian(180 * shutterScale)};
+	shutter.transform.scale = { scale, scale, 1 };
+	shutter.material.color = { 0, 0, 0, shutterAlpha };
 	shutter.transform.UpdateMatrix();
 	shutter.TransferBuffer();
 }
 
 void SimpleSceneTransition::Draw()
 {
-	if (shutterPos != 0) {
+	if (shutterScale != 0) {
 		shutter.DrawCommands();
 		//SimpleDrawer::DrawBox(0, 0, (float)RWindow::GetWidth(), (float)RWindow::GetHeight() * shutterPos, Color(0, 0.5f, 0.5f, 1), true);
 	}
