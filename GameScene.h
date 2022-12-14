@@ -22,6 +22,7 @@ private:
 	Sprite controlDescText3;
 
 	Cube cube;
+	ModelObj model;
 
 	Image3D text;
 

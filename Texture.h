@@ -6,6 +6,7 @@
 #include <memory>
 #include <map>
 #include <mutex>
+#include "Color.h"
 
 typedef std::string TextureHandle;
 
@@ -40,11 +41,33 @@ public:
 	static Texture GetHogeHogeTexture();
 
 	/// <summary>
+	/// 色情報の配列によってテクスチャを作る
+	/// </summary>
+	/// <param name="pSource">Color配列</param>
+	/// <param name="width">横幅</param>
+	/// <param name="height">縦幅</param>
+	/// <param name="filepath">あれば、ファイルパス</param>
+	/// <param name="handle">必要なら、任意ハンドル名指定</param>
+	/// <returns>作られたテクスチャのハンドル</returns>
+	static TextureHandle Create(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath = "", const std::string handle = "");
+
+	/// <summary>
 	/// ファイルからテクスチャを読み込んで登録する
 	/// </summary>
 	/// <param name="filepath">ファイルへのパス</param>
+	/// <param name="handle">必要なら、任意ハンドル名指定</param>
 	/// <returns>読み込んだテクスチャのハンドル</returns>
 	static TextureHandle Load(const std::string filepath, const std::string handle = "");
+
+	/// <summary>
+	/// メモリからテクスチャを読み込んで登録する
+	/// </summary>
+	/// <param name="pSource">そのメモリへのポインタ</param>
+	/// <param name="size">サイズ</param>
+	/// <param name="filepath">あれば、ファイルへのパス</param>
+	/// <param name="handle">必要なら、任意ハンドル名指定</param>
+	/// <returns>読み込んだテクスチャのハンドル</returns>
+	static TextureHandle Load(const void* pSource, const size_t size, const std::string filepath = "", const std::string handle = "");
 
 	/// <summary>
 	/// 登録済みのテクスチャを取得する
@@ -94,7 +117,9 @@ private:
 
 	void Init();
 	
+	TextureHandle CreateInternal(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath = "", const std::string handle = "");
 	TextureHandle LoadInternal(const std::string filepath, const std::string handle = "");
+	TextureHandle LoadInternal(const void* pSource, const size_t size, const std::string filepath, const std::string handle = "");
 	Texture& GetInternal(const TextureHandle& handle);
 	TextureHandle RegisterInternal(Texture texture, TextureHandle handle = "");
 	void UnRegisterInternal(const TextureHandle& handle);

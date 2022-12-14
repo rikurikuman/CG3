@@ -4,6 +4,7 @@
 #include <cassert>
 #include "Util.h"
 #include "Mtllib.h"
+#include "Matrix4.h"
 
 using namespace std;
 
@@ -218,6 +219,232 @@ ModelHandle Model::Register(ModelHandle handle, Model model)
     std::lock_guard<std::recursive_mutex> lock(instance->mutex);
 
     instance->modelMap[handle] = model;
+    return handle;
+}
+
+aiMatrix4x4 GetNodeAbsoluteTransform(const aiNode* node) {
+    aiMatrix4x4 transform = node->mTransformation;
+
+    if (node->mParent != nullptr) {
+        aiMatrix4x4 pTransform = GetNodeAbsoluteTransform(node->mParent);
+        transform = pTransform * transform;
+    }
+
+    return transform;
+}
+
+void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const vector<Material>* materials) {
+    for (UINT meshIndex = 0; meshIndex < node->mNumMeshes; meshIndex++) {
+        ModelData data;
+
+        aiMesh* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
+
+        //おなまえドットコム
+        aiString _name = mesh->mName;
+        data.name = _name.C_Str();
+
+        //トランスフォーム
+        aiMatrix4x4 transform = GetNodeAbsoluteTransform(node);
+
+        //頂点
+        vector<VertexPNU> vertices;
+
+        for (UINT posIndex = 0; posIndex < mesh->mNumVertices; posIndex++) {
+            Vector3 pos = { 0, 0, 0 };
+            Vector3 norm = { 0, 0, 0 };
+            Vector2 uv = { 0, 0 };
+
+            aiVector3D _pos = mesh->mVertices[posIndex];
+            _pos *= transform;
+            pos = Vector3(_pos.x, _pos.y, _pos.z);
+
+            if (mesh->HasNormals()) {
+                aiVector3D _norm = mesh->mNormals[posIndex];
+                _norm *= transform;
+                _norm.Normalize();
+                norm = Vector3(_norm.x, _norm.y, _norm.z);
+            }
+
+            if (mesh->HasTextureCoords(0)) {
+                aiVector3D _uv = mesh->mTextureCoords[0][posIndex];
+                uv = Vector2(_uv.x, _uv.y);
+            }
+
+            VertexPNU vert;
+            vert.pos = pos;
+            vert.normal = norm;
+            vert.uv = uv;
+            vertices.push_back(vert);
+        }
+
+        for (VertexPNU& vert : vertices) {
+            data.vertexs.push_back(vert);
+        }
+
+        //面(インデックス)
+        for (UINT faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
+            aiFace face = mesh->mFaces[faceIndex];
+            for (UINT vertIndex = 0; vertIndex < face.mNumIndices; vertIndex++) {
+                data.indices.push_back(face.mIndices[vertIndex]);
+            }
+        }
+
+        if (materials->size() > mesh->mMaterialIndex) {
+            data.material = materials->at(mesh->mMaterialIndex);
+        }
+
+        data.vertexBuff.Init(data.vertexs);
+        data.indexBuff.Init(data.indices);
+        data.material.Transfer(data.materialBuff.constMap);
+        model->data.push_back(make_shared<ModelData>(data));
+    }
+
+    for (UINT childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
+        NodeTraverse(scene, node->mChildren[childIndex], model, materials);
+    }
+}
+
+ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, ModelHandle handle)
+{
+    ModelManager* instance = ModelManager::GetInstance();
+    Model model;
+
+    if (directoryPath[directoryPath.size() - 1] != '/') {
+        directoryPath += "/";
+    }
+
+    model.path = directoryPath + filename;
+
+    if (handle.empty()) {
+        handle = "UnnamedModelHandle_" + model.path;
+    }
+
+    std::unique_lock<std::recursive_mutex> lock(instance->mutex);
+    if (instance->modelMap.find(handle) != instance->modelMap.end()
+        && instance->modelMap[handle].path == (model.path)) {
+        return handle;
+    }
+    lock.unlock();
+
+    Assimp::Importer importer;
+
+    const aiScene* scene = importer.ReadFile(model.path,
+        aiProcess_ConvertToLeftHanded |
+        aiProcess_Triangulate |
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_SortByPType |
+        aiProcess_GenNormals |
+        aiProcess_FixInfacingNormals |
+        aiProcess_CalcTangentSpace
+    );
+
+    if (scene == nullptr) {
+        OutputDebugStringA(importer.GetErrorString());
+        return "";
+    }
+
+    model.name = scene->mName.C_Str();
+
+    //マテリアル
+    vector<Material> materials;
+
+    for (UINT materialIndex = 0; materialIndex < scene->mNumMaterials; materialIndex++) {
+        Material material;
+        aiMaterial* _material = scene->mMaterials[materialIndex];
+
+        aiString str;
+        _material->Get(AI_MATKEY_NAME, str);
+        material.name = str.C_Str();
+
+        aiColor3D color;
+
+        _material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+        material.diffuse = Vector3(color.r, color.g, color.b);
+        
+        _material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+        material.ambient = Vector3(color.r, color.g, color.b);
+
+        _material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+        material.specular = Vector3(color.r, color.g, color.b);
+
+        float opacity = 0.0f;
+        _material->Get(AI_MATKEY_OPACITY, opacity);
+        material.color.a = opacity;
+
+        if (_material->GetTextureCount(aiTextureType_DIFFUSE) >= 1) {
+            //_material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
+            _material->Get(AI_MATKEY_TEXTURE_DIFFUSE(0), str);
+
+            string path = str.C_Str();
+            string texHandle = "";
+
+            if (!material.name.empty()) {
+                texHandle = model.path + "_" + material.name + "_Tex";
+            }
+            else {
+                texHandle = "UnnamedMaterial_Tex";
+            }
+
+            material.texture = "";
+            if (path.empty()) {
+                material.texture = "";
+            }
+            else {
+                const aiTexture* embedTex = scene->GetEmbeddedTexture(path.c_str());
+                if (embedTex != nullptr) {
+                    if (embedTex->mHeight == 0) {
+                        material.texture = TextureManager::Load(embedTex->pcData, embedTex->mWidth, path, texHandle);
+                    }
+                    else {
+                        Color* data = new Color[embedTex->mWidth * embedTex->mHeight];
+
+                        for (UINT i = 0; i < embedTex->mWidth * embedTex->mHeight; i++) {
+                            aiTexel texel = embedTex->pcData[i];
+                            data[i] = Color(texel.r, texel.g, texel.b, texel.a);
+                        }
+
+                        material.texture = TextureManager::Create(data, embedTex->mWidth, embedTex->mHeight, path, texHandle);
+                        
+                        delete[] data;
+                    }
+                }
+                else {
+                    if (path[0] == '*') {
+                        string index = path.substr(1, path.size() - 1);
+                        aiTexture* tex = scene->mTextures[atoi(index.c_str())];
+                        
+                        if (tex->mHeight == 0) {
+                            material.texture = TextureManager::Load(tex->pcData, tex->mWidth, path, texHandle);
+                        }
+                        else {
+                            Color* data = new Color[tex->mWidth * tex->mHeight];
+
+                            for (UINT i = 0; i < tex->mWidth * tex->mHeight; i++) {
+                                aiTexel texel = tex->pcData[i];
+                                data[i] = Color(texel.r, texel.g, texel.b, texel.a);
+                            }
+
+                            material.texture = TextureManager::Create(data, tex->mWidth, tex->mHeight, path, texHandle);
+
+                            delete[] data;
+                        }
+                    }
+                    else {
+                        material.texture = TextureManager::Load(directoryPath + path, texHandle);
+                    }
+                }
+            }
+        }
+
+        materials.push_back(material);
+    }
+
+    //ルートノードからぜーんぶメッシュをぶち込んでモデルにする
+    NodeTraverse(scene, scene->mRootNode, &model, &materials);
+
+    lock.lock();
+    instance->modelMap[handle] = model;
+    lock.unlock();
     return handle;
 }
 

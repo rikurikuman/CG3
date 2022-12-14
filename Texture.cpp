@@ -148,6 +148,69 @@ Texture TextureManager::GetHogeHogeTexture()
 	return texture;
 }
 
+TextureHandle TextureManager::CreateInternal(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath, const std::string handle)
+{
+	std::lock_guard<std::recursive_mutex> lock(mutex);
+	HRESULT result;
+
+	if (!filepath.empty()) {
+		//一回読み込んだことがあるファイルはそのまま返す
+		auto itr = find_if(textureMap.begin(), textureMap.end(), [&](const std::pair<TextureHandle, Texture> p) {
+			return p.second.filePath == filepath;
+			});
+		if (itr != textureMap.end()) {
+			return itr->first;
+		}
+	}
+
+	Texture texture = Texture();
+	texture.filePath = filepath;
+
+	// テクスチャバッファ
+	// ヒープ設定
+	D3D12_HEAP_PROPERTIES textureHeapProp{};
+	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
+	textureHeapProp.CPUPageProperty =
+		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	// リソース設定
+	D3D12_RESOURCE_DESC textureResourceDesc{};
+	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	textureResourceDesc.Format = DXGI_FORMAT_R8G8B8A8_UINT;
+	textureResourceDesc.Width = width;
+	textureResourceDesc.Height = height;
+	textureResourceDesc.DepthOrArraySize = 1;
+	textureResourceDesc.MipLevels = 1;
+	textureResourceDesc.SampleDesc.Count = 1;
+
+	//生成
+	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+		&textureHeapProp,
+		D3D12_HEAP_FLAG_NONE,
+		&textureResourceDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&texture.resource)
+	);
+	if (FAILED(result)) {
+		return "FailedTextureHandle";
+	}
+
+	//てんそー
+	result = texture.resource->WriteToSubresource(
+		0,
+		nullptr, //全領域へコピー
+		pSource, //元データアドレス
+		static_cast<UINT>(sizeof(Color) * width), //1ラインサイズ
+		static_cast<UINT>(sizeof(Color) * width * static_cast<UINT64>(height)) //1枚サイズ
+	);
+	if (FAILED(result)) {
+		return "FailedTextureHandle";
+	}
+
+	return RegisterInternal(texture, handle);
+}
+
 TextureHandle TextureManager::LoadInternal(const std::string filepath, const std::string handle)
 {
 	std::lock_guard<std::recursive_mutex> lock(mutex);
@@ -171,6 +234,104 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 	// WICテクスチャのロード
 	result = LoadFromWICFile(
 		wfilePath.c_str(),
+		WIC_FLAGS_NONE,
+		&imgMetadata, scratchImg
+	);
+	if (FAILED(result)) {
+		return "FailedTextureHandle";
+	}
+
+	// ミップマップ生成
+	ScratchImage mipChain{};
+	result = GenerateMipMaps(
+		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
+		TEX_FILTER_DEFAULT, 0, mipChain
+	);
+	if (SUCCEEDED(result)) {
+		scratchImg = std::move(mipChain);
+		imgMetadata = scratchImg.GetMetadata();
+	}
+	else {
+		return "FailedTextureHandle";
+	}
+
+	//読み込んだディフューズテクスチャをSRGBとして扱う
+	imgMetadata.format = MakeSRGB(imgMetadata.format);
+
+	// テクスチャバッファ
+	// ヒープ設定
+	D3D12_HEAP_PROPERTIES textureHeapProp{};
+	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
+	textureHeapProp.CPUPageProperty =
+		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	// リソース設定
+	D3D12_RESOURCE_DESC textureResourceDesc{};
+	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	textureResourceDesc.Format = imgMetadata.format;
+	textureResourceDesc.Width = imgMetadata.width;
+	textureResourceDesc.Height = (UINT)imgMetadata.height;
+	textureResourceDesc.DepthOrArraySize = (UINT16)imgMetadata.arraySize;
+	textureResourceDesc.MipLevels = (UINT16)imgMetadata.mipLevels;
+	textureResourceDesc.SampleDesc.Count = 1;
+
+	//生成
+	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+		&textureHeapProp,
+		D3D12_HEAP_FLAG_NONE,
+		&textureResourceDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&texture.resource)
+	);
+	if (FAILED(result)) {
+		return "FailedTextureHandle";
+	}
+
+	//てんそー
+	//全ミップマップについて
+	for (size_t i = 0; i < imgMetadata.mipLevels; i++) {
+		const Image* img = scratchImg.GetImage(i, 0, 0);
+		result = texture.resource->WriteToSubresource(
+			(UINT)i,
+			nullptr, //全領域へコピー
+			img->pixels, //元データアドレス
+			(UINT)img->rowPitch, //1ラインサイズ
+			(UINT)img->slicePitch //1枚サイズ
+		);
+		if (FAILED(result)) {
+			return "FailedTextureHandle";
+		}
+	}
+
+	return RegisterInternal(texture, handle);
+}
+
+TextureHandle TextureManager::LoadInternal(const void* pSource, const size_t size, const std::string filepath, const std::string handle)
+{
+	std::lock_guard<std::recursive_mutex> lock(mutex);
+	HRESULT result;
+
+	if (!filepath.empty()) {
+		//一回読み込んだことがあるファイルはそのまま返す
+		auto itr = find_if(textureMap.begin(), textureMap.end(), [&](const std::pair<TextureHandle, Texture> p) {
+			return p.second.filePath == filepath;
+			});
+		if (itr != textureMap.end()) {
+			return itr->first;
+		}
+	}
+
+	Texture texture = Texture();
+	texture.filePath = filepath;
+
+	// 画像イメージデータ
+	TexMetadata imgMetadata{};
+	ScratchImage scratchImg{};
+	// WICテクスチャのロード
+	result = LoadFromWICMemory(
+		pSource,
+		size,
 		WIC_FLAGS_NONE,
 		&imgMetadata, scratchImg
 	);
@@ -341,10 +502,22 @@ void TextureManager::EndFrameProcessInternal()
 	unregisterScheduledList.clear();
 }
 
+TextureHandle TextureManager::Create(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath, const std::string handle)
+{
+	TextureManager* manager = TextureManager::GetInstance();
+	return manager->CreateInternal(pSource, width, height, filepath, handle);
+}
+
 TextureHandle TextureManager::Load(const string filepath, const std::string handle)
 {
 	TextureManager* manager = TextureManager::GetInstance();
 	return manager->LoadInternal(filepath, handle);
+}
+
+TextureHandle TextureManager::Load(const void* pSource, const size_t size, const std::string filepath, const std::string handle)
+{
+	TextureManager* manager = TextureManager::GetInstance();
+	return manager->LoadInternal(pSource, size, filepath, handle);
 }
 
 Texture& TextureManager::Get(const TextureHandle& handle)

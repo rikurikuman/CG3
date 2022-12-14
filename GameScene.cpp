@@ -23,6 +23,11 @@ GameScene::GameScene()
 	cube = Cube(tex);
 	cube.transform.position = { 0, 0, 10 };
 
+	model = ModelObj(Model::LoadWithAIL("Resources/Model/VicViper", "VicViper.fbx"));
+	//model = ModelObj(Model::Load("./Resources/Model/VicViper/", "VicViper.obj"));
+	model.transform.scale = { 0.2f, 0.2f, 0.2f };
+	model.transform.UpdateMatrix();
+
 	text = Image3D(TextDrawer::CreateStringTexture("hogehoge‚ ‚¢‚¤‚¦int‚Ù‚°", "‚l‚r ‚o–¾’©", 128), { 3.0f, 3.0f });
 	text.transform.position = { 0, 0, 20 };
 	text.transform.UpdateMatrix();
@@ -87,7 +92,7 @@ void GameScene::Init()
 void GameScene::Update()
 {
 	if (RInput::GetKeyDown(DIK_R)) {
-		SceneManager::Change<GameScene, SimpleSceneTransition>();
+		if(!SceneManager::IsSceneChanging()) SceneManager::Change<GameScene, SimpleSceneTransition>();
 	}
 
 	cube.transform.rotation.y += Util::AngleToRadian(1);
@@ -99,6 +104,7 @@ void GameScene::Update()
 	text.TransferBuffer(camera.viewProjection);
 
 	cube.TransferBuffer(camera.viewProjection);
+	model.TransferBuffer(camera.viewProjection);
 
 	skydome.transform.scale = { 4,4,4 };
 	skydome.transform.UpdateMatrix();
@@ -113,6 +119,7 @@ void GameScene::Draw()
 	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(RDirectX::GetInstance()->rootSignature.ptr.Get());
 
 	cube.DrawCommands();
+	model.DrawCommands();
 	skydome.DrawCommands();
 
 	RDirectX::GetInstance()->cmdList->SetPipelineState(TextDrawer::GetInstance()->pipeline.ptr.Get());
