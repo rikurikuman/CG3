@@ -6,12 +6,10 @@
 
 class DebugCamera : public Camera
 {
-private:
-	Vector2 angle = {90, 0};
-
 public:
 	float moveSpeed = 0.2f;
 	float sensitivity = 10.0f;
+	Vector2 angle = { 90, 0 };
 
 	DebugCamera(Vector3 pos, float moveSpeed = 0.2f, float sensitivity = 10.0f) : moveSpeed(moveSpeed), sensitivity(sensitivity) {
 		viewProjection.eye = pos;

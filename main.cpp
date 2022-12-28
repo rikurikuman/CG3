@@ -54,7 +54,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #endif
 
 	//WindowsAPI
-	RWindow::SetWindowName(L"Gradiu3D");
+	RWindow::SetWindowName(L"RKEngine");
 	RWindow::Init();
 
 	//DirectX
@@ -94,26 +94,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//モデルデータの読み込み
 	Model::Load("Resources/Model/", "Cube.obj", "Cube");
-	Model::Load("Resources/Model/VicViper/", "VicViper.obj", "VicViper");
-
-	//音声データの読み込み
-	RAudio::Load("Resources/Sound/Music_Main.wav", "MusicMain");
-	RAudio::Load("Resources/Sound/Music_Boss.wav", "MusicBoss");
-	RAudio::Load("Resources/Sound/Music_GameOver.wav", "MusicGameOver");
-	RAudio::Load("Resources/Sound/CursorMove.wav", "CursorMove");
-	RAudio::Load("Resources/Sound/Shot.wav", "Shot");
-	RAudio::Load("Resources/Sound/Laser.wav", "Laser");
-	RAudio::Load("Resources/Sound/Defeat.wav", "Defeat");
-	RAudio::Load("Resources/Sound/ItemPickup.wav", "ItemPickup");
-	RAudio::Load("Resources/Sound/ItemUse.wav", "ItemUse");
-	RAudio::Load("Resources/Sound/EnemyBreak.wav", "EnemyBreak");
-	RAudio::Load("Resources/Sound/BossBreak.wav", "BossBreak");
-	RAudio::Load("Resources/Sound/Start.wav", "Start");
 
 	SceneManager::Set<GameScene>();
-	Image3D text(TextDrawer::CreateStringTexture("hogehogeあいうえintほげ", "ＭＳ Ｐ明朝", 128), { 3.0f, 3.0f });
-	text.transform.position = { 0, 0, 20 };
-	text.transform.UpdateMatrix();
 
 	DebugCamera camera({ 0, 0, -10 });
 
@@ -172,9 +154,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//描画コマンド
 		
 		SceneManager::Draw();
-
-		RDirectX::GetInstance()->cmdList->SetPipelineState(TextDrawer::GetInstance()->pipeline.ptr.Get());
-		text.DrawCommands();
 
 		if (Util::debugBool) {
 			SimpleDrawer::DrawString(100, 80, Util::StringFormat("FPS: %f", TimeManager::fps));

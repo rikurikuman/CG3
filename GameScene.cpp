@@ -4,10 +4,11 @@
 #include "RInput.h"
 #include "SceneManager.h"
 #include "SimpleSceneTransition.h"
+#include "TimeManager.h"
 
 GameScene::GameScene()
 {
-	skydome = ModelObj(Model::Load("Resources/skydome/", "skydome.obj"));
+	skydome = ModelObj(Model::Load("Resources/Model/Skydome/", "skydome.obj"));
 
 	controlDescText1 = Sprite(TextDrawer::CreateStringTexture("ESC:終了", "", 24), { 0, 1 });
 	controlDescText2 = Sprite(TextDrawer::CreateStringTexture("WASD:移動, マウスで視点操作", "", 24), { 0, 1 });
@@ -19,69 +20,24 @@ GameScene::GameScene()
 	controlDescText2.transform.UpdateMatrix();
 	controlDescText3.transform.UpdateMatrix();
 
-	TextureHandle tex = TextureManager::Load("Resources/conflict.jpg");
-	cube = Cube(tex);
-	cube.transform.position = { 0, 0, 10 };
-
-	model = ModelObj(Model::LoadWithAIL("Resources/Model/VicViper", "VicViper.fbx"));
-	//model = ModelObj(Model::Load("./Resources/Model/VicViper/", "VicViper.obj"));
-	model.transform.scale = { 0.2f, 0.2f, 0.2f };
-	model.transform.UpdateMatrix();
-
-	text = Image3D(TextDrawer::CreateStringTexture("hogehogeあいうえintほげ", "ＭＳ Ｐ明朝", 128), { 3.0f, 3.0f });
-	text.transform.position = { 0, 0, 20 };
-	text.transform.UpdateMatrix();
-
-	camera.viewProjection.eye = { 0, 0, -10 };
-
-	//グリッド
-	gridRoot = RDirectX::GetInstance()->rootSignature;
-
-	RootParamaters gridRootParams(2);
-	//定数バッファ0番(Material)
-	gridRootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //定数バッファビュー
-	gridRootParams[0].Descriptor.ShaderRegister = 0; //定数バッファ番号
-	gridRootParams[0].Descriptor.RegisterSpace = 0; //デフォルト値
-	gridRootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL; //全シェーダから見える
-	//定数バッファ1番(ViewProjection)
-	gridRootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //定数バッファビュー
-	gridRootParams[1].Descriptor.ShaderRegister = 1; //定数バッファ番号
-	gridRootParams[1].Descriptor.RegisterSpace = 0; //デフォルト値
-	gridRootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL; //全シェーダから見える
-
-	gridRoot.desc.RootParamaters = gridRootParams;
-	gridRoot.Create();
-
-	gridPSO = RDirectX::GetInstance()->pipelineState;
-	gridPSO.desc.VS = Shader("Shader/GridVS.hlsl", "main", "vs_5_0");
-	gridPSO.desc.PS = Shader("Shader/GridPS.hlsl", "main", "ps_5_0");
-
-	InputLayout gridInputLayout = {
-		{
-			"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
-			D3D12_APPEND_ALIGNED_ELEMENT,
-			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
-		},
-	};
-	gridPSO.desc.InputLayout = gridInputLayout;
-	gridPSO.desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
-	gridPSO.desc.pRootSignature = gridRoot.ptr.Get();
-	gridPSO.Create();
-
-	for (int i = -100; i <= 100; i++) {
-		gridVertices.push_back(Vector3{ (float)i, -10, 100 });
-		gridVertices.push_back(Vector3{ (float)i, -10, -100 });
+	floor = Cube("");
+	for (Image3D& face : floor.faces) {
+		face.material.color = { 0.3f, 0.3f, 0.3f, 1.0f };
 	}
+	floor.transform.position = { 0.0f, -1.0f, 0.0f };
+	floor.transform.scale = { 40.0f, 1.0f, 40.0f };
+	floor.transform.UpdateMatrix();
+	floor.UpdateFaces();
 
-	for (int i = -100; i <= 100; i++) {
-		gridVertices.push_back(Vector3{ 100, -10, (float)i });
-		gridVertices.push_back(Vector3{ -100, -10, (float)i });
-	}
+	ModelHandle objVicViperModel = Model::Load("./Resources/Model/VicViper/", "VicViper.obj");
+	
+	objVicViper = ModelObj(objVicViperModel);
 
-	gridVertBuff = VertexBuffer(gridVertices);
+	objVicViper.transform.position = { 0, 0, 0 };
+	objVicViper.transform.scale = { 0.1f, 0.1f, 0.1f };
+	objVicViper.transform.UpdateMatrix();
 
-	gridMaterial.color = Color(0, 1, 1, 0.25f);
-	gridMaterial.Transfer(gridMaterialBuff.constMap);
+	camera.viewProjection.eye = { 0, 5, -20 };
 }
 
 void GameScene::Init()
@@ -95,22 +51,84 @@ void GameScene::Update()
 		if(!SceneManager::IsSceneChanging()) SceneManager::Change<GameScene, SimpleSceneTransition>();
 	}
 
-	cube.transform.rotation.y += Util::AngleToRadian(1);
-	cube.transform.UpdateMatrix();
-	cube.UpdateFaces();
+
+	if (RInput::GetKey(DIK_LEFT)) {
+		objVicViper.transform.rotation.y -= Util::AngleToRadian(2);
+		objVicViper.transform.rotation.z += Util::AngleToRadian(1);
+		if (Util::RadianToAngle(objVicViper.transform.rotation.z) >= 20) {
+			objVicViper.transform.rotation.z = Util::AngleToRadian(20);
+		}
+	}
+	else if(RInput::GetKey(DIK_RIGHT)) {
+		objVicViper.transform.rotation.y += Util::AngleToRadian(2);
+		objVicViper.transform.rotation.z -= Util::AngleToRadian(1);
+		if (Util::RadianToAngle(objVicViper.transform.rotation.z) <= -20) {
+			objVicViper.transform.rotation.z = Util::AngleToRadian(-20);
+		}
+	}
+	else {
+		if (objVicViper.transform.rotation.z != 0) {
+			if (objVicViper.transform.rotation.z > 0) {
+				objVicViper.transform.rotation.z -= Util::AngleToRadian(2);
+				if (objVicViper.transform.rotation.z < 0) {
+					objVicViper.transform.rotation.z = 0;
+				}
+			}
+			else {
+				objVicViper.transform.rotation.z += Util::AngleToRadian(2);
+				if (objVicViper.transform.rotation.z > 0) {
+					objVicViper.transform.rotation.z = 0;
+				}
+			}
+		}
+	}
+
+	if (RInput::GetKey(DIK_G)) {
+		objVicViper.transform.position.y = -0.2f;
+
+		speed -= 0.05f * speed;
+		if (speed <= 0) {
+			speed = 0;
+		}
+		charge += TimeManager::deltaTime;
+	}
+	else {
+		objVicViper.transform.position.y = 0.0f;
+
+		if (charge >= 0.5f) {
+			speed = 0.4f;
+		}
+		charge = 0;
+		
+		speed += 0.2f * TimeManager::deltaTime;
+	}
+
+	if (speed > 0) {
+		speed -= 0.02f * speed;
+		if (speed <= 0) {
+			speed = 0;
+		}
+	}
+	
+
+	Vector3 moveVec = { 0, 0, 1 };
+	moveVec *= Matrix4::RotationY(objVicViper.transform.rotation.y);
+
+	objVicViper.transform.position += moveVec * speed;
+	objVicViper.transform.position.x = Util::Clamp(objVicViper.transform.position.x, -20.0f, 20.0f);
+	objVicViper.transform.position.z = Util::Clamp(objVicViper.transform.position.z, -20.0f, 20.0f);
+
+	objVicViper.transform.UpdateMatrix();
 
 	camera.Update();
 
-	text.TransferBuffer(camera.viewProjection);
+	floor.TransferBuffer(camera.viewProjection);
 
-	cube.TransferBuffer(camera.viewProjection);
-	model.TransferBuffer(camera.viewProjection);
+	objVicViper.TransferBuffer(camera.viewProjection);
 
 	skydome.transform.scale = { 4,4,4 };
 	skydome.transform.UpdateMatrix();
 	skydome.TransferBuffer(camera.viewProjection);
-
-	gridViewProjectionBuff.constMap->matrix = camera.viewProjection.matrix;
 }
 
 void GameScene::Draw()
@@ -118,12 +136,11 @@ void GameScene::Draw()
 	RDirectX::GetInstance()->cmdList->SetPipelineState(RDirectX::GetInstance()->pipelineState.ptr.Get());
 	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(RDirectX::GetInstance()->rootSignature.ptr.Get());
 
-	cube.DrawCommands();
-	model.DrawCommands();
+	floor.DrawCommands();
+	objVicViper.DrawCommands();
 	skydome.DrawCommands();
 
 	RDirectX::GetInstance()->cmdList->SetPipelineState(TextDrawer::GetInstance()->pipeline.ptr.Get());
-	text.DrawCommands();
 
 	RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
 	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
@@ -134,14 +151,4 @@ void GameScene::Draw()
 	controlDescText1.DrawCommands();
 	controlDescText2.DrawCommands();
 	controlDescText3.DrawCommands();
-
-	//グリッド
-	RDirectX::GetInstance()->cmdList->SetPipelineState(gridPSO.ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(gridRoot.ptr.Get());
-	RDirectX::GetInstance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	RDirectX::GetInstance()->cmdList->IASetVertexBuffers(0, 1, &gridVertBuff.view);
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(0, gridMaterialBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(1, gridViewProjectionBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetInstance()->cmdList->DrawInstanced((UINT)gridVertices.size(), 1, 0, 0);
-	RDirectX::GetInstance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }

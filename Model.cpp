@@ -260,7 +260,16 @@ void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const 
 
             if (mesh->HasNormals()) {
                 aiVector3D _norm = mesh->mNormals[posIndex];
-                _norm *= transform;
+
+                aiVector3D _matpos;
+                aiVector3D _matrotAxis;
+                ai_real _matrotang;
+                aiVector3D _matsca;
+                transform.Decompose(_matsca, _matrotAxis, _matrotang, _matpos);
+
+                aiMatrix4x4 rotateMat;
+                aiMatrix4x4::Rotation(_matrotang, _matrotAxis, rotateMat);
+                _norm *= rotateMat;
                 _norm.Normalize();
                 norm = Vector3(_norm.x, _norm.y, _norm.z);
             }
@@ -358,12 +367,15 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
 
         aiColor3D color;
 
+        color = { 0, 0, 0 };
         _material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
         material.diffuse = Vector3(color.r, color.g, color.b);
         
+        color = { 0, 0, 0 };
         _material->Get(AI_MATKEY_COLOR_AMBIENT, color);
         material.ambient = Vector3(color.r, color.g, color.b);
 
+        color = { 0, 0, 0 };
         _material->Get(AI_MATKEY_COLOR_SPECULAR, color);
         material.specular = Vector3(color.r, color.g, color.b);
 

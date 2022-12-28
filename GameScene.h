@@ -21,20 +21,12 @@ private:
 	Sprite controlDescText2;
 	Sprite controlDescText3;
 
-	Cube cube;
-	ModelObj model;
-
-	Image3D text;
+	Cube floor;
+	ModelObj objVicViper;
+	float speed = 0;
+	float brake = 0;
+	float charge = 0;
 
 	DebugCamera camera = DebugCamera({0, 0, 0});
-
-	//糞雑グリッド用
-	RootSignature gridRoot;
-	GraphicsPipeline gridPSO;
-	std::vector<VertexP> gridVertices;
-	VertexBuffer gridVertBuff;
-	Material gridMaterial;
-	RConstBuffer<MaterialBuffer> gridMaterialBuff;
-	RConstBuffer<ViewProjectionBuffer> gridViewProjectionBuff;
 };
 
