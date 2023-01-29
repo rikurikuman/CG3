@@ -7,13 +7,19 @@ float4 main(VSOutput input) : SV_TARGET
 {
 	float4 texcolor = float4(tex.Sample(smp, input.uv));
 	texcolor = texcolor * m_color;
+	
+    float dotNormal = saturate(dot(-light_vec, input.normal));
+	
+	//視点へのベクトル
+    float3 eyedir = normalize(cameraPos - input.wpos.xyz);
+	
+	//反射光ベクトル
+    float3 reflect = normalize(light_vec + 2 * dotNormal * input.normal);
 
-	float3 lightdir = float3(1, -1, 1);
-	lightdir = normalize(lightdir);
-
-	float3 diffuse = dot(-lightdir, input.normal) * m_diffuse;
 	float3 ambient = m_ambient;
+    float3 diffuse = dotNormal * m_diffuse;
+    float3 specular = pow(saturate(dot(reflect, eyedir)), 4.0f) * m_specular;
 
-	float3 light = diffuse + ambient;
+    float3 light = (ambient + diffuse + specular) * light_color;
 	return float4(texcolor.rgb * light, texcolor.a);
 }

@@ -68,7 +68,8 @@ public:
 	}
 
 	static AudioHandle Load(const std::string filepath, std::string handle = "");
-	static void Play(AudioHandle handle, const float volume = 1.0f, const bool loop = false);
+	//static void Play(AudioHandle handle, const float volume = 1.0f, const bool loop = false);
+	static void Play(AudioHandle handle, const float volume = 1.0f, const float pitch = 1.0f, const bool loop = false);
 	static void Stop(AudioHandle handle);
 
 private:

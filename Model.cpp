@@ -18,8 +18,68 @@ bool ModelData::operator!=(const ModelData& o) const
     return !(*this == o);
 }
 
+void ModelData::CalcSmoothedNormals()
+{
+    map<Vector3, vector<Vector3>> smoothData;
 
-ModelHandle Model::Load(string filepath, string filename, ModelHandle handle)
+    for (VertexPNU v : vertexs) {
+        smoothData[v.pos].push_back(v.normal);
+    }
+
+    for (VertexPNU& v : vertexs) {
+        vector<Vector3> normals = smoothData[v.pos];
+
+        Vector3 result;
+        for (Vector3 n : normals) {
+            result += n;
+        }
+        result /= static_cast<float>(normals.size());
+        result.Normalize();
+
+        v.normal = result;
+    }
+
+    /*assert(indices.size() % 3 == 0);
+    for (unsigned int i = 0; i < indices.size() / 3; i++) {
+        unsigned int index0 = indices[i * 3 + 0];
+        unsigned int index1 = indices[i * 3 + 1];
+        unsigned int index2 = indices[i * 3 + 2];
+
+        Vector3 p0 = vertexs[index0].pos;
+        Vector3 p1 = vertexs[index1].pos;
+        Vector3 p2 = vertexs[index2].pos;
+
+        Vector3 v1 = p1 - p0;
+        Vector3 v2 = p2 - p0;
+
+        Vector3 normal = v1.Cross(v2);
+        normal.Normalize();
+
+        smoothData[p0].push_back(normal);
+        smoothData[p1].push_back(normal);
+        smoothData[p2].push_back(normal);
+    }
+
+    for (auto itr = smoothData.begin(); itr != smoothData.end(); itr++) {
+        Vector3 target = itr->first;
+        vector<Vector3> normals = itr->second;
+
+        Vector3 result = { 0, 0, 0 };
+        for (Vector3 n : normals) {
+            result += n;
+        }
+        result /= static_cast<float>(normals.size());
+        result.Normalize();
+
+        for (VertexPNU& v : vertexs) {
+            if (v.pos == target) {
+                v.normal = result;
+            }
+        }
+    }*/
+}
+
+ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bool smooth)
 {
     ModelManager* instance = ModelManager::GetInstance();
     Model model;
@@ -68,6 +128,7 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle)
 
         if (key == "o") { //‚¨‚È‚Ü‚¦
             if (loading != ModelData()) {
+                if (smooth) loading.CalcSmoothedNormals();
                 loading.vertexBuff.Init(loading.vertexs);
                 loading.indexBuff.Init(loading.indices);
                 loading.material.Transfer(loading.materialBuff.constMap);
@@ -185,6 +246,7 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle)
         if (key == "usemtl") {
             if (loading.material != Material()) {
                 string oldname = loading.name;
+                if (smooth) loading.CalcSmoothedNormals();
                 loading.vertexBuff.Init(loading.vertexs);
                 loading.indexBuff.Init(loading.indices);
                 loading.material.Transfer(loading.materialBuff.constMap);
@@ -202,6 +264,7 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle)
         }
     }
 
+    if (smooth) loading.CalcSmoothedNormals();
     loading.vertexBuff.Init(loading.vertexs);
     loading.indexBuff.Init(loading.indices);
     loading.material.Transfer(loading.materialBuff.constMap);
@@ -342,8 +405,8 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
         aiProcess_SortByPType |
-        aiProcess_GenNormals |
-        aiProcess_FixInfacingNormals |
+        aiProcess_GenSmoothNormals |
+//        aiProcess_FixInfacingNormals |
         aiProcess_CalcTangentSpace
     );
 

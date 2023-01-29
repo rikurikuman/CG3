@@ -19,6 +19,9 @@ public:
 	bool operator==(const Vector3& a) const;
 	bool operator!=(const Vector3& a) const;
 
+	//狭義の弱順序(ベクトルの長さを見たりするわけじゃないので普通使わない）
+	bool operator<(const Vector3& a) const;
+
 	//ベクトルの足し算
 	Vector3 operator+(const Vector3& a) const;
 	//ベクトルの引き算
@@ -34,6 +37,8 @@ public:
 	Vector3& operator+=(const Vector3& a);
 	//ベクトルの引き算
 	Vector3& operator-=(const Vector3& a);
+	//ベクトルのかけ算
+	Vector3& operator*=(const Vector3& a);
 	//定数倍
 	Vector3& operator*=(const float a);
 	//定数分の1倍
@@ -60,3 +65,6 @@ public:
 
 //定数倍
 Vector3 operator*(const float a, const Vector3& b);
+
+//線形補間(1次関数補間)
+const Vector3 lerp(const Vector3& start, const Vector3& end, const float t);

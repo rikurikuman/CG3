@@ -10,4 +10,5 @@ void ViewProjection::UpdateMatrix()
 void ViewProjection::Transfer(ViewProjectionBuffer* target)
 {
 	target->matrix = this->matrix;
+	target->cameraPos = this->eye;
 }

@@ -35,6 +35,8 @@ public:
 	std::vector<UINT> indices;
 	Material material;
 
+	void CalcSmoothedNormals();
+
 	void UpdateMaterial() {
 		material.Transfer(materialBuff.constMap);
 	}
@@ -50,7 +52,7 @@ public:
 	std::string path;
 	std::vector<std::shared_ptr<ModelData>> data;
 
-	static ModelHandle Load(std::string filepath, std::string filename, ModelHandle handle = "");
+	static ModelHandle Load(std::string filepath, std::string filename, ModelHandle handle = "", bool smooth = false);
 	static ModelHandle Register(ModelHandle handle, Model model);
 
 	static ModelHandle LoadWithAIL(std::string directoryPath, std::string filename, ModelHandle handle = "");

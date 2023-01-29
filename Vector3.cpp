@@ -10,11 +10,23 @@ Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 Vector3::~Vector3() {}
 
 bool Vector3::operator==(const Vector3& a) const {
-	return this->x == a.x && this->y == a.y;
+	return this->x == a.x && this->y == a.y && this->z == a.z;
 }
 
 bool Vector3::operator!=(const Vector3& a) const {
-	return this->x != a.x || this->y != a.y;
+	return this->x != a.x || this->y != a.y || this->z == a.z;
+}
+
+bool Vector3::operator<(const Vector3& a) const
+{
+	if (this->x < a.x) return true;
+	if (this->x == a.x) {
+		if (this->y < a.y) return true;
+		if (this->y == a.y) {
+			if (this->z < a.z) return true;
+		}
+	}
+	return false;
 }
 
 Vector3 Vector3::operator+(const Vector3& a) const {
@@ -52,6 +64,14 @@ Vector3& Vector3::operator-=(const Vector3& a) {
 	this->x -= a.x;
 	this->y -= a.y;
 	this->z -= a.z;
+	return *this;
+}
+
+Vector3& Vector3::operator*=(const Vector3& a)
+{
+	this->x *= a.x;
+	this->y *= a.y;
+	this->z *= a.z;
 	return *this;
 }
 
@@ -114,4 +134,9 @@ Vector3 Vector3::GetNormalize() const {
 		dz = this->z / length;
 	}
 	return Vector3(dx, dy, dz);
+}
+
+const Vector3 lerp(const Vector3& start, const Vector3& end, const float t)
+{
+	return start + (end - start) * t;
 }

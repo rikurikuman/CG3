@@ -42,7 +42,7 @@ void SimpleSceneTransition::Update()
 	shutter.transform.position = { RWindow::GetWidth() / 2.0f, RWindow::GetHeight() / 2.0f, 0 };
 	shutter.transform.rotation = { 0, 0, Util::AngleToRadian(180 * shutterScale)};
 	shutter.transform.scale = { scale, scale, 1 };
-	shutter.material.color = { 0, 0, 0, shutterAlpha };
+	shutter.material.color = { 0, 0.5f, 0.7f, shutterAlpha };
 	shutter.transform.UpdateMatrix();
 	shutter.TransferBuffer();
 }

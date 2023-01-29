@@ -213,7 +213,7 @@ TextureHandle TextureManager::CreateInternal(const Color* pSource, const UINT64 
 
 TextureHandle TextureManager::LoadInternal(const std::string filepath, const std::string handle)
 {
-	std::lock_guard<std::recursive_mutex> lock(mutex);
+	std::unique_lock<std::recursive_mutex> lock(mutex);
 	HRESULT result;
 
 	//ˆê‰ñ“Ç‚Ýž‚ñ‚¾‚±‚Æ‚ª‚ ‚éƒtƒ@ƒCƒ‹‚Í‚»‚Ì‚Ü‚Ü•Ô‚·
@@ -223,6 +223,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 	if (itr != textureMap.end()) {
 		return itr->first;
 	}
+	lock.unlock();
 
 	Texture texture = Texture();
 	texture.filePath = filepath;
@@ -309,7 +310,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 
 TextureHandle TextureManager::LoadInternal(const void* pSource, const size_t size, const std::string filepath, const std::string handle)
 {
-	std::lock_guard<std::recursive_mutex> lock(mutex);
+	std::unique_lock<std::recursive_mutex> lock(mutex);
 	HRESULT result;
 
 	if (!filepath.empty()) {
@@ -321,6 +322,7 @@ TextureHandle TextureManager::LoadInternal(const void* pSource, const size_t siz
 			return itr->first;
 		}
 	}
+	lock.unlock();
 
 	Texture texture = Texture();
 	texture.filePath = filepath;
@@ -422,7 +424,7 @@ Texture& TextureManager::GetInternal(const TextureHandle& handle)
 
 TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle handle)
 {
-	std::lock_guard<std::recursive_mutex> lock(mutex);
+	std::unique_lock<std::recursive_mutex> lock(mutex);
 	UINT useIndex = -1; 
 
 	auto itr = textureMap.find(handle);
@@ -445,6 +447,7 @@ TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle ha
 			}
 		}
 	}
+	lock.unlock();
 
 	if (useIndex == -1) {
 		//over
@@ -476,6 +479,7 @@ TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle ha
 		handle = "NoNameHandle_" + to_string(useIndex);
 	}
 
+	lock.lock();
 	textureMap[handle] = texture;
 	return handle;
 }

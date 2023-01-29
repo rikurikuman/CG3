@@ -64,7 +64,41 @@ AudioHandle RAudio::Load(const std::string filepath, std::string handle)
 	return handle;
 }
 
-void RAudio::Play(const AudioHandle handle, const float volume, const bool loop)
+//void RAudio::Play(const AudioHandle handle, const float volume, const bool loop)
+//{
+//	RAudio* instance = GetInstance();
+//	HRESULT result;
+//
+//	if (instance->audioMap.find(handle) == instance->audioMap.end()) {
+//		return;
+//	}
+//
+//	shared_ptr<AudioData> data = instance->audioMap[handle];
+//
+//	if (data->type == AudioType::Wave) {
+//		shared_ptr<WaveAudio> waveData = static_pointer_cast<WaveAudio>(data);
+//
+//		IXAudio2SourceVoice* pSourceVoice = nullptr;
+//		result = instance->xAudio2->CreateSourceVoice(&pSourceVoice, &waveData->wfex);
+//		assert(SUCCEEDED(result));
+//
+//		XAUDIO2_BUFFER buf{};
+//		buf.pAudioData = waveData->pBuffer;
+//		buf.AudioBytes = waveData->bufferSize;
+//		buf.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
+//		buf.Flags = XAUDIO2_END_OF_STREAM;
+//
+//		result = pSourceVoice->SubmitSourceBuffer(&buf);
+//		result = pSourceVoice->SetVolume(volume);
+//		result = pSourceVoice->Start();
+//
+//		if (loop) {
+//			instance->playingList.push_back({ handle, pSourceVoice });
+//		}
+//	}
+//}
+
+void RAudio::Play(AudioHandle handle, const float volume, const float pitch, const bool loop)
 {
 	RAudio* instance = GetInstance();
 	HRESULT result;
@@ -89,6 +123,7 @@ void RAudio::Play(const AudioHandle handle, const float volume, const bool loop)
 		buf.Flags = XAUDIO2_END_OF_STREAM;
 
 		result = pSourceVoice->SubmitSourceBuffer(&buf);
+		result = pSourceVoice->SetFrequencyRatio(pitch);
 		result = pSourceVoice->SetVolume(volume);
 		result = pSourceVoice->Start();
 

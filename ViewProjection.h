@@ -5,6 +5,7 @@
 struct ViewProjectionBuffer
 {
 	Matrix4 matrix;
+	Vector3 cameraPos;
 };
 
 class ViewProjection

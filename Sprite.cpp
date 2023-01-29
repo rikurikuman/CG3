@@ -59,10 +59,6 @@ void Sprite::TransferBuffer()
 
 void Sprite::DrawCommands()
 {
-	//パイプラインセット
-	RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
-
 	//頂点バッファビューの設定コマンド
 	RDirectX::GetInstance()->cmdList->IASetVertexBuffers(0, 1, &vertBuff.view);
 

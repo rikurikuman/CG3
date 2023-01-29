@@ -45,6 +45,19 @@ void RInput::InitInternal()
 		RWindow::GetWindowHandle(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE //左から、アクティブウィンドウ,専有しない
 	);
 	assert(SUCCEEDED(result));
+
+	ZeroMemory(&xInputState, sizeof(XINPUT_STATE));
+	DWORD dresult;
+	dresult = XInputGetState(0, &xInputState);
+
+	if (result == ERROR_SUCCESS)
+	{
+		isConnectPad = true;
+	}
+	else
+	{
+		isConnectPad = false;
+	}
 }
 
 void RInput::Update()
@@ -65,6 +78,33 @@ void RInput::Update()
 
 	instance->oldMousePos = instance->mousePos;
 	instance->mousePos = RWindow::GetInstance()->GetMousePos();
+
+	instance->oldXInputState = instance->xInputState;
+	DWORD dresult = XInputGetState(0, &instance->xInputState);
+	if (dresult == ERROR_SUCCESS) {
+		instance->isConnectPad = true;
+	}
+	else {
+		instance->isConnectPad = false;
+	}
+
+	if ((instance->xInputState.Gamepad.sThumbLX <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+		instance->xInputState.Gamepad.sThumbLX > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
+		(instance->xInputState.Gamepad.sThumbLY <  XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+		instance->xInputState.Gamepad.sThumbLY > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE))
+	{
+		instance->xInputState.Gamepad.sThumbLX = 0;
+		instance->xInputState.Gamepad.sThumbLY = 0;
+	}
+
+	if ((instance->xInputState.Gamepad.sThumbRX <  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
+		instance->xInputState.Gamepad.sThumbRX > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
+		(instance->xInputState.Gamepad.sThumbRY <  XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
+		instance->xInputState.Gamepad.sThumbRY > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE))
+	{
+		instance->xInputState.Gamepad.sThumbRX = 0;
+		instance->xInputState.Gamepad.sThumbRY = 0;
+	}
 }
 
 bool RInput::GetKey(unsigned char key)
@@ -109,4 +149,78 @@ Vector2 RInput::GetOldMousePos()
 
 Vector3 RInput::GetMouseMove() {
 	return Vector3((float)GetInstance()->mouseState.lX, (float)GetInstance()->mouseState.lY, (float)GetInstance()->mouseState.lZ);
+}
+
+bool RInput::GetPadConnect()
+{
+	return isConnectPad;
+}
+
+bool RInput::GetPadButton(UINT button)
+{
+	return xInputState.Gamepad.wButtons == button;
+}
+
+bool RInput::GetPadButtonUp(UINT button)
+{
+	return xInputState.Gamepad.wButtons != button && oldXInputState.Gamepad.wButtons == button;
+}
+
+bool RInput::GetPadButtonDown(UINT button)
+{
+	return xInputState.Gamepad.wButtons == button && oldXInputState.Gamepad.wButtons != button;
+}
+
+Vector2 RInput::GetPadLStick()
+{
+	SHORT x = xInputState.Gamepad.sThumbLX;
+	SHORT y = xInputState.Gamepad.sThumbLY;
+
+	return Vector2(static_cast<float>(x) / 32767.0f, static_cast<float>(y) / 32767.0f);
+}
+
+Vector2 RInput::GetPadRStick()
+{
+	SHORT x = xInputState.Gamepad.sThumbRX;
+	SHORT y = xInputState.Gamepad.sThumbRY;
+
+	return Vector2(static_cast<float>(x) / 32767.0f, static_cast<float>(y) / 32767.0f);
+}
+
+bool RInput::GetLTriggerDown()
+{
+	if (oldXInputState.Gamepad.bLeftTrigger < 128 && xInputState.Gamepad.bLeftTrigger >= 128)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool RInput::GetRTriggerDown()
+{
+	if (oldXInputState.Gamepad.bRightTrigger < 128 && xInputState.Gamepad.bRightTrigger >= 128)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool RInput::GetLStickUp()
+{
+	if (oldXInputState.Gamepad.sThumbLY < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+		xInputState.Gamepad.sThumbLY >= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool RInput::GetLStickDown()
+{
+	if (oldXInputState.Gamepad.sThumbLY > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+		xInputState.Gamepad.sThumbLY <= -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
+	{
+		return true;
+	}
+	return false;
 }

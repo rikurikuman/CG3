@@ -28,6 +28,10 @@
 #include "RAudio.h"
 #include "SceneManager.h"
 #include "GameScene.h"
+#include "TitleScene.h"
+#include "ResultScene.h"
+#include "TestScene.h"
+#include "SRBuffer.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -54,7 +58,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #endif
 
 	//WindowsAPI
-	RWindow::SetWindowName(L"RKEngine");
+	RWindow::SetWindowName(L"AirRunner");
 	RWindow::Init();
 
 	//DirectX
@@ -95,7 +99,24 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//モデルデータの読み込み
 	Model::Load("Resources/Model/", "Cube.obj", "Cube");
 
-	SceneManager::Set<GameScene>();
+	RAudio::Load("Resources/Sound/start.wav", "Start");
+	RAudio::Load("Resources/Sound/countdown.wav", "Countdown");
+	RAudio::Load("Resources/Sound/runstart.wav", "RunStart");
+	RAudio::Load("Resources/Sound/lap.wav", "Lap");
+	RAudio::Load("Resources/Sound/finish.wav", "Finish");
+
+	RAudio::Load("Resources/Sound/engine.wav", "Engine");
+	RAudio::Load("Resources/Sound/charge.wav", "Charge");
+	RAudio::Load("Resources/Sound/chargemax.wav", "ChargeMax");
+	RAudio::Load("Resources/Sound/dash.wav", "Dash");
+
+	RAudio::Load("Resources/Sound/bgm_title.wav", "BGM_Title");
+	RAudio::Load("Resources/Sound/bgm_game.wav", "BGM_Game");
+	RAudio::Load("Resources/Sound/bgm_result.wav", "BGM_Result");
+
+	TextureManager::Load("Resources/loadingMark.png", "LoadingMark");
+
+	SceneManager::Set<TestScene>();
 
 	DebugCamera camera({ 0, 0, -10 });
 

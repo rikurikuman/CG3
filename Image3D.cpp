@@ -1,6 +1,7 @@
 #include "Image3D.h"
 #include "RDirectX.h"
 #include "Vertex.h"
+#include "Light.h"
 
 Image3D::Image3D(TextureHandle texture, Vector2 size, bool forceSize)
 {
@@ -51,10 +52,6 @@ void Image3D::TransferBuffer(ViewProjection viewprojection)
 
 void Image3D::DrawCommands()
 {
-	//パイプラインセット
-	RDirectX::GetInstance()->cmdList->SetPipelineState(RDirectX::GetInstance()->pipelineState.ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(RDirectX::GetInstance()->rootSignature.ptr.Get());
-
 	//頂点バッファビューの設定コマンド
 	RDirectX::GetInstance()->cmdList->IASetVertexBuffers(0, 1, &vertBuff.view);
 
@@ -65,6 +62,7 @@ void Image3D::DrawCommands()
 	RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(1, materialBuff.constBuff->GetGPUVirtualAddress());
 	RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(2, transformBuff.constBuff->GetGPUVirtualAddress());
 	RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(3, viewProjectionBuff.constBuff->GetGPUVirtualAddress());
+	RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(4, Light::nowLight->buffer.constBuff->GetGPUVirtualAddress());
 
 	//SRVヒープから必要なテクスチャデータをセットする(背景)
 	RDirectX::GetInstance()->cmdList->SetGraphicsRootDescriptorTable(0, TextureManager::Get(texture).gpuHandle);
