@@ -1,5 +1,5 @@
 #include "ModelObj.h"
-#include "Light.h"
+#include "LightGroup.h"
 
 void ModelObj::TransferBuffer(ViewProjection viewprojection)
 {
@@ -21,7 +21,7 @@ void ModelObj::DrawCommands()
 		RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(1, data->materialBuff.constBuff->GetGPUVirtualAddress());
 		RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(2, transformBuff.constBuff->GetGPUVirtualAddress());
 		RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(3, viewProjectionBuff.constBuff->GetGPUVirtualAddress());
-		RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(4, Light::nowLight->buffer.constBuff->GetGPUVirtualAddress());
+		RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(4, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress());
 
 		//SRVヒープから必要なテクスチャデータをセットする
 		RDirectX::GetInstance()->cmdList->SetGraphicsRootDescriptorTable(0, TextureManager::Get(data->material.texture).gpuHandle);
