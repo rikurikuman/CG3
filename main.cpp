@@ -58,7 +58,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #endif
 
 	//WindowsAPI
-	RWindow::SetWindowName(L"AirRunner");
+	RWindow::SetWindowName(L"CG3_Task_2");
 	RWindow::Init();
 
 	//DirectX
