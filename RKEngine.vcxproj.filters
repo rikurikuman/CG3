@@ -237,6 +237,9 @@
     <ClCompile Include="SRBuffer.cpp">
       <Filter>ソース ファイル\Buffer</Filter>
     </ClCompile>
+    <ClCompile Include="RImGui.cpp">
+      <Filter>ソース ファイル\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BasicPS.hlsl" />
@@ -413,6 +416,9 @@
     </ClInclude>
     <ClInclude Include="SRBuffer.h">
       <Filter>ヘッダー ファイル\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="RImGui.h">
+      <Filter>ヘッダー ファイル\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

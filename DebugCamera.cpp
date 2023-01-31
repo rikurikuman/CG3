@@ -3,6 +3,13 @@
 
 void DebugCamera::Update()
 {
+	if (RInput::GetKeyDown(DIK_LALT)) {
+		freeFlag = !freeFlag;
+		return;
+	}
+
+	if (freeFlag) return;
+
 	if (RInput::GetKey(DIK_W)) {
 		viewProjection.eye.x += -moveSpeed * cosf(Util::PI / 180 * angle.x);
 		viewProjection.eye.z += moveSpeed * sinf(Util::PI / 180 * angle.x);

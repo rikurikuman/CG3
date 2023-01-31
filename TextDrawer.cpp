@@ -111,7 +111,7 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 
 	HRESULT result;
 	//¶¬
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -225,7 +225,7 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 
 	HRESULT result;
 	//¶¬
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -260,7 +260,7 @@ bool TextDrawer::LoadFontFromFile(std::string path)
 
 void TextDrawer::Init()
 {
-	pipeline = RDirectX::GetInstance()->pipelineState;
+	pipeline = RDirectX::GetDefPipeline();
 	pipeline.desc.DepthStencilState.DepthEnable = true;
 	pipeline.desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 	pipeline.Create();

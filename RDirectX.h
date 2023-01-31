@@ -17,7 +17,7 @@ using namespace Microsoft::WRL;
 
 class RDirectX
 {
-public:
+private:
 	ComPtr<ID3D12Device> device = nullptr;
 	ComPtr<IDXGIFactory7> dxgiFactory = nullptr;
 	ComPtr<IDXGISwapChain4> swapChain = nullptr;
@@ -36,9 +36,34 @@ public:
 	RootSignature rootSignature;
 	GraphicsPipeline pipelineState;
 
+public:
 	//DirectX初期化
 	static void Init();
 	static RDirectX* GetInstance();
+
+	//デバイスを取得する
+	static ID3D12Device* GetDevice();
+
+	//コマンドリストを取得する
+	static ID3D12GraphicsCommandList* GetCommandList();
+
+	//ほぼImGui専用みたいになってるsrvHeapをプレゼント
+	static ID3D12DescriptorHeap* GetSRVHeap();
+
+	//基本ルートシグネチャを取得する
+	static RootSignature GetDefRootSignature();
+
+	//基本パイプラインを取得する
+	static GraphicsPipeline GetDefPipeline();
+
+	//何か良い感じに描画前処理をする
+	static void PreDraw();
+
+	//何か良い感じに描画後処理をする
+	static void PostDraw();
+
+	//バックバッファの数を取得する
+	static size_t GetBackBufferSize();
 
 	//現在のバックバッファ番号を取得する
 	static UINT GetCurrentBackBufferIndex();

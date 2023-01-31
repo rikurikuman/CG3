@@ -87,6 +87,7 @@ private:
 	RInput(const RInput& a) {};
 	RInput& operator=(const RInput&) { return *this; }
 
+	bool initialized = false;
 	Microsoft::WRL::ComPtr<IDirectInput8> directInput = nullptr;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard = nullptr;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouse = nullptr;

@@ -57,13 +57,13 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	RDirectX::GetInstance()->cmdList->SetPipelineState(RDirectX::GetInstance()->pipelineState.ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(RDirectX::GetInstance()->rootSignature.ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
+	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
 
 	objVic.DrawCommands();
 
-	RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
+	RDirectX::GetCommandList()->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
 	
 	logo.DrawCommands();
 	startBar.DrawCommands();

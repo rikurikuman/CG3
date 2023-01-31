@@ -17,6 +17,8 @@ void RInput::Init() {
 
 void RInput::InitInternal()
 {
+	assert(!initialized);
+
 	HRESULT result;
 
 	result = DirectInput8Create(

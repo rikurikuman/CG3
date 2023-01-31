@@ -29,6 +29,9 @@ public:
 	//Vertex(PosNormalUv)のvectorで頂点バッファを作る
 	void Init(std::vector<VertexPNU> list);
 
+	//Vertex(PosNormalUv)の配列とその大きさで頂点バッファを更新する
+	void Update(VertexPNU* list, unsigned int size);
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> buff = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW view{};
 };

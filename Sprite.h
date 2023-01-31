@@ -12,9 +12,13 @@
 class Sprite
 {
 public:
-	TextureHandle texture;
 	Material material;
 	Transform transform;
+
+private:
+	bool change = false;
+	TextureHandle texture;
+	Vector2 srcPos = { 0, 0 };
 	Vector2 size = { 0, 0 };
 	Vector2 anchor = { 0.5f, 0.5f };
 
@@ -24,8 +28,27 @@ public:
 	RConstBuffer<TransformBuffer> transformBuff;
 	RConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
 
-	Sprite() {}
+	//頂点を弄る
+	void UpdateVertex();
+
+public:
+	Sprite();
 	Sprite(TextureHandle texture, Vector2 anchor = { 0.5f, 0.5f });
+
+	//テクスチャを変更する
+	void SetTexture(TextureHandle texture);
+
+	//アンカーポイントを変更する
+	void SetAnchor(Vector2 anchor);
+
+	/// <summary>
+	/// テクスチャの切り出し位置を設定する
+	/// </summary>
+	/// <param name="srcX">切り出し位置の左上X</param>
+	/// <param name="srcY">切り出し位置の左上Y</param>
+	/// <param name="width">切り出し範囲サイズX</param>
+	/// <param name="height">切り出し範囲サイズY</param>
+	void SetTexRect(int srcX, int srcY, int width, int height);
 
 	void Init();
 

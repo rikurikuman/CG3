@@ -50,21 +50,21 @@ void SimpleDrawer::DrawBox(float x1, float y1, float x2, float y2, Color color, 
 	}
 	info->pipelineState.Create();
 
-	RDirectX::GetInstance()->cmdList->SetPipelineState(info->pipelineState.ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(instance->rootSignature.ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(info->pipelineState.ptr.Get());
+	RDirectX::GetCommandList()->SetGraphicsRootSignature(instance->rootSignature.ptr.Get());
 
 	//頂点バッファビューの設定コマンド
-	RDirectX::GetInstance()->cmdList->IASetVertexBuffers(0, 1, &info->vertBuff.view);
+	RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, &info->vertBuff.view);
 
 	//インデックスバッファビューの設定コマンド
-	RDirectX::GetInstance()->cmdList->IASetIndexBuffer(&info->indexBuff.view);
+	RDirectX::GetCommandList()->IASetIndexBuffer(&info->indexBuff.view);
 
 	//定数バッファビューの設定コマンド
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(0, info->colorBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootConstantBufferView(1, info->viewProjectionBuff.constBuff->GetGPUVirtualAddress());
+	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(0, info->colorBuff.constBuff->GetGPUVirtualAddress());
+	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(1, info->viewProjectionBuff.constBuff->GetGPUVirtualAddress());
 
 	//描画コマンド
-	RDirectX::GetInstance()->cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0); // 全ての頂点を使って描画
+	RDirectX::GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0); // 全ての頂点を使って描画
 }
 
 void SimpleDrawer::DrawString(float x, float y, std::string text, Color color, std::string fontTypeFace, UINT fontSize, Vector2 anchor)
@@ -78,8 +78,8 @@ void SimpleDrawer::DrawString(float x, float y, std::string text, Color color, s
 	info->sprite.material.color = color;
 	info->sprite.TransferBuffer();
 
-	RDirectX::GetInstance()->cmdList->SetPipelineState(instance->pipelineStateForString.ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(instance->rootSignatureForString.ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(instance->pipelineStateForString.ptr.Get());
+	RDirectX::GetCommandList()->SetGraphicsRootSignature(instance->rootSignatureForString.ptr.Get());
 
 	info->sprite.DrawCommands();
 
@@ -89,7 +89,7 @@ void SimpleDrawer::DrawString(float x, float y, std::string text, Color color, s
 
 void SimpleDrawer::Init()
 {
-	rootSignature = RDirectX::GetInstance()->rootSignature;
+	rootSignature = RDirectX::GetDefRootSignature();
 
 	// ルートパラメータの設定
 	RootParamaters rootParams(2);
@@ -107,7 +107,7 @@ void SimpleDrawer::Init()
 	rootSignature.desc.RootParamaters = rootParams;
 	rootSignature.Create();
 
-	pipelineState = RDirectX::GetInstance()->pipelineState;
+	pipelineState = RDirectX::GetDefPipeline();
 
 	pipelineState.desc.VS = Shader("./Shader/SimpleVS.hlsl", "main", "vs_5_0");
 	pipelineState.desc.PS = Shader("./Shader/SimplePS.hlsl", "main", "ps_5_0");

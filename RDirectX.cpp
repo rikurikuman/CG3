@@ -15,6 +15,58 @@ RDirectX* RDirectX::GetInstance() {
 	return &instance;
 }
 
+ID3D12Device* RDirectX::GetDevice()
+{
+	return GetInstance()->device.Get();
+}
+
+ID3D12GraphicsCommandList* RDirectX::GetCommandList()
+{
+	return GetInstance()->cmdList.Get();
+}
+
+ID3D12DescriptorHeap* RDirectX::GetSRVHeap()
+{
+	return GetInstance()->srvHeap.Get();
+}
+
+RootSignature RDirectX::GetDefRootSignature()
+{
+	return GetInstance()->rootSignature;
+}
+
+GraphicsPipeline RDirectX::GetDefPipeline()
+{
+	return GetInstance()->pipelineState;
+}
+
+void RDirectX::PreDraw()
+{
+	RDirectX::SetBackBufferToRenderTarget();
+
+	//プリミティブ形状設定
+	RDirectX::GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	//SRVヒープの設定コマンド
+	ID3D12DescriptorHeap* _heap = TextureManager::GetInstance()->GetSRVHeap();
+	RDirectX::GetCommandList()->SetDescriptorHeaps(1, &_heap);
+
+	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
+}
+
+void RDirectX::PostDraw()
+{
+	RDirectX::CloseResourceBarrier(RDirectX::GetCurrentBackBufferResource());
+
+	RDirectX::RunDraw();
+}
+
+size_t RDirectX::GetBackBufferSize()
+{
+	return GetInstance()->backBuffers.size();
+}
+
 void RDirectX::Init() {
 	GetInstance()->InitInternal();
 }
@@ -145,7 +197,7 @@ void RDirectX::InitInternal() {
 
 
 	//デスクリプタヒープ(SRV)
-	const size_t kMaxSRVCount = 2056; //シェーダーリソースビューの最大個数
+	const size_t kMaxSRVCount = 1; //シェーダーリソースビューの最大個数
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; //シェーダーから見える
@@ -408,7 +460,7 @@ void RDirectX::OpenResorceBarrier(ID3D12Resource* resource) {
 	barrierDesc.Transition.pResource = resource;
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT; //Before:表示から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET; //After:描画へ
-	RDirectX::GetInstance()->cmdList->ResourceBarrier(1, &barrierDesc);
+	RDirectX::GetCommandList()->ResourceBarrier(1, &barrierDesc);
 }
 
 void RDirectX::CloseResourceBarrier(ID3D12Resource* resource) {
@@ -416,7 +468,7 @@ void RDirectX::CloseResourceBarrier(ID3D12Resource* resource) {
 	barrierDesc.Transition.pResource = resource;
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET; //Before:描画から
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT; //After:表示へ
-	RDirectX::GetInstance()->cmdList->ResourceBarrier(1, &barrierDesc);
+	RDirectX::GetCommandList()->ResourceBarrier(1, &barrierDesc);
 }
 
 void RDirectX::ClearRenderTarget(Color color) {

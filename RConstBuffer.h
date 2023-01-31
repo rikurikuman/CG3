@@ -65,7 +65,7 @@ private:
 		cbResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 		
 		// 定数バッファの生成
-		result = RDirectX::GetInstance()->device->CreateCommittedResource(
+		result = RDirectX::GetDevice()->CreateCommittedResource(
 			&cbHeapProp, //ヒープ設定
 			D3D12_HEAP_FLAG_NONE,
 			&cbResourceDesc, //リソース設定

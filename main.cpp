@@ -39,6 +39,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <cstdlib>
 #include <crtdbg.h>
+#include "RImGui.h"
 
 using namespace std;
 using namespace DirectX;
@@ -58,11 +59,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 #endif
 
 	//WindowsAPI
-	RWindow::SetWindowName(L"CG3_Task_2");
+	RWindow::SetWindowName(L"RKEngine");
 	RWindow::Init();
 
 	//DirectX
 	RDirectX::Init();
+
+	//ImGui
+	RImGui::Init();
 
 	//DirectInput
 	RInput::Init();
@@ -74,7 +78,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 #ifdef _DEBUG
 	ComPtr<ID3D12InfoQueue> infoQueue;
-	if (SUCCEEDED(RDirectX::GetInstance()->device->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+	if (SUCCEEDED(RDirectX::GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION, true);
 		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR, true);
 	}
@@ -129,8 +133,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			break;
 		}
 
+		RImGui::NewFrame();
+
 		if (Util::instanceof<DebugCamera>(*Camera::nowCamera)
-			&& GetForegroundWindow() == RWindow::GetWindowHandle()) {
+			&& GetForegroundWindow() == RWindow::GetWindowHandle()
+			&& !dynamic_cast<DebugCamera*>(Camera::nowCamera)->freeFlag) {
 			RWindow::SetMouseHideFlag(true);
 			RWindow::SetMousePos(RWindow::GetWidth() / 2, RWindow::GetHeight() / 2);
 		}
@@ -147,7 +154,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		SceneManager::Update();
 
 		//以下描画処理
-		RDirectX::SetBackBufferToRenderTarget();
+		RDirectX::PreDraw();
 
 		//画面クリア～
 		RDirectX::ClearRenderTarget(Color(0.0f, 0.0f, 0.0f, 1.0f));
@@ -155,22 +162,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//深度値もクリア
 		RDirectX::ClearDepthStencil();
 
-		//描画コマンド
 		//ビューポート設定コマンド
-		RDirectX::GetInstance()->cmdList->RSSetViewports(1, &viewport);
+		RDirectX::GetCommandList()->RSSetViewports(1, &viewport);
 
 		//シザー矩形
-		RDirectX::GetInstance()->cmdList->RSSetScissorRects(1, &scissorRect);
-
-		//プリミティブ形状設定
-		RDirectX::GetInstance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		//SRVヒープの設定コマンド
-		ID3D12DescriptorHeap* _heap = TextureManager::GetInstance()->GetSRVHeap();
-		RDirectX::GetInstance()->cmdList->SetDescriptorHeaps(1, &_heap);
-
-		RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(RDirectX::GetInstance()->rootSignature.ptr.Get());
-		RDirectX::GetInstance()->cmdList->SetPipelineState(RDirectX::GetInstance()->pipelineState.ptr.Get());
+		RDirectX::GetCommandList()->RSSetScissorRects(1, &scissorRect);
 
 		//描画コマンド
 		
@@ -181,10 +177,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			SimpleDrawer::DrawString(100, 100, Util::StringFormat("%f, %f", RWindow::GetMousePos().x, RWindow::GetMousePos().y));
 		}
 
-		//リソースバリアを表示に戻す
-		RDirectX::CloseResourceBarrier(RDirectX::GetCurrentBackBufferResource());
+		static bool demoWindow = true;
+		ImGui::ShowDemoWindow(&demoWindow);
 
-		RDirectX::RunDraw();
+		RImGui::Render();
+
+		//リソースバリアを表示に戻す
+		RDirectX::PostDraw();
 
 		TimeManager::Update();
 
@@ -195,6 +194,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	SceneManager::GameEnd();
 	RAudio::Final();
+	RImGui::Final();
 
 	return 0;
 }

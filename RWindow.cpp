@@ -1,4 +1,5 @@
 #include "RWindow.h"
+#include <imgui_impl_win32.h>
 
 using namespace std;
 
@@ -96,8 +97,12 @@ void RWindow::SetMouseHideFlag(bool hide)
 	}
 }
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
 LRESULT _DefWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) return true;
+
 	switch (msg) {
 	case WM_DESTROY:
 		PostQuitMessage(0);

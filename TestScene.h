@@ -3,6 +3,7 @@
 #include "Light.h"
 #include "DebugCamera.h"
 #include "ModelObj.h"
+#include "Sprite.h"
 
 class TestScene : public Scene
 {
@@ -18,5 +19,6 @@ private:
 	DebugCamera camera = DebugCamera({ 0, 0, -5 });
 	ModelObj obj;
 	ModelObj obj2;
+	Sprite sp;
 };
 

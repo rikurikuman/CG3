@@ -19,7 +19,7 @@ void TextureManager::Init()
 
 	//生成
 	srvHeap = nullptr;
-	result = RDirectX::GetInstance()->device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
+	result = RDirectX::GetDevice()->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&srvHeap));
 	assert(SUCCEEDED(result));
 
 	RegisterInternal(GetEmptyTexture(), "PreRegisteredTex_Empty");
@@ -62,7 +62,7 @@ Texture TextureManager::GetEmptyTexture()
 	textureResourceDesc.SampleDesc.Count = 1;
 
 	//生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -126,7 +126,7 @@ Texture TextureManager::GetHogeHogeTexture()
 	textureResourceDesc.SampleDesc.Count = 1;
 
 	//生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -184,7 +184,7 @@ TextureHandle TextureManager::CreateInternal(const Color* pSource, const UINT64 
 	textureResourceDesc.SampleDesc.Count = 1;
 
 	//生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -277,7 +277,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 	textureResourceDesc.SampleDesc.Count = 1;
 
 	//生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -376,7 +376,7 @@ TextureHandle TextureManager::LoadInternal(const void* pSource, const size_t siz
 	textureResourceDesc.SampleDesc.Count = 1;
 
 	//生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&textureHeapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&textureResourceDesc,
@@ -457,7 +457,7 @@ TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle ha
 	//シェーダーリソースビュー
 	D3D12_CPU_DESCRIPTOR_HANDLE _cpuHandle = srvHeap->GetCPUDescriptorHandleForHeapStart();
 	D3D12_GPU_DESCRIPTOR_HANDLE _gpuHandle = srvHeap->GetGPUDescriptorHandleForHeapStart();
-	size_t incrementSize = RDirectX::GetInstance()->device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	size_t incrementSize = RDirectX::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	_cpuHandle.ptr += useIndex * incrementSize;
 	_gpuHandle.ptr += useIndex * incrementSize;
 	texture.cpuHandle = _cpuHandle;
@@ -473,7 +473,7 @@ TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle ha
 	srvDesc.Texture2D.MipLevels = texture.resource->GetDesc().MipLevels;
 
 	//生成
-	RDirectX::GetInstance()->device->CreateShaderResourceView(texture.resource.Get(), &srvDesc, _cpuHandle);
+	RDirectX::GetDevice()->CreateShaderResourceView(texture.resource.Get(), &srvDesc, _cpuHandle);
 
 	if (handle.empty()) {
 		handle = "NoNameHandle_" + to_string(useIndex);

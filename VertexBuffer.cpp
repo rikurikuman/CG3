@@ -39,7 +39,7 @@ void VertexBuffer::Init(VertexP* list, unsigned int size)
 	resDesc.SampleDesc.Count = 1;
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	//頂点バッファ生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&heapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,
@@ -84,7 +84,7 @@ void VertexBuffer::Init(std::vector<VertexP> list)
 	resDesc.SampleDesc.Count = 1;
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	//頂点バッファ生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&heapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,
@@ -129,7 +129,7 @@ void VertexBuffer::Init(VertexPNU* list, unsigned int size)
 	resDesc.SampleDesc.Count = 1;
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	//頂点バッファ生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&heapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,
@@ -174,7 +174,7 @@ void VertexBuffer::Init(std::vector<VertexPNU> list)
 	resDesc.SampleDesc.Count = 1;
 	resDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	//頂点バッファ生成
-	result = RDirectX::GetInstance()->device->CreateCommittedResource(
+	result = RDirectX::GetDevice()->CreateCommittedResource(
 		&heapProp,
 		D3D12_HEAP_FLAG_NONE,
 		&resDesc,
@@ -199,4 +199,28 @@ void VertexBuffer::Init(std::vector<VertexPNU> list)
 	view.BufferLocation = buff->GetGPUVirtualAddress(); //GPU仮想アドレス
 	view.SizeInBytes = dataSize; //頂点バッファのサイズ
 	view.StrideInBytes = sizeof(VertexPNU); //頂点一個のサイズ
+}
+
+void VertexBuffer::Update(VertexPNU* list, unsigned int size)
+{
+	HRESULT result;
+
+	UINT dataSize = static_cast<UINT>(sizeof(VertexPNU) * size);
+
+	assert(buff->GetDesc().Width >= dataSize);
+	if (buff->GetDesc().Width < dataSize) {
+		return;
+	}
+
+	VertexPNU* vertMap = nullptr;
+	result = buff->Map(0, nullptr, (void**)&vertMap);
+	assert(SUCCEEDED(result));
+	//全頂点に対して
+	for (UINT i = 0; i < size; i++) {
+		vertMap[i] = list[i];
+	}
+	buff->Unmap(0, nullptr);
+
+	view.SizeInBytes = dataSize;
+	view.StrideInBytes = sizeof(VertexPNU);
 }

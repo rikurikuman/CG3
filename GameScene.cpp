@@ -148,16 +148,16 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
-	RDirectX::GetInstance()->cmdList->SetPipelineState(RDirectX::GetInstance()->pipelineState.ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(RDirectX::GetInstance()->rootSignature.ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
+	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
 
 	player.Draw();
 	course.Draw();
 
-	RDirectX::GetInstance()->cmdList->SetPipelineState(TextDrawer::GetInstance()->pipeline.ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(TextDrawer::GetInstance()->pipeline.ptr.Get());
 
-	RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
-	RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
+	RDirectX::GetCommandList()->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
 
 	controlDescText1.TransferBuffer();
 	controlDescText2.TransferBuffer();
