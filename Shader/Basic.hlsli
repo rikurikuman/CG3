@@ -16,14 +16,48 @@ cbuffer ConstBufferDataTransform : register(b1)
 // ビュー&射影変換行列
 cbuffer ConstBufferDataViewProjection : register(b2)
 {
-    matrix matViewProjection;
-    float3 cameraPos;
+    matrix matViewProjection : packoffset(c0);
+    float3 cameraPos : packoffset(c4);
 };
 
+// 平行光源型
+struct DirectionalLight
+{
+    uint active;
+    float3 lightVec;
+    float3 lightColor;
+};
+
+//点光源型
+struct PointLight
+{
+    uint active;
+    float3 pos;
+    float3 color;
+    float3 atten;
+};
+
+//スポットライト型
+struct SpotLight
+{
+    uint active;
+    float3 pos;
+    float3 dir;
+    float3 color;
+    float3 atten;
+    float2 factorAngleCos;
+};
+
+// 光源情報
+static const int DIRECTIONAL_LIGHT_NUM = 8;
+static const int POINT_LIGHT_NUM = 8;
+static const int SPOT_LIGHT_NUM = 8;
 cbuffer ConstBufferDataLight : register(b3)
 {
-	float3 light_vec;
-	float3 light_color;
+    float3 ambientColor;
+    DirectionalLight directionalLights[DIRECTIONAL_LIGHT_NUM];
+    PointLight pointLights[POINT_LIGHT_NUM];
+    SpotLight spotLights[SPOT_LIGHT_NUM];
 };
 
 // 頂点シェーダーの出力構造体

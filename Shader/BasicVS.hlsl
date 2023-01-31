@@ -13,7 +13,7 @@ VSOutput main(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOOR
 	matrix matFinal = mul(matViewProjection, matWorld);
     output.wpos = mul(matWorld, pos);
 	output.svpos = mul(matFinal, pos); // ç¿ïWÇ…çsóÒÇèÊéZ
-    output.normal = mul(worldRot, float4(normal, 1.0f)).xyz;
+    output.normal = normalize(mul(worldRot, float4(normal, 1.0f)).xyz);
 	output.uv = uv;
 	return output;
 }

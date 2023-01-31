@@ -27,10 +27,10 @@
 #include "SimpleDrawer.h"
 #include "RAudio.h"
 #include "SceneManager.h"
-#include "GameScene.h"
-#include "TitleScene.h"
-#include "ResultScene.h"
-#include "TestScene.h"
+#include "MainTestScene.h"
+#include "MultiLightTestScene.h"
+#include "PointLightTestScene.h"
+#include "SpotLightTestScene.h"
 #include "SRBuffer.h"
 
 #pragma comment(lib, "d3d12.lib")
@@ -40,6 +40,7 @@
 #include <cstdlib>
 #include <crtdbg.h>
 #include "RImGui.h"
+#include "SimpleSceneTransition.h"
 
 using namespace std;
 using namespace DirectX;
@@ -120,9 +121,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	TextureManager::Load("Resources/loadingMark.png", "LoadingMark");
 
-	SceneManager::Set<TestScene>();
+	SceneManager::Set<MainTestScene>();
 
 	DebugCamera camera({ 0, 0, -10 });
+	Sprite scDesc = Sprite(TextDrawer::CreateStringTexture("数字の1, 2, 3, 4キーでシーン切り替え", "", 32, "scDesc"), {0, 0});
+	scDesc.transform.position = { 0, 0, 0 };
+	scDesc.transform.UpdateMatrix();
+	scDesc.TransferBuffer();
 
 	//////////////////////////////////////
 
@@ -151,6 +156,21 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		RInput::Update();
 
+		if (!SceneManager::IsSceneChanging()) {
+			if (RInput::GetKeyDown(DIK_1)) {
+				SceneManager::Change<MainTestScene, SimpleSceneTransition>();
+			}
+			else if (RInput::GetKeyDown(DIK_2)) {
+				SceneManager::Change<MultiLightTestScene, SimpleSceneTransition>();
+			}
+			else if (RInput::GetKeyDown(DIK_3)) {
+				SceneManager::Change<PointLightTestScene, SimpleSceneTransition>();
+			}
+			else if (RInput::GetKeyDown(DIK_4)) {
+				SceneManager::Change<SpotLightTestScene, SimpleSceneTransition>();
+			}
+		}
+
 		SceneManager::Update();
 
 		//以下描画処理
@@ -171,6 +191,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		//描画コマンド
 		
 		SceneManager::Draw();
+
+		RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
+		RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
+		scDesc.DrawCommands();
 
 		if (Util::debugBool) {
 			SimpleDrawer::DrawString(100, 80, Util::StringFormat("FPS: %f", TimeManager::fps));
