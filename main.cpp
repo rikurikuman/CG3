@@ -7,31 +7,26 @@
 #include "RWindow.h"
 #include "RDirectX.h"
 #include "RInput.h"
-#include "Transform.h"
 #include "Texture.h"
-#include "Sprite.h"
-#include "RConstBuffer.h"
 #include "ViewProjection.h"
-#include "Image3D.h"
-#include "Cube.h"
-#include "Matrix4.h"
 #include "Util.h"
 #include "Model.h"
-#include "ModelObj.h"
 #include "DebugCamera.h"
-#include "BillboardImage.h"
 #include "TextDrawer.h"
-#include "SphereCollision.h"
-#include "Raycast.h"
 #include "TimeManager.h"
 #include "SimpleDrawer.h"
 #include "RAudio.h"
 #include "SceneManager.h"
+#include "SimpleSceneTransition.h"
+#include "RImGui.h"
+#include "SpriteScene.h"
+#include "ModelScene.h"
+#include "SoundScene.h"
 #include "MainTestScene.h"
 #include "MultiLightTestScene.h"
 #include "PointLightTestScene.h"
 #include "SpotLightTestScene.h"
-#include "SRBuffer.h"
+#include "VerySlowLoadScene.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -39,8 +34,6 @@
 #define _CRTDBG_MAP_ALLOC
 #include <cstdlib>
 #include <crtdbg.h>
-#include "RImGui.h"
-#include "SimpleSceneTransition.h"
 
 using namespace std;
 using namespace DirectX;
@@ -104,30 +97,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//モデルデータの読み込み
 	Model::Load("Resources/Model/", "Cube.obj", "Cube");
 
-	RAudio::Load("Resources/Sound/start.wav", "Start");
-	RAudio::Load("Resources/Sound/countdown.wav", "Countdown");
-	RAudio::Load("Resources/Sound/runstart.wav", "RunStart");
-	RAudio::Load("Resources/Sound/lap.wav", "Lap");
-	RAudio::Load("Resources/Sound/finish.wav", "Finish");
-
-	RAudio::Load("Resources/Sound/engine.wav", "Engine");
-	RAudio::Load("Resources/Sound/charge.wav", "Charge");
-	RAudio::Load("Resources/Sound/chargemax.wav", "ChargeMax");
-	RAudio::Load("Resources/Sound/dash.wav", "Dash");
-
-	RAudio::Load("Resources/Sound/bgm_title.wav", "BGM_Title");
-	RAudio::Load("Resources/Sound/bgm_game.wav", "BGM_Game");
-	RAudio::Load("Resources/Sound/bgm_result.wav", "BGM_Result");
-
 	TextureManager::Load("Resources/loadingMark.png", "LoadingMark");
 
-	SceneManager::Set<MainTestScene>();
+	SceneManager::Set<SpriteScene>();
 
 	DebugCamera camera({ 0, 0, -10 });
-	Sprite scDesc = Sprite(TextDrawer::CreateStringTexture("数字の1, 2, 3, 4キーでシーン切り替え", "", 32, "scDesc"), {0, 0});
-	scDesc.transform.position = { 0, 0, 0 };
-	scDesc.transform.UpdateMatrix();
-	scDesc.TransferBuffer();
 
 	//////////////////////////////////////
 
@@ -156,19 +130,59 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		RInput::Update();
 
-		if (!SceneManager::IsSceneChanging()) {
-			if (RInput::GetKeyDown(DIK_1)) {
-				SceneManager::Change<MainTestScene, SimpleSceneTransition>();
+		//べんり！
+		{
+			ImGui::SetNextWindowSize({ 400, 300 });
+
+			ImGuiWindowFlags window_flags = 0;
+			 window_flags |= ImGuiWindowFlags_NoResize;
+			ImGui::Begin("Debug", NULL, window_flags);
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::NewLine();
+			ImGui::Text("SceneManager");
+			static int sceneNum = 0;
+			const char* scenes[] = {"Sprite", "Model", "Sound", "DirectionalLight", "PointLight", "SpotLight", "VerySlowLoad"};
+			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
+			ImGui::SameLine();
+			if (ImGui::Button("Go!!!")) {
+				if (!SceneManager::IsSceneChanging()) {
+					switch (sceneNum) {
+					case 0:
+						SceneManager::Change<SpriteScene, SimpleSceneTransition>();
+						break;
+					case 1:
+						SceneManager::Change<ModelScene, SimpleSceneTransition>();
+						break;
+					case 2:
+						SceneManager::Change<SoundScene, SimpleSceneTransition>();
+						break;
+					case 3:
+						SceneManager::Change<MultiLightTestScene, SimpleSceneTransition>();
+						break;
+					case 4:
+						SceneManager::Change<PointLightTestScene, SimpleSceneTransition>();
+						break;
+					case 5:
+						SceneManager::Change<SpotLightTestScene, SimpleSceneTransition>();
+						break;
+					case 6:
+						SceneManager::Change<VerySlowLoadScene, SimpleSceneTransition>();
+						break;
+					}
+				}
 			}
-			else if (RInput::GetKeyDown(DIK_2)) {
-				SceneManager::Change<MultiLightTestScene, SimpleSceneTransition>();
-			}
-			else if (RInput::GetKeyDown(DIK_3)) {
-				SceneManager::Change<PointLightTestScene, SimpleSceneTransition>();
-			}
-			else if (RInput::GetKeyDown(DIK_4)) {
-				SceneManager::Change<SpotLightTestScene, SimpleSceneTransition>();
-			}
+
+			ImGui::NewLine();
+			ImGui::Separator();
+			ImGui::Text("DebugCamera Control");
+			ImGui::Text("* Valid only in available scenes.");
+			ImGui::Text("Left Control Key : Enable / Disable");
+			ImGui::Text("WASD Key : Move");
+			ImGui::Text("Space Key : Up");
+			ImGui::Text("LShift Key : Down");
+			ImGui::Text("Mouse : Direction");
+			ImGui::End();
 		}
 
 		SceneManager::Update();
@@ -192,18 +206,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		
 		SceneManager::Draw();
 
-		RDirectX::GetInstance()->cmdList->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
-		RDirectX::GetInstance()->cmdList->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
-		scDesc.DrawCommands();
-
-		if (Util::debugBool) {
-			SimpleDrawer::DrawString(100, 80, Util::StringFormat("FPS: %f", TimeManager::fps));
-			SimpleDrawer::DrawString(100, 100, Util::StringFormat("%f, %f", RWindow::GetMousePos().x, RWindow::GetMousePos().y));
-		}
-
-		static bool demoWindow = true;
-		ImGui::ShowDemoWindow(&demoWindow);
-
 		RImGui::Render();
 
 		//リソースバリアを表示に戻す
@@ -216,9 +218,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		}
 	}
 
-	SceneManager::GameEnd();
-	RAudio::Final();
-	RImGui::Final();
+	SceneManager::Finalize();
+	RAudio::Finalize();
+	RImGui::Finalize();
 
 	return 0;
 }

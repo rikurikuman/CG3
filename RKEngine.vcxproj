@@ -129,7 +129,7 @@
       <ConformanceMode>false</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Application;$(ProjectDir)Engine;$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d;$(ProjectDir)Engine\3d\Model;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Camera;$(ProjectDir)Engine\Collision;$(ProjectDir)Engine\Light;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\SimpleDrawer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -148,7 +148,7 @@
       <ConformanceMode>false</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Application;$(ProjectDir)Engine;$(ProjectDir)Engine\2d;$(ProjectDir)Engine\3d;$(ProjectDir)Engine\3d\Model;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Camera;$(ProjectDir)Engine\Collision;$(ProjectDir)Engine\Light;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\SimpleDrawer;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -159,65 +159,66 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BillboardImage.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Collision.cpp" />
-    <ClCompile Include="Color.cpp" />
-    <ClCompile Include="ColPrimitive2D.cpp" />
-    <ClCompile Include="ColPrimitive3D.cpp" />
-    <ClCompile Include="Cube.cpp" />
-    <ClCompile Include="DebugCamera.cpp" />
-    <ClCompile Include="GraphicsPipeline.cpp" />
-    <ClCompile Include="Image3D.cpp" />
-    <ClCompile Include="IndexBuffer.cpp" />
-    <ClCompile Include="DirectionalLight.cpp" />
-    <ClCompile Include="LightGroup.cpp" />
+    <ClCompile Include="Engine\3d\BillboardImage.cpp" />
+    <ClCompile Include="Engine\Camera\Camera.cpp" />
+    <ClCompile Include="Engine\Collision\Collision.cpp" />
+    <ClCompile Include="Engine\Base\Color.cpp" />
+    <ClCompile Include="Engine\Collision\ColPrimitive2D.cpp" />
+    <ClCompile Include="Engine\Collision\ColPrimitive3D.cpp" />
+    <ClCompile Include="Engine\3d\Cube.cpp" />
+    <ClCompile Include="Engine\Camera\DebugCamera.cpp" />
+    <ClCompile Include="Engine\Base\GraphicsPipeline.cpp" />
+    <ClCompile Include="Engine\3d\Image3D.cpp" />
+    <ClCompile Include="Engine\Base\IndexBuffer.cpp" />
+    <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
+    <ClCompile Include="Engine\Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MainTestScene.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Matrix4.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="ModelObj.cpp" />
-    <ClCompile Include="Mtllib.cpp" />
-    <ClCompile Include="MultiLightTestScene.cpp" />
-    <ClCompile Include="Obj3D.cpp" />
-    <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="PointLightTestScene.cpp" />
-    <ClCompile Include="Quaternion.cpp" />
-    <ClCompile Include="RAudio.cpp" />
-    <ClCompile Include="Raycast.cpp" />
-    <ClCompile Include="RDirectX.cpp" />
-    <ClCompile Include="RImGui.cpp" />
-    <ClCompile Include="RInput.cpp" />
-    <ClCompile Include="RootSignature.cpp" />
-    <ClCompile Include="RWindow.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="SceneTransition.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="SimpleDrawer.cpp" />
-    <ClCompile Include="SimpleDrawInfo.cpp" />
-    <ClCompile Include="SimpleSceneTransition.cpp" />
-    <ClCompile Include="SphereCollision.cpp" />
-    <ClCompile Include="SpotLight.cpp" />
-    <ClCompile Include="SpotLightTestScene.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="SRBuffer.cpp" />
-    <ClCompile Include="TextDrawer.cpp" />
-    <ClCompile Include="Texture.cpp">
+    <ClCompile Include="Application\MainTestScene.cpp" />
+    <ClCompile Include="Engine\Base\Material.cpp" />
+    <ClCompile Include="Engine\Math\Matrix4.cpp" />
+    <ClCompile Include="Engine\3d\Model\Model.cpp" />
+    <ClCompile Include="Engine\3d\Model\ModelObj.cpp" />
+    <ClCompile Include="Application\ModelScene.cpp" />
+    <ClCompile Include="Engine\3d\Model\Mtllib.cpp" />
+    <ClCompile Include="Application\MultiLightTestScene.cpp" />
+    <ClCompile Include="Engine\3d\Obj3D.cpp" />
+    <ClCompile Include="Application\PointLightTestScene.cpp" />
+    <ClCompile Include="Engine\Math\Quaternion.cpp" />
+    <ClCompile Include="Engine\Base\RAudio.cpp" />
+    <ClCompile Include="Engine\Base\RDirectX.cpp" />
+    <ClCompile Include="Engine\Base\RImGui.cpp" />
+    <ClCompile Include="Engine\Base\RInput.cpp" />
+    <ClCompile Include="Engine\Base\RootSignature.cpp" />
+    <ClCompile Include="Engine\Base\RWindow.cpp" />
+    <ClCompile Include="Engine\Scene\SceneManager.cpp" />
+    <ClCompile Include="Engine\Base\Shader.cpp" />
+    <ClCompile Include="Engine\SimpleDrawer\SimpleDrawer.cpp" />
+    <ClCompile Include="Engine\SimpleDrawer\SimpleDrawInfo.cpp" />
+    <ClCompile Include="Application\SimpleSceneTransition.cpp" />
+    <ClCompile Include="Application\SoundScene.cpp" />
+    <ClCompile Include="Engine\Light\SpotLight.cpp" />
+    <ClCompile Include="Application\SpotLightTestScene.cpp" />
+    <ClCompile Include="Engine\2d\Sprite.cpp" />
+    <ClCompile Include="Application\SpriteScene.cpp" />
+    <ClCompile Include="Engine\Base\SRBuffer.cpp" />
+    <ClCompile Include="Engine\SimpleDrawer\TextDrawer.cpp" />
+    <ClCompile Include="Engine\Base\Texture.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
     </ClCompile>
-    <ClCompile Include="TimeManager.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Util.cpp" />
-    <ClCompile Include="Vector2.cpp" />
-    <ClCompile Include="Vector3.cpp" />
-    <ClCompile Include="Vertex.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
-    <ClCompile Include="ViewProjection.cpp" />
+    <ClCompile Include="Engine\TimeManager.cpp" />
+    <ClCompile Include="Engine\Base\Transform.cpp" />
+    <ClCompile Include="Engine\Util.cpp" />
+    <ClCompile Include="Engine\Math\Vector2.cpp" />
+    <ClCompile Include="Engine\Math\Vector3.cpp" />
+    <ClCompile Include="Engine\Base\Vertex.cpp" />
+    <ClCompile Include="Engine\Base\VertexBuffer.cpp" />
+    <ClCompile Include="Application\VerySlowLoadScene.cpp" />
+    <ClCompile Include="Engine\Base\ViewProjection.cpp" />
+    <ClCompile Include="Application\SpherePlaneScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BasicPS.hlsl">
@@ -308,60 +309,64 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BillboardImage.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Collision.h" />
-    <ClInclude Include="Color.h" />
-    <ClInclude Include="ColPrimitive2D.h" />
-    <ClInclude Include="ColPrimitive3D.h" />
-    <ClInclude Include="Cube.h" />
-    <ClInclude Include="DebugCamera.h" />
-    <ClInclude Include="GraphicsPipeline.h" />
-    <ClInclude Include="Image3D.h" />
-    <ClInclude Include="IndexBuffer.h" />
-    <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="LightGroup.h" />
-    <ClInclude Include="MainTestScene.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Matrix4.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="ModelObj.h" />
-    <ClInclude Include="Mtllib.h" />
-    <ClInclude Include="MultiLightTestScene.h" />
-    <ClInclude Include="Obj3D.h" />
-    <ClInclude Include="PointLight.h" />
-    <ClInclude Include="PointLightTestScene.h" />
-    <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="RAudio.h" />
-    <ClInclude Include="Raycast.h" />
-    <ClInclude Include="RConstBuffer.h" />
-    <ClInclude Include="RDirectX.h" />
-    <ClInclude Include="RImGui.h" />
-    <ClInclude Include="RInput.h" />
-    <ClInclude Include="RootSignature.h" />
-    <ClInclude Include="RWindow.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="SceneTransition.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="SimpleDrawer.h" />
-    <ClInclude Include="SimpleDrawInfo.h" />
-    <ClInclude Include="SimpleSceneTransition.h" />
-    <ClInclude Include="SphereCollision.h" />
-    <ClInclude Include="SpotLight.h" />
-    <ClInclude Include="SpotLightTestScene.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SRBuffer.h" />
-    <ClInclude Include="TextDrawer.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TimeManager.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="Util.h" />
-    <ClInclude Include="Vector2.h" />
-    <ClInclude Include="Vector3.h" />
-    <ClInclude Include="Vertex.h" />
-    <ClInclude Include="VertexBuffer.h" />
-    <ClInclude Include="ViewProjection.h" />
+    <ClInclude Include="Engine\3d\BillboardImage.h" />
+    <ClInclude Include="Engine\Camera\Camera.h" />
+    <ClInclude Include="Engine\Collision\Collision.h" />
+    <ClInclude Include="Engine\Base\Color.h" />
+    <ClInclude Include="Engine\Collision\ColPrimitive2D.h" />
+    <ClInclude Include="Engine\Collision\ColPrimitive3D.h" />
+    <ClInclude Include="Engine\3d\Cube.h" />
+    <ClInclude Include="Engine\Camera\DebugCamera.h" />
+    <ClInclude Include="Engine\Base\GraphicsPipeline.h" />
+    <ClInclude Include="Engine\3d\Image3D.h" />
+    <ClInclude Include="Engine\Base\IndexBuffer.h" />
+    <ClInclude Include="Engine\Light\DirectionalLight.h" />
+    <ClInclude Include="Engine\Scene\ISceneFactory.h" />
+    <ClInclude Include="Engine\Light\LightGroup.h" />
+    <ClInclude Include="Application\MainTestScene.h" />
+    <ClInclude Include="Engine\Base\Material.h" />
+    <ClInclude Include="Engine\Math\Matrix4.h" />
+    <ClInclude Include="Engine\3d\Model\Model.h" />
+    <ClInclude Include="Engine\3d\Model\ModelObj.h" />
+    <ClInclude Include="Application\ModelScene.h" />
+    <ClInclude Include="Engine\3d\Model\Mtllib.h" />
+    <ClInclude Include="Application\MultiLightTestScene.h" />
+    <ClInclude Include="Engine\3d\Obj3D.h" />
+    <ClInclude Include="Engine\Light\PointLight.h" />
+    <ClInclude Include="Application\PointLightTestScene.h" />
+    <ClInclude Include="Engine\Math\Quaternion.h" />
+    <ClInclude Include="Engine\Base\RAudio.h" />
+    <ClInclude Include="Engine\Base\RConstBuffer.h" />
+    <ClInclude Include="Engine\Base\RDirectX.h" />
+    <ClInclude Include="Engine\Base\RImGui.h" />
+    <ClInclude Include="Engine\Base\RInput.h" />
+    <ClInclude Include="Engine\Base\RootSignature.h" />
+    <ClInclude Include="Engine\Base\RWindow.h" />
+    <ClInclude Include="Engine\Scene\IScene.h" />
+    <ClInclude Include="Engine\Scene\SceneManager.h" />
+    <ClInclude Include="Engine\Scene\ISceneTransition.h" />
+    <ClInclude Include="Engine\Base\Shader.h" />
+    <ClInclude Include="Engine\SimpleDrawer\SimpleDrawer.h" />
+    <ClInclude Include="Engine\SimpleDrawer\SimpleDrawInfo.h" />
+    <ClInclude Include="Application\SimpleSceneTransition.h" />
+    <ClInclude Include="Application\SoundScene.h" />
+    <ClInclude Include="Engine\Light\SpotLight.h" />
+    <ClInclude Include="Application\SpotLightTestScene.h" />
+    <ClInclude Include="Engine\2d\Sprite.h" />
+    <ClInclude Include="Application\SpriteScene.h" />
+    <ClInclude Include="Engine\Base\SRBuffer.h" />
+    <ClInclude Include="Engine\SimpleDrawer\TextDrawer.h" />
+    <ClInclude Include="Engine\Base\Texture.h" />
+    <ClInclude Include="Engine\TimeManager.h" />
+    <ClInclude Include="Engine\Base\Transform.h" />
+    <ClInclude Include="Engine\Util.h" />
+    <ClInclude Include="Engine\Math\Vector2.h" />
+    <ClInclude Include="Engine\Math\Vector3.h" />
+    <ClInclude Include="Engine\Base\Vertex.h" />
+    <ClInclude Include="Engine\Base\VertexBuffer.h" />
+    <ClInclude Include="Application\VerySlowLoadScene.h" />
+    <ClInclude Include="Engine\Base\ViewProjection.h" />
+    <ClInclude Include="Application\SpherePlaneScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli">
