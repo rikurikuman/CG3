@@ -434,7 +434,7 @@ TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle ha
 	else {
 		for (UINT i = 0; i < TextureManager::numSRVDescritors; i++) {
 			bool ok = true;
-			for (std::pair<TextureHandle, Texture> p : textureMap) {
+			for (std::pair<const TextureHandle, Texture>& p : textureMap) {
 				if (p.second.heapIndex == i) {
 					ok = false;
 					break;

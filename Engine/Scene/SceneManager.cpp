@@ -67,6 +67,7 @@ void SceneManager::Update() {
 			std::lock_guard<std::mutex> lock(instance->mutex);
 			instance->nowScene->Finalize();
 			std::swap(instance->nowScene, instance->changeScene);
+			std::swap(instance->changeScene, std::make_shared<IScene>());
 			instance->nowScene->Init();
 			instance->loadingTimer = 0;
 			sc.transition->Open();

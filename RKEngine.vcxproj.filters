@@ -144,9 +144,6 @@
     <ClCompile Include="Engine\Base\Shader.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Collision\Collision.cpp">
-      <Filter>ソース ファイル\Engine\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\3d\Model\Model.cpp">
       <Filter>ソース ファイル\Engine\3D\Model</Filter>
     </ClCompile>
@@ -228,9 +225,6 @@
     <ClCompile Include="Engine\Camera\DebugCamera.cpp">
       <Filter>ソース ファイル\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Base\Material.cpp">
       <Filter>ソース ファイル\Engine</Filter>
     </ClCompile>
@@ -251,6 +245,36 @@
     </ClCompile>
     <ClCompile Include="Application\SpherePlaneScene.cpp">
       <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\SpherePolygonScene.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\RayPlaneScene.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\RayPolygonScene.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\RaySphereScene.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\Colliders.cpp">
+      <Filter>ソース ファイル\Engine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\PolygonCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\SphereCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\CollidersScene.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision\RayCollider.cpp">
+      <Filter>ソース ファイル\Engine\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -345,9 +369,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\RWindow.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Collision\Collision.h">
-      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3d\Model\Model.h">
       <Filter>ヘッダー ファイル\Engine\3D\Model</Filter>
@@ -462,6 +483,36 @@
     </ClInclude>
     <ClInclude Include="Application\SpherePlaneScene.h">
       <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\SpherePolygonScene.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\RayPlaneScene.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\RayPolygonScene.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\RaySphereScene.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\Colliders.h">
+      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\ICollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\SphereCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\PolygonCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\CollidersScene.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision\RayCollider.h">
+      <Filter>ヘッダー ファイル\Engine\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

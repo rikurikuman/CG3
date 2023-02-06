@@ -68,7 +68,7 @@ public:
 
 	//このクォータニオンの逆元を得る
 	//元のインスタンスは書き換えず、別のインスタンスとして得る
-	Quaternion GetInverse();
+	Quaternion GetInverse() const;
 
 	//このクォータニオンの逆回転(共役)を得る
 	//元のインスタンスを書き換える
@@ -134,6 +134,14 @@ public:
 	/// <param name="vec">上方向ベクトル</param>
 	/// <returns>回転クォータニオン</returns>
 	static Quaternion LookAt(const Vector3& vec, const Vector3& up = {0, 1, 0});
+
+	/// <summary>
+	/// fromからtoへの回転クォータニオンを生成する
+	/// </summary>
+	/// <param name="from">回転前の姿勢クォータニオン</param>
+	/// <param name="to">回転後の姿勢クォータニオン</param>
+	/// <returns>回転クォータニオン</returns>
+	static Quaternion FromToRotation(const Quaternion& from, const Quaternion& to);
 
 	/// <summary>
 	/// 二つのクォータニオンを線形補間する

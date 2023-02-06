@@ -9,6 +9,7 @@ class ModelObj : public Obj3D
 {
 public:
 	Model* model = nullptr;
+	Material tuneMaterial = Material(true);
 
 	RConstBuffer<TransformBuffer> transformBuff;
 	RConstBuffer<ViewProjectionBuffer> viewProjectionBuff;

@@ -29,15 +29,26 @@ namespace ColPrimitive3D
 		Vector3 size;
 	};
 
+	//ÉåÉC
+	struct Ray
+	{
+		Vector3 start;
+		Vector3 dir;
+	};
+
 	//ê¸ï™
 	struct Segment {
 		Vector3 start;
 		Vector3 end;
 		Vector3 dir;
 	};
-
-	bool IsHit(Sphere sphere, Plane plane);
-	bool IsHit(Sphere sphere, AABB box);
-	bool IsHit(Sphere sphere, Triangle triangle, Vector3* outClosestPos = nullptr);
+	
+	bool CheckSphereToSphere(Sphere a, Sphere b);
+	bool CheckSphereToPlane(Sphere sphere, Plane plane);
+	bool CheckSphereToAABB(Sphere sphere, AABB box);
+	bool CheckSphereToTriangle(Sphere sphere, Triangle triangle, Vector3* outClosestPos = nullptr);
+	bool CheckRayToPlane(Ray ray, Plane plane, float* outDistance = nullptr, Vector3* outInter = nullptr);
+	bool CheckRayToTriangle(Ray ray, Triangle triangle, float* outDistance = nullptr, Vector3* outInter = nullptr);
+	bool CheckRayToSphere(Ray ray, Sphere sphere, float* outDistance = nullptr, Vector3* outInter = nullptr);
 };
 

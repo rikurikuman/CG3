@@ -19,6 +19,8 @@
 #include "SceneManager.h"
 #include "SimpleSceneTransition.h"
 #include "RImGui.h"
+#include "SpherePlaneScene.h"
+#include "SpherePolygonScene.h"
 #include "SpriteScene.h"
 #include "ModelScene.h"
 #include "SoundScene.h"
@@ -27,6 +29,10 @@
 #include "PointLightTestScene.h"
 #include "SpotLightTestScene.h"
 #include "VerySlowLoadScene.h"
+#include <RaySphereScene.h>
+#include <RayPolygonScene.h>
+#include <RayPlaneScene.h>
+#include "CollidersScene.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -34,6 +40,8 @@
 #define _CRTDBG_MAP_ALLOC
 #include <cstdlib>
 #include <crtdbg.h>
+
+#include "Colliders.h"
 
 using namespace std;
 using namespace DirectX;
@@ -99,7 +107,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	TextureManager::Load("Resources/loadingMark.png", "LoadingMark");
 
-	SceneManager::Set<SpriteScene>();
+	SceneManager::Set<SpherePlaneScene>();
 
 	DebugCamera camera({ 0, 0, -10 });
 
@@ -142,32 +150,29 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int sceneNum = 0;
-			const char* scenes[] = {"Sprite", "Model", "Sound", "DirectionalLight", "PointLight", "SpotLight", "VerySlowLoad"};
+			const char* scenes[] = {"Sphere&Plane", "Sphere&Polygon", "Ray&Plane", "Ray&Polygon", "Ray&Sphere", "Colliders"};
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
 				if (!SceneManager::IsSceneChanging()) {
 					switch (sceneNum) {
 					case 0:
-						SceneManager::Change<SpriteScene, SimpleSceneTransition>();
+						SceneManager::Change<SpherePlaneScene, SimpleSceneTransition>();
 						break;
 					case 1:
-						SceneManager::Change<ModelScene, SimpleSceneTransition>();
+						SceneManager::Change<SpherePolygonScene, SimpleSceneTransition>();
 						break;
 					case 2:
-						SceneManager::Change<SoundScene, SimpleSceneTransition>();
+						SceneManager::Change<RayPlaneScene, SimpleSceneTransition>();
 						break;
 					case 3:
-						SceneManager::Change<MultiLightTestScene, SimpleSceneTransition>();
+						SceneManager::Change<RayPolygonScene, SimpleSceneTransition>();
 						break;
 					case 4:
-						SceneManager::Change<PointLightTestScene, SimpleSceneTransition>();
+						SceneManager::Change<RaySphereScene, SimpleSceneTransition>();
 						break;
 					case 5:
-						SceneManager::Change<SpotLightTestScene, SimpleSceneTransition>();
-						break;
-					case 6:
-						SceneManager::Change<VerySlowLoadScene, SimpleSceneTransition>();
+						SceneManager::Change<CollidersScene, SimpleSceneTransition>();
 						break;
 					}
 				}

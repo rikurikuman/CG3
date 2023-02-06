@@ -5,10 +5,10 @@
 #include <Camera.h>
 #include <LightGroup.h>
 
-class SpherePlaneScene : public IScene
+class RaySphereScene : public IScene
 {
 public:
-	SpherePlaneScene();
+	RaySphereScene();
 
 	void Init() override;
 	void Update() override;
@@ -18,13 +18,13 @@ private:
 	Camera camera;
 	LightGroup light;
 
+	ColPrimitive3D::Ray colRay;
 	ColPrimitive3D::Sphere colSphere;
-	ColPrimitive3D::Plane colPlane;
 	ModelObj sphere;
-	ModelObj plane;
+	ModelObj ray;
+	ModelObj sphere2;
 
 	float radius = 1;
-	float rotPlane = 0;
 
 	bool autoMove = true;
 	float moveDir = 1;

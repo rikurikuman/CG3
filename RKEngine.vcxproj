@@ -163,9 +163,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\RayPlaneScene.cpp" />
+    <ClCompile Include="Application\RayPolygonScene.cpp" />
+    <ClCompile Include="Application\RaySphereScene.cpp" />
+    <ClCompile Include="Application\SpherePolygonScene.cpp" />
+    <ClCompile Include="Engine\Collision\Colliders.cpp" />
+    <ClCompile Include="Application\CollidersScene.cpp" />
     <ClCompile Include="Engine\3d\BillboardImage.cpp" />
     <ClCompile Include="Engine\Camera\Camera.cpp" />
-    <ClCompile Include="Engine\Collision\Collision.cpp" />
     <ClCompile Include="Engine\Base\Color.cpp" />
     <ClCompile Include="Engine\Collision\ColPrimitive2D.cpp" />
     <ClCompile Include="Engine\Collision\ColPrimitive3D.cpp" />
@@ -219,6 +224,9 @@
     <ClCompile Include="Application\VerySlowLoadScene.cpp" />
     <ClCompile Include="Engine\Base\ViewProjection.cpp" />
     <ClCompile Include="Application\SpherePlaneScene.cpp" />
+    <ClCompile Include="Engine\Collision\PolygonCollider.cpp" />
+    <ClCompile Include="Engine\Collision\RayCollider.cpp" />
+    <ClCompile Include="Engine\Collision\SphereCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BasicPS.hlsl">
@@ -309,9 +317,14 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\RayPlaneScene.h" />
+    <ClInclude Include="Application\RayPolygonScene.h" />
+    <ClInclude Include="Application\RaySphereScene.h" />
+    <ClInclude Include="Application\SpherePolygonScene.h" />
+    <ClInclude Include="Engine\Collision\Colliders.h" />
+    <ClInclude Include="Application\CollidersScene.h" />
     <ClInclude Include="Engine\3d\BillboardImage.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
-    <ClInclude Include="Engine\Collision\Collision.h" />
     <ClInclude Include="Engine\Base\Color.h" />
     <ClInclude Include="Engine\Collision\ColPrimitive2D.h" />
     <ClInclude Include="Engine\Collision\ColPrimitive3D.h" />
@@ -367,6 +380,10 @@
     <ClInclude Include="Application\VerySlowLoadScene.h" />
     <ClInclude Include="Engine\Base\ViewProjection.h" />
     <ClInclude Include="Application\SpherePlaneScene.h" />
+    <ClInclude Include="Engine\Collision\ICollider.h" />
+    <ClInclude Include="Engine\Collision\PolygonCollider.h" />
+    <ClInclude Include="Engine\Collision\RayCollider.h" />
+    <ClInclude Include="Engine\Collision\SphereCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli">

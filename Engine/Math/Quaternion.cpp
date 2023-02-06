@@ -93,7 +93,7 @@ Quaternion& Quaternion::Inverse()
 	return *this;
 }
 
-Quaternion Quaternion::GetInverse()
+Quaternion Quaternion::GetInverse() const
 {
 	Quaternion temp = *this;
 	temp.Inverse();
@@ -272,6 +272,10 @@ Quaternion Quaternion::LookAt(const Vector3& vec, const Vector3& up)
 {
 	Matrix4 mat = -Matrix4::View({ 0, 0, 0 }, vec.GetNormalize(), up);
 	return Quaternion::FromRotationMatrix(mat);
+}
+
+Quaternion Quaternion::FromToRotation(const Quaternion& from, const Quaternion& to) {
+	return from * to.GetInverse();
 }
 
 Quaternion Quaternion::Lerp(const Quaternion& qA, const Quaternion& qB, const float& t)

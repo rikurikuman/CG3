@@ -3,6 +3,18 @@
 
 void ModelObj::TransferBuffer(ViewProjection viewprojection)
 {
+	for (std::shared_ptr<ModelData> data : model->data) {
+		Material mat = data->material;
+		mat.color.r *= tuneMaterial.color.r;
+		mat.color.g *= tuneMaterial.color.g;
+		mat.color.b *= tuneMaterial.color.b;
+		mat.color.a *= tuneMaterial.color.a;
+		mat.ambient *= tuneMaterial.ambient;
+		mat.diffuse *= tuneMaterial.diffuse;
+		mat.specular *= tuneMaterial.specular;
+		mat.Transfer(data->materialBuff.constMap);
+	}
+
 	transform.Transfer(transformBuff.constMap);
 	viewprojection.Transfer(viewProjectionBuff.constMap);
 	//viewProjectionBuff.constMap->matrix = viewprojection.matrix;

@@ -23,6 +23,13 @@ public:
 	Vector3 diffuse = {0, 0, 0}; //ŠgŽU”½ŽËŒõ
 	Vector3 specular = {0, 0, 0}; //‹¾–Ê”½ŽËŒõ
 
+	Material() {}
+	Material(bool allOne) {
+		if (allOne) {
+			diffuse = { 1, 1, 1 };
+			specular = { 1, 1, 1 };
+		}
+	}
 	bool operator==(const Material& o) const;
 	bool operator!=(const Material& o) const;
 
