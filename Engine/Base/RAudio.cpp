@@ -5,6 +5,19 @@ using namespace std;
 
 AudioHandle RAudio::Load(const std::string filepath, std::string handle)
 {
+	RAudio* instance = GetInstance();
+
+	std::unique_lock<std::recursive_mutex> lock(GetInstance()->mutex);
+
+	//ˆê‰ñ“Ç‚Ýž‚ñ‚¾‚±‚Æ‚ª‚ ‚éƒtƒ@ƒCƒ‹‚Í‚»‚Ì‚Ü‚Ü•Ô‚·
+	auto itr = find_if(instance->audioMap.begin(), instance->audioMap.end(), [&](const std::pair<AudioHandle, shared_ptr<AudioData>>& p) {
+		return p.second->filepath == filepath;
+		});
+	if (itr != instance->audioMap.end()) {
+		return itr->first;
+	}
+	lock.unlock();
+
 	std::ifstream file;
 	file.open(filepath, std::ios_base::binary);
 
@@ -51,6 +64,7 @@ AudioHandle RAudio::Load(const std::string filepath, std::string handle)
 	file.close();
 
 	shared_ptr<WaveAudio> sound = make_shared<WaveAudio>();
+	sound->filepath = filepath;
 	sound->wfex = format.fmt;
 	sound->pBuffer = reinterpret_cast<BYTE*>(pBuffer);
 	sound->bufferSize = data.size;
@@ -59,50 +73,17 @@ AudioHandle RAudio::Load(const std::string filepath, std::string handle)
 		handle = "NoNameHandle_" + filepath;
 	}
 
+	lock.lock();
 	GetInstance()->audioMap[handle] = sound;
-
 	return handle;
 }
 
-//void RAudio::Play(const AudioHandle handle, const float volume, const bool loop)
-//{
-//	RAudio* instance = GetInstance();
-//	HRESULT result;
-//
-//	if (instance->audioMap.find(handle) == instance->audioMap.end()) {
-//		return;
-//	}
-//
-//	shared_ptr<AudioData> data = instance->audioMap[handle];
-//
-//	if (data->type == AudioType::Wave) {
-//		shared_ptr<WaveAudio> waveData = static_pointer_cast<WaveAudio>(data);
-//
-//		IXAudio2SourceVoice* pSourceVoice = nullptr;
-//		result = instance->xAudio2->CreateSourceVoice(&pSourceVoice, &waveData->wfex);
-//		assert(SUCCEEDED(result));
-//
-//		XAUDIO2_BUFFER buf{};
-//		buf.pAudioData = waveData->pBuffer;
-//		buf.AudioBytes = waveData->bufferSize;
-//		buf.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
-//		buf.Flags = XAUDIO2_END_OF_STREAM;
-//
-//		result = pSourceVoice->SubmitSourceBuffer(&buf);
-//		result = pSourceVoice->SetVolume(volume);
-//		result = pSourceVoice->Start();
-//
-//		if (loop) {
-//			instance->playingList.push_back({ handle, pSourceVoice });
-//		}
-//	}
-//}
-
-void RAudio::Play(AudioHandle handle, const float volume, const float pitch, const bool loop)
+void RAudio::Play(const AudioHandle handle, const float volume, const bool loop)
 {
 	RAudio* instance = GetInstance();
 	HRESULT result;
 
+	std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
 	if (instance->audioMap.find(handle) == instance->audioMap.end()) {
 		return;
 	}
@@ -123,9 +104,11 @@ void RAudio::Play(AudioHandle handle, const float volume, const float pitch, con
 		buf.Flags = XAUDIO2_END_OF_STREAM;
 
 		result = pSourceVoice->SubmitSourceBuffer(&buf);
-		result = pSourceVoice->SetFrequencyRatio(pitch);
+		assert(SUCCEEDED(result));
 		result = pSourceVoice->SetVolume(volume);
+		assert(SUCCEEDED(result));
 		result = pSourceVoice->Start();
+		assert(SUCCEEDED(result));
 
 		if (loop) {
 			instance->playingList.push_back({ handle, pSourceVoice });
@@ -136,6 +119,7 @@ void RAudio::Play(AudioHandle handle, const float volume, const float pitch, con
 void RAudio::Stop(AudioHandle handle)
 {
 	RAudio* instance = GetInstance();
+	std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
 	for (auto itr = instance->playingList.begin(); itr != instance->playingList.end();) {
 		PlayingInfo info = *itr;
 		if (info.handle == handle) {
@@ -160,6 +144,7 @@ void RAudio::InitInternal()
 
 void RAudio::FinalInternal()
 {
+	master->DestroyVoice();
 	xAudio2.Reset();
 	audioMap.clear();
 }

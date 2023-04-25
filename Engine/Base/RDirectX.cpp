@@ -6,6 +6,7 @@
 #include "RootSignature.h"
 #include "Vertex.h"
 #include "SimpleDrawer.h"
+#include "RenderTarget.h"
 
 using namespace std;
 using namespace DirectX;
@@ -42,7 +43,7 @@ GraphicsPipeline RDirectX::GetDefPipeline()
 
 void RDirectX::PreDraw()
 {
-	RDirectX::SetBackBufferToRenderTarget();
+	RenderTarget::SetToBackBuffer();
 
 	//プリミティブ形状設定
 	RDirectX::GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -60,6 +61,8 @@ void RDirectX::PostDraw()
 	RDirectX::CloseResourceBarrier(RDirectX::GetCurrentBackBufferResource());
 
 	RDirectX::RunDraw();
+
+	RDirectX::OpenResorceBarrier(RDirectX::GetCurrentBackBufferResource());
 }
 
 size_t RDirectX::GetBackBufferSize()
@@ -427,32 +430,9 @@ D3D12_CPU_DESCRIPTOR_HANDLE RDirectX::GetCurrentBackBufferHandle() {
 	return rtvHandle;
 }
 
-void RDirectX::SetRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE& rtvHandle)
+D3D12_CPU_DESCRIPTOR_HANDLE RDirectX::GetBackBufferDSVHandle()
 {
-	RDirectX* instance = GetInstance();
-	//深度ステンシルも設定
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = instance->dsvHeap->GetCPUDescriptorHandleForHeapStart();
-
-	//セット
-	instance->cmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
-	instance->nowRtvHandle = rtvHandle;
-}
-
-void RDirectX::SetBackBufferToRenderTarget() {
-	RDirectX* instance = GetInstance();
-
-	//リソースバリアで書き込み可能に変更
-	OpenResorceBarrier(GetCurrentBackBufferResource());
-
-	//バックバッファのRTVハンドルを得る
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = GetCurrentBackBufferHandle();
-
-	//深度ステンシルも設定
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = instance->dsvHeap->GetCPUDescriptorHandleForHeapStart();
-
-	//セット
-	instance->cmdList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
-	instance->nowRtvHandle = rtvHandle;
+	return GetInstance()->dsvHeap->GetCPUDescriptorHandleForHeapStart();
 }
 
 void RDirectX::OpenResorceBarrier(ID3D12Resource* resource) {
@@ -471,16 +451,12 @@ void RDirectX::CloseResourceBarrier(ID3D12Resource* resource) {
 	RDirectX::GetCommandList()->ResourceBarrier(1, &barrierDesc);
 }
 
-void RDirectX::ClearRenderTarget(Color color) {
+void RDirectX::ClearBackBuffer(Color color)
+{
 	RDirectX* instance = GetInstance();
 
 	FLOAT clearColor[] = { color.r, color.g, color.b, color.r };
-	instance->cmdList->ClearRenderTargetView(instance->nowRtvHandle, clearColor, 0, nullptr);
-}
-
-void RDirectX::ClearDepthStencil() {
-	RDirectX* instance = GetInstance();
-
+	instance->cmdList->ClearRenderTargetView(GetCurrentBackBufferHandle(), clearColor, 0, nullptr);
 	instance->cmdList->ClearDepthStencilView(
 		instance->dsvHeap->GetCPUDescriptorHandleForHeapStart(),
 		D3D12_CLEAR_FLAG_DEPTH,

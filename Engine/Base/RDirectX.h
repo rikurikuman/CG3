@@ -74,8 +74,8 @@ public:
 	//現在のバックバッファのRTVハンドルを取得する
 	static D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentBackBufferHandle();
 
-	//レンダーターゲットを指定する
-	static void SetRenderTarget(D3D12_CPU_DESCRIPTOR_HANDLE& rtvHandle);
+	//バックバッファのDSVハンドルを取得する
+	static D3D12_CPU_DESCRIPTOR_HANDLE GetBackBufferDSVHandle();
 
 	//リソースバリアをPRESENT->RENDER_TARGETにする処理
 	static void OpenResorceBarrier(ID3D12Resource* resource);
@@ -83,17 +83,8 @@ public:
 	//リソースバリアをRENDER_TARGET->PRESENTにする処理
 	static void CloseResourceBarrier(ID3D12Resource* resource);
 
-	//バックバッファを描画先にするための色んな処理をまとめて行う
-	static void SetBackBufferToRenderTarget();
-
-	/// <summary>
-	/// レンダーターゲットを指定で塗りつぶす
-	/// </summary>
-	/// <param name="color">塗りつぶす色</param>
-	static void ClearRenderTarget(Color color);
-
-	//深度値をクリアする
-	static void ClearDepthStencil();
+	//バックバッファをクリアする
+	static void ClearBackBuffer(Color color);
 
 	//コマンドリストを閉じて実行し、フリップして、コマンドリストを再び開ける
 	static void RunDraw();

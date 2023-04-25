@@ -6,6 +6,8 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <mutex>
+#include "Util.h"
 
 #pragma comment(lib,"xaudio2.lib")
 
@@ -41,11 +43,12 @@ struct AudioData {
 struct WaveAudio : public AudioData
 {
 	WAVEFORMATEX wfex;
-	BYTE* pBuffer;
+	BYTE* pBuffer = nullptr;
 	unsigned int bufferSize;
 
 	~WaveAudio() {
 		if (pBuffer != nullptr) {
+			OutputDebugStringA(Util::StringFormat("Delete %p\n", pBuffer).c_str());
 			delete[] pBuffer;
 		}
 	}
@@ -63,19 +66,19 @@ public:
 		GetInstance()->InitInternal();
 	}
 
-	static void Finalize() {
+	static void Final() {
 		GetInstance()->FinalInternal();
 	}
 
 	static AudioHandle Load(const std::string filepath, std::string handle = "");
-	//static void Play(AudioHandle handle, const float volume = 1.0f, const bool loop = false);
-	static void Play(AudioHandle handle, const float volume = 1.0f, const float pitch = 1.0f, const bool loop = false);
+	static void Play(AudioHandle handle, const float volume = 1.0f, const bool loop = false);
 	static void Stop(AudioHandle handle);
 
 private:
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 	IXAudio2MasteringVoice* master = nullptr;
 
+	std::recursive_mutex mutex;
 	std::map<AudioHandle, std::shared_ptr<AudioData>> audioMap;
 
 	struct PlayingInfo {

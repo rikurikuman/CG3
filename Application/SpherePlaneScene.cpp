@@ -91,9 +91,6 @@ void SpherePlaneScene::Update()
 
 void SpherePlaneScene::Draw()
 {
-	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
-
-	sphere.DrawCommands();
-	plane.DrawCommands();
+	sphere.Draw();
+	plane.Draw();
 }

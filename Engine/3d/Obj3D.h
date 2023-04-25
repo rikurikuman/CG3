@@ -24,6 +24,9 @@ public:
 	//各データのバッファへの転送
 	virtual void TransferBuffer(ViewProjection viewprojection) {}
 
+	//描画要求をRendererへ
+	virtual void Draw() {}
+
 	//描画用のコマンドをまとめてコマンドリストに積む
 	virtual void DrawCommands() {}
 };

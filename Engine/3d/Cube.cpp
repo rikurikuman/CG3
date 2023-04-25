@@ -74,6 +74,13 @@ void Cube::TransferBuffer(ViewProjection viewprojection)
 	}
 }
 
+void Cube::Draw()
+{
+	for (int i = 0; i < 6; i++) {
+		faces[i].Draw();
+	}
+}
+
 void Cube::DrawCommands()
 {
 	for (int i = 0; i < 6; i++) {

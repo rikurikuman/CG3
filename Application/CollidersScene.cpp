@@ -2,6 +2,7 @@
 #include <TimeManager.h>
 #include <RImGui.h>
 #include <Quaternion.h>
+#include <Renderer.h>
 
 CollidersScene::CollidersScene()
 {
@@ -211,27 +212,21 @@ void CollidersScene::Update()
 
 void CollidersScene::Draw()
 {
-	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
+	sphere.Draw();
+	sphere2.Draw();
+	ray.Draw();
 
-	sphere.DrawCommands();
-	sphere2.DrawCommands();
-	ray.DrawCommands();
+	RenderOrder polygon;
+	polygon.pipelineState = polygonPipeline.ptr.Get();
+	polygon.rootData = {
+		{TextureManager::Get("").gpuHandle},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
+	};
+	polygon.vertView = &vertBuff.view;
+	polygon.indexCount = 3;
 
-	RDirectX::GetCommandList()->SetPipelineState(polygonPipeline.ptr.Get());
-
-	//頂点バッファビューの設定コマンド
-	RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, &vertBuff.view);
-
-	//定数バッファビューの設定コマンド
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(1, materialBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(2, transformBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(3, viewProjectionBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(4, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress());
-
-	//SRVヒープから必要なテクスチャデータをセットする
-	RDirectX::GetCommandList()->SetGraphicsRootDescriptorTable(0, TextureManager::Get("").gpuHandle);
-
-	//描画コマンド
-	RDirectX::GetCommandList()->DrawInstanced(3, 1, 0, 0); // 全ての頂点を使って描画
+	Renderer::DrawCall("Opaque", polygon);
 }

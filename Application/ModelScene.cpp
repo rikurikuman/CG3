@@ -51,7 +51,5 @@ void ModelScene::Update()
 
 void ModelScene::Draw()
 {
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
-	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
-	model.DrawCommands();
+	model.Draw();
 }

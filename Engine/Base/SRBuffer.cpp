@@ -1,5 +1,6 @@
 #include "SRBuffer.h"
 #include "RDirectX.h"
+#include <Util.h>
 
 SRBufferAllocator* SRBufferAllocator::GetInstance()
 {
@@ -22,7 +23,7 @@ UINT8* SRBufferAllocator::Alloc(UINT64 needSize, UINT align)
 	UINT8* newLoc = nullptr;
 
 	//空き領域から欲しいサイズが収まる領域を探す
-	for (FreeRegion reg : instance->freeRegions) {
+	for (MemoryRegion& reg : instance->freeRegions) {
 
 		//要求境界にアライメントする
 		UINT8* alignedLoc = reinterpret_cast<UINT8*>(Align(reinterpret_cast<UINT64>(reg.pBegin), align));
@@ -46,7 +47,7 @@ UINT8* SRBufferAllocator::Alloc(UINT64 needSize, UINT align)
 	//空き領域情報を編集する
 	//確保領域の先頭アドレスが含まれている空き領域を探す
 	for (auto itr = instance->freeRegions.begin(); itr != instance->freeRegions.end(); itr++) {
-		FreeRegion& reg = *itr;
+		MemoryRegion& reg = *itr;
 		if (newLoc < reg.pBegin || reg.pEnd < newLoc) {
 			continue;
 		}
@@ -68,7 +69,43 @@ UINT8* SRBufferAllocator::Alloc(UINT64 needSize, UINT align)
 		break;
 	}
 
+	instance->usingRegions.push_back(MemoryRegion(newLoc, newLoc + needSize));
 	return newLoc;
+}
+
+void SRBufferAllocator::Free(UINT8* ptr)
+{
+	SRBufferAllocator* instance = GetInstance();
+
+	//使用中領域から指定アドレスを先頭とする領域を探す
+	bool regionFound = false;
+	MemoryRegion usingRegion;
+	for (auto itr = instance->usingRegions.begin(); itr != instance->usingRegions.end(); itr++) {
+		if (itr->pBegin == ptr) {
+			//見つけたら覚えて、消す
+			regionFound = true;
+			usingRegion = *itr;
+			instance->usingRegions.erase(itr);
+			break;
+		}
+	}
+
+	//見つからなかったら不正なポインタを解放しようとしてるので怒る
+	if (!regionFound) {
+		//けど今は警告出力してreturnでいいや
+#ifdef _DEBUG
+		OutputDebugStringA(Util::StringFormat("RKEngine WARNING: SRBufferAllocator::Free() : Attempted to free an invalid pointer(%p).\n", ptr).c_str());
+#endif
+		return;
+	}
+
+	//解放する領域を空き領域に追加する
+	for (auto itr = instance->freeRegions.begin(); itr != instance->freeRegions.end(); itr++) {
+		if (itr->pEnd == usingRegion.pBegin - 1) {
+			//解放する領域の先頭と連続する既存の空き領域があったら融合
+			//どうしよう？？？
+		}
+	}
 }
 
 SRBufferAllocator::SRBufferAllocator() {

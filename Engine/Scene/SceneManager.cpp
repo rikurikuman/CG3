@@ -87,7 +87,7 @@ void SceneManager::Update() {
 				float fx = 1 - powf(1 - t, 5);
 
 				instance->loadingAngle += Util::AngleToRadian(5);
-				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 0 };
+				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 1145141919.0f };
 				instance->loadingMark.transform.rotation = { 0, 0, instance->loadingAngle };
 				instance->loadingMark.transform.UpdateMatrix();
 				instance->loadingMark.material.color.a = 1.0f * fx;
@@ -95,7 +95,7 @@ void SceneManager::Update() {
 			}
 			else {
 				instance->loadingAngle = 0;
-				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 0 };
+				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 1145141919.0f };
 				instance->loadingMark.transform.rotation = { 0, 0, 0 };
 				instance->loadingMark.transform.UpdateMatrix();
 				instance->loadingMark.material.color.a = 0;
@@ -108,7 +108,7 @@ void SceneManager::Update() {
 				float fx = 1 - powf(1 - t, 5);
 
 				instance->loadingAngle += Util::AngleToRadian(5);
-				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 0 };
+				instance->loadingMark.transform.position = { RWindow::GetWidth() - 45.0f, RWindow::GetHeight() - 45.0f, 1145141919.0f };
 				instance->loadingMark.transform.rotation = { 0, 0, instance->loadingAngle };
 				instance->loadingMark.transform.UpdateMatrix();
 				instance->loadingMark.material.color.a = instance->loadingAlpha * (1 - fx);
@@ -136,10 +136,8 @@ void SceneManager::Draw() {
 		sc.transition->Draw();
 
 		if (instance->loadingAlpha != 0 && ((sc.increment == 1 && sc.transition->IsClosed()) || sc.increment == 2 || sc.increment == 3)) {
-			RDirectX::GetCommandList()->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
-			RDirectX::GetCommandList()->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
 			instance->loadingMark.TransferBuffer();
-			instance->loadingMark.DrawCommands();
+			instance->loadingMark.Draw();
 		}
 	}
 }

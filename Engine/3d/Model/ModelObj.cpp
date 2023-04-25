@@ -1,5 +1,6 @@
 #include "ModelObj.h"
 #include "LightGroup.h"
+#include <Renderer.h>
 
 void ModelObj::TransferBuffer(ViewProjection viewprojection)
 {
@@ -18,6 +19,23 @@ void ModelObj::TransferBuffer(ViewProjection viewprojection)
 	transform.Transfer(transformBuff.constMap);
 	viewprojection.Transfer(viewProjectionBuff.constMap);
 	//viewProjectionBuff.constMap->matrix = viewprojection.matrix;
+}
+
+void ModelObj::Draw()
+{
+	for (std::shared_ptr<ModelData> data : model->data) {
+		std::vector<RootData> rootData = {
+			{ TextureManager::Get(data->material.texture).gpuHandle },
+			{ D3D12_ROOT_PARAMETER_TYPE_CBV, data->materialBuff.constBuff->GetGPUVirtualAddress() },
+			{ D3D12_ROOT_PARAMETER_TYPE_CBV, transformBuff.constBuff->GetGPUVirtualAddress() },
+			{ D3D12_ROOT_PARAMETER_TYPE_CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress() },
+			{ D3D12_ROOT_PARAMETER_TYPE_CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress() }
+		};
+
+		std::string stage = "Opaque";
+		if (data->material.color.a < 1.0f || tuneMaterial.color.a < 1.0f) stage = "Transparent";
+		Renderer::DrawCall(stage, &data->vertexBuff.view, &data->indexBuff.view, static_cast<UINT>(data->indices.size()), rootData);
+	}
 }
 
 void ModelObj::DrawCommands()

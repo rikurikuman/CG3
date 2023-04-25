@@ -2,6 +2,7 @@
 #include "RDirectX.h"
 #include "Vertex.h"
 #include "LightGroup.h"
+#include <Renderer.h>
 
 Image3D::Image3D(TextureHandle texture, Vector2 size, bool forceSize)
 {
@@ -48,6 +49,19 @@ void Image3D::TransferBuffer(ViewProjection viewprojection)
 	material.Transfer(materialBuff.constMap);
 	transform.Transfer(transformBuff.constMap);
 	viewProjectionBuff.constMap->matrix = viewprojection.matrix;
+}
+
+void Image3D::Draw()
+{
+	std::vector<RootData> rootData{
+		{TextureManager::Get(texture).gpuHandle},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
+	};
+
+	Renderer::DrawCall("Opaque", &vertBuff.view, &indexBuff.view, 6, rootData);
 }
 
 void Image3D::DrawCommands()

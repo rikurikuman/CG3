@@ -41,6 +41,16 @@ public:
 	static Texture GetHogeHogeTexture();
 
 	/// <summary>
+	/// 指定色で塗りつぶされたテクスチャを作る
+	/// </summary>
+	/// <param name="color">塗りつぶす色</param>
+	/// <param name="width">横幅</param>
+	/// <param name="height">縦幅</param>
+	/// <param name="handle">必要なら、任意ハンドル名指定</param>
+	/// <returns>作られたテクスチャのハンドル</returns>
+	static TextureHandle Create(const Color color, const UINT64 width, const UINT height, const std::string handle = "");
+
+	/// <summary>
 	/// 色情報の配列によってテクスチャを作る
 	/// </summary>
 	/// <param name="pSource">Color配列</param>
@@ -117,6 +127,7 @@ private:
 
 	void Init();
 	
+	TextureHandle CreateInternal(const Color color, const UINT64 width, const UINT height, const std::string handle = "");
 	TextureHandle CreateInternal(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath = "", const std::string handle = "");
 	TextureHandle LoadInternal(const std::string filepath, const std::string handle = "");
 	TextureHandle LoadInternal(const void* pSource, const size_t size, const std::string filepath, const std::string handle = "");

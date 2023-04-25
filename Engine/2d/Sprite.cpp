@@ -3,6 +3,7 @@
 #include "RDirectX.h"
 #include "RWindow.h"
 #include "Vertex.h"
+#include "Renderer.h"
 
 using namespace Microsoft::WRL;
 
@@ -109,6 +110,18 @@ void Sprite::TransferBuffer()
 	);
 	
 	viewProjectionBuff.constMap->matrix = matProjection;
+}
+
+void Sprite::Draw()
+{
+	std::vector<RootData> rootData{
+		{TextureManager::Get(texture).gpuHandle},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
+	};
+	
+	Renderer::DrawCall("Sprite", &vertBuff.view, &indexBuff.view, 6, rootData, transform.position);
 }
 
 void Sprite::DrawCommands()

@@ -39,6 +39,10 @@ void BillboardImage::TransferBuffer(ViewProjection v) {
 	image.TransferBuffer(v);
 }
 
+void BillboardImage::Draw() {
+	image.Draw();
+}
+
 void BillboardImage::DrawCommands()
 {
 	image.DrawCommands();

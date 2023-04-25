@@ -42,6 +42,9 @@
 #include <crtdbg.h>
 
 #include "Colliders.h"
+#include <RenderTarget.h>
+#include <Renderer.h>
+#include <TestRenderStage.h>
 
 using namespace std;
 using namespace DirectX;
@@ -88,28 +91,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	///////////////////
 
-	D3D12_VIEWPORT viewport{};
-	viewport.Width = WIN_WIDTH;
-	viewport.Height = WIN_HEIGHT;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
+	D3D12_VIEWPORT viewportS{};
+	viewportS.Width = WIN_WIDTH;
+	viewportS.Height = WIN_HEIGHT;
+	viewportS.TopLeftX = 0;
+	viewportS.TopLeftY = 0;
+	viewportS.MinDepth = 0.0f;
+	viewportS.MaxDepth = 1.0f;
 
-	D3D12_RECT scissorRect{};
-	scissorRect.left = 0;
-	scissorRect.right = scissorRect.left + WIN_WIDTH;
-	scissorRect.top = 0;
-	scissorRect.bottom = scissorRect.top + WIN_HEIGHT;
+	D3D12_RECT scissorRectS{};
+	scissorRectS.left = 0;
+	scissorRectS.right = scissorRectS.left + WIN_WIDTH;
+	scissorRectS.top = 0;
+	scissorRectS.bottom = scissorRectS.top + WIN_HEIGHT;
 
 	//モデルデータの読み込み
 	Model::Load("Resources/Model/", "Cube.obj", "Cube");
 
 	TextureManager::Load("Resources/loadingMark.png", "LoadingMark");
 
-	SceneManager::Set<SpherePlaneScene>();
+	SceneManager::Set<MainTestScene>();
 
 	DebugCamera camera({ 0, 0, -10 });
+
+	RenderTarget::CreateRenderTargetTexture(1280, 720, { 0.01f, 0.01f, 0.01f, 0 }, "hoge");
+	RenderTarget* hoge = RenderTarget::GetInstance();
 
 	//////////////////////////////////////
 
@@ -150,28 +156,31 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int sceneNum = 0;
-			const char* scenes[] = {"Sphere&Plane", "Sphere&Polygon", "Ray&Plane", "Ray&Polygon", "Ray&Sphere", "Colliders"};
+			const char* scenes[] = {"MainTest", "Sphere&Plane", "Sphere&Polygon", "Ray&Plane", "Ray&Polygon", "Ray&Sphere", "Colliders"};
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
 				if (!SceneManager::IsSceneChanging()) {
 					switch (sceneNum) {
 					case 0:
-						SceneManager::Change<SpherePlaneScene, SimpleSceneTransition>();
+						SceneManager::Change<MainTestScene, SimpleSceneTransition>();
 						break;
 					case 1:
-						SceneManager::Change<SpherePolygonScene, SimpleSceneTransition>();
+						SceneManager::Change<SpherePlaneScene, SimpleSceneTransition>();
 						break;
 					case 2:
-						SceneManager::Change<RayPlaneScene, SimpleSceneTransition>();
+						SceneManager::Change<SpherePolygonScene, SimpleSceneTransition>();
 						break;
 					case 3:
-						SceneManager::Change<RayPolygonScene, SimpleSceneTransition>();
+						SceneManager::Change<RayPlaneScene, SimpleSceneTransition>();
 						break;
 					case 4:
-						SceneManager::Change<RaySphereScene, SimpleSceneTransition>();
+						SceneManager::Change<RayPolygonScene, SimpleSceneTransition>();
 						break;
 					case 5:
+						SceneManager::Change<RaySphereScene, SimpleSceneTransition>();
+						break;
+					case 6:
 						SceneManager::Change<CollidersScene, SimpleSceneTransition>();
 						break;
 					}
@@ -194,26 +203,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//以下描画処理
 		RDirectX::PreDraw();
+		Renderer::SetAllParamaterToAuto();
 
 		//画面クリア～
-		RDirectX::ClearRenderTarget(Color(0.0f, 0.0f, 0.0f, 1.0f));
-		
-		//深度値もクリア
-		RDirectX::ClearDepthStencil();
-
-		//ビューポート設定コマンド
-		RDirectX::GetCommandList()->RSSetViewports(1, &viewport);
-
-		//シザー矩形
-		RDirectX::GetCommandList()->RSSetScissorRects(1, &scissorRect);
+		RDirectX::ClearBackBuffer(Color(0.0f, 0.0f, 0.0f, 1.0f));
 
 		//描画コマンド
-		
 		SceneManager::Draw();
+
+		Renderer::Execute();
 
 		RImGui::Render();
 
-		//リソースバリアを表示に戻す
 		RDirectX::PostDraw();
 
 		TimeManager::Update();
@@ -224,7 +225,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	}
 
 	SceneManager::Finalize();
-	RAudio::Finalize();
+	RAudio::Final();
 	RImGui::Finalize();
 
 	return 0;

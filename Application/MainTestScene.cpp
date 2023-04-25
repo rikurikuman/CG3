@@ -3,89 +3,77 @@
 #include "TextDrawer.h"
 #include "TimeManager.h"
 #include "SimpleDrawer.h"
+#include <RenderTarget.h>
+#include <Renderer.h>
 
 MainTestScene::MainTestScene()
 {
-	controlDesc = Sprite(TextDrawer::CreateStringTexture("マウス:視線, WASD:移動, Space:上昇, LShift:下降", "", 32), {0, 1});
-	controlDesc.transform.position = { 0, (float)RWindow::GetHeight(), 0 };
-	controlDesc.transform.UpdateMatrix();
-	controlDesc.material.color = { 1, 1, 1, 1 };
-	controlDesc.TransferBuffer();
+	sphere = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere", true));
 
-	obj = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "NonSmoothVic", false));
-	obj.transform.position = { -1, 0, 0 };
-	obj.transform.scale = { 0.2f, 0.2f, 0.2f };
-	obj.transform.UpdateMatrix();
+	sphere.transform.position = { 0, 0, 0 };
+	sphere.transform.UpdateMatrix();
 
-	obj2 = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "SmoothVic", true));
-	obj2.transform.position = { 1, 0, 0 };
-	obj2.transform.scale = { 0.2f, 0.2f, 0.2f };
-	obj2.transform.UpdateMatrix();
+	sphere2 = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere2", true));
 
-	ground = ModelObj(Model::Load("./Resources/Model/Ground", "ground.obj", "ground", true));
-	ground.transform.position = { 0, -1, 0 };
-	ground.transform.scale = { 10, 1, 10 };
-	ground.transform.UpdateMatrix();
+	sphere2.transform.position = { 0.5f, 0, -1 };
+	sphere2.transform.UpdateMatrix();
 
-	light.SetAmbientColor({ 0.1f, 0.1f, 0.1f });
-	light.SetDirectionalLightActive(0, true);
+	sphere2.tuneMaterial.color.a = 0.6f;
+
+	sprite.SetTexture("");
+	sprite.SetAnchor({ 0, 0 });
+	sprite.transform.position = { 100, 100, 0 };
+	sprite.transform.UpdateMatrix();
+	sprite.material.color = { 1, 1, 1, 1 };
+
+	sprite2.SetTexture("");
+	sprite2.SetAnchor({ 0, 0 });
+	sprite2.transform.position = { 120, 120, 0 };
+	sprite2.transform.UpdateMatrix();
+	sprite2.material.color = { 1, 0, 0, 0.5f };
+
+	camera.viewProjection.eye = { 0, 0, -10 };
+	camera.viewProjection.target = { 0, 0, 0 };
+	camera.viewProjection.UpdateMatrix();
 }
 
 void MainTestScene::Init()
 {
 	Camera::nowCamera = &camera;
 	LightGroup::nowLight = &light;
+	PostEffect::InitPipeline();
+	hoge.SetTexture("RenderTargetTex_hoge");
 }
 
 void MainTestScene::Update()
 {
-	obj.transform.rotation.z += Util::AngleToRadian(1);
-	obj2.transform.rotation.z += Util::AngleToRadian(1);
-
-	obj.transform.UpdateMatrix();
-	obj2.transform.UpdateMatrix();
-
-	if (RInput::GetKey(DIK_NUMPAD6)) {
-		lightVec.x += 1.0f * TimeManager::deltaTime;
-	}
-	if (RInput::GetKey(DIK_NUMPAD4)) {
-		lightVec.x -= 1.0f * TimeManager::deltaTime;
-	}
-	if (RInput::GetKey(DIK_NUMPAD8)) {
-		lightVec.z += 1.0f * TimeManager::deltaTime;
-	}
-	if (RInput::GetKey(DIK_NUMPAD2)) {
-		lightVec.z -= 1.0f * TimeManager::deltaTime;
-	}
-	if (RInput::GetKey(DIK_NUMPAD9)) {
-		lightVec.y += 1.0f * TimeManager::deltaTime;
-	}
-	if (RInput::GetKey(DIK_NUMPAD1)) {
-		lightVec.y -= 1.0f * TimeManager::deltaTime;
-	}
-
-	light.SetDirectionalLightVec(0, lightVec);
-
 	light.Update();
 	camera.Update();
 
-	obj.TransferBuffer(Camera::nowCamera->viewProjection);
-	obj2.TransferBuffer(Camera::nowCamera->viewProjection);
-	ground.TransferBuffer(Camera::nowCamera->viewProjection);
+	sphere.TransferBuffer(camera.viewProjection);
+	sphere2.TransferBuffer(camera.viewProjection);
+	sprite.TransferBuffer();
+	sprite2.TransferBuffer();
+	hoge.TransferBuffer();
 }
 
 void MainTestScene::Draw()
 {
-	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
-	obj.DrawCommands();
-	obj2.DrawCommands();
-	ground.DrawCommands();
+	sphere.Draw();
+	sphere2.Draw();
 
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
-	RDirectX::GetCommandList()->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
-	controlDesc.DrawCommands();
+	sprite.Draw();
+	sprite2.Draw();
 
-	SimpleDrawer::DrawString(10, 32, Util::StringFormat("ライトの向き: {%f, %f, %f}", lightVec.x, lightVec.y, lightVec.z), {1, 1, 1, 1}, "");
-	SimpleDrawer::DrawString(20, 52, "テンキーの4,6でX移動, 1,9でY移動, 2,8でZ移動", {1, 1, 1, 1}, "", 15);
+	/*Renderer::SetToBackBuffer();
+	Renderer::SetRootSignature(PostEffect::rootSignature);
+	Renderer::SetPipeline(PostEffect::pipelineState);
+	hoge.TransferBuffer();
+	hoge.DrawCommands();
+
+	/*std::vector<RootData> rootData{
+		{TextureManager::Get(hoge.texture).gpuHandle},
+		{D3D12_ROOT_PARAMETER_TYPE_CBV, hoge.materialBuff.constBuff->GetGPUVirtualAddress()}
+	};
+	Renderer::DrawCall("TestRenderStage", &hoge.vertBuff.view, &hoge.indexBuff.view, 6, rootData);*/
 }

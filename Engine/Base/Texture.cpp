@@ -148,6 +148,60 @@ Texture TextureManager::GetHogeHogeTexture()
 	return texture;
 }
 
+TextureHandle TextureManager::CreateInternal(const Color color, const UINT64 width, const UINT height, const std::string handle)
+{
+	std::lock_guard<std::recursive_mutex> lock(mutex);
+	HRESULT result;
+
+	Texture texture = Texture();
+
+	const size_t imageDataCount = width * height;
+	Color* imageData = new Color[imageDataCount];
+
+	for (size_t i = 0; i < imageDataCount; i++) {
+		imageData[i] = color;
+	}
+
+	// テクスチャバッファ
+	// ヒープ設定
+	D3D12_HEAP_PROPERTIES textureHeapProp{};
+	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
+	textureHeapProp.CPUPageProperty =
+		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	// リソース設定
+	D3D12_RESOURCE_DESC textureResourceDesc{};
+	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	textureResourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	textureResourceDesc.Width = width;
+	textureResourceDesc.Height = height;
+	textureResourceDesc.DepthOrArraySize = 1;
+	textureResourceDesc.MipLevels = 1;
+	textureResourceDesc.SampleDesc.Count = 1;
+
+	//生成
+	result = RDirectX::GetDevice()->CreateCommittedResource(
+		&textureHeapProp,
+		D3D12_HEAP_FLAG_NONE,
+		&textureResourceDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&texture.resource)
+	);
+	assert(SUCCEEDED(result));
+
+	result = texture.resource->WriteToSubresource(
+		0,
+		nullptr,
+		imageData,
+		sizeof(Color) * static_cast<UINT>(width),
+		sizeof(Color) * static_cast<UINT>(imageDataCount)
+	);
+
+	delete[] imageData;
+	return RegisterInternal(texture, handle);
+}
+
 TextureHandle TextureManager::CreateInternal(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath, const std::string handle)
 {
 	std::lock_guard<std::recursive_mutex> lock(mutex);
@@ -155,7 +209,7 @@ TextureHandle TextureManager::CreateInternal(const Color* pSource, const UINT64 
 
 	if (!filepath.empty()) {
 		//一回読み込んだことがあるファイルはそのまま返す
-		auto itr = find_if(textureMap.begin(), textureMap.end(), [&](const std::pair<TextureHandle, Texture> p) {
+		auto itr = find_if(textureMap.begin(), textureMap.end(), [&](const std::pair<TextureHandle, Texture>& p) {
 			return p.second.filePath == filepath;
 			});
 		if (itr != textureMap.end()) {
@@ -217,7 +271,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 	HRESULT result;
 
 	//一回読み込んだことがあるファイルはそのまま返す
-	auto itr = find_if(textureMap.begin(), textureMap.end(), [&](const std::pair<TextureHandle, Texture> p) {
+	auto itr = find_if(textureMap.begin(), textureMap.end(), [&](const std::pair<TextureHandle, Texture>& p) {
 		return p.second.filePath == filepath;
 		});
 	if (itr != textureMap.end()) {
@@ -315,7 +369,7 @@ TextureHandle TextureManager::LoadInternal(const void* pSource, const size_t siz
 
 	if (!filepath.empty()) {
 		//一回読み込んだことがあるファイルはそのまま返す
-		auto itr = find_if(textureMap.begin(), textureMap.end(), [&](const std::pair<TextureHandle, Texture> p) {
+		auto itr = find_if(textureMap.begin(), textureMap.end(), [&](const std::pair<TextureHandle, Texture>& p) {
 			return p.second.filePath == filepath;
 			});
 		if (itr != textureMap.end()) {
@@ -504,6 +558,12 @@ void TextureManager::EndFrameProcessInternal()
 	}
 
 	unregisterScheduledList.clear();
+}
+
+TextureHandle TextureManager::Create(const Color color, const UINT64 width, const UINT height, const std::string handle)
+{
+	TextureManager* manager = TextureManager::GetInstance();
+	return manager->CreateInternal(color, width, height, handle);
 }
 
 TextureHandle TextureManager::Create(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath, const std::string handle)

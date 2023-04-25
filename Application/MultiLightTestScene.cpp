@@ -124,9 +124,7 @@ void MultiLightTestScene::Update()
 
 void MultiLightTestScene::Draw()
 {
-	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
-	obj.DrawCommands();
-	obj2.DrawCommands();
-	ground.DrawCommands();
+	obj.Draw();
+	obj2.Draw();
+	ground.Draw();
 }

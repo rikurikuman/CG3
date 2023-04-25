@@ -4,6 +4,7 @@
 #include "DebugCamera.h"
 #include "ModelObj.h"
 #include "Sprite.h"
+#include "PostEffect.h"
 
 class MainTestScene : public IScene
 {
@@ -15,14 +16,15 @@ public:
 	void Draw() override;
 
 private:
-	LightGroup light = LightGroup();
-	DebugCamera camera = DebugCamera({ 0, 0, -5 });
-	ModelObj obj;
-	ModelObj obj2;
-	ModelObj ground;
+	DebugCamera camera = DebugCamera({0, 0, -5});
+	LightGroup light;
 
-	Sprite controlDesc;
+	ModelObj sphere;
+	ModelObj sphere2;
+	Sprite sprite;
+	Sprite sprite2;
 
-	Vector3 lightVec = { 1, -1, 1 };
+	PostEffect hoge;
+
+	float radius = 1;
 };
-

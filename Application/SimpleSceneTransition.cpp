@@ -4,7 +4,8 @@
 #include "SimpleDrawer.h"
 
 SimpleSceneTransition::SimpleSceneTransition() {
-	shutter = Sprite("", {0.5f, 0.5f});
+	TextureManager::Create({ 1, 1, 1, 1 }, 100, 100, "Shutter");
+	shutter = Sprite("Shutter", {0.5f, 0.5f});
 }
 
 void SimpleSceneTransition::Update()
@@ -39,7 +40,7 @@ void SimpleSceneTransition::Update()
 	}
 
 	float scale = 15.0f * shutterScale;
-	shutter.transform.position = { RWindow::GetWidth() / 2.0f, RWindow::GetHeight() / 2.0f, 0 };
+	shutter.transform.position = { RWindow::GetWidth() / 2.0f, RWindow::GetHeight() / 2.0f, 1145141919.0f };
 	shutter.transform.rotation = { 0, 0, Util::AngleToRadian(180 * shutterScale)};
 	shutter.transform.scale = { scale, scale, 1 };
 	shutter.material.color = { 0, 0.5f, 0.7f, shutterAlpha };
@@ -50,9 +51,7 @@ void SimpleSceneTransition::Update()
 void SimpleSceneTransition::Draw()
 {
 	if (shutterScale != 0) {
-		RDirectX::GetCommandList()->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
-		RDirectX::GetCommandList()->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
-		shutter.DrawCommands();
+		shutter.Draw();
 		//SimpleDrawer::DrawBox(0, 0, (float)RWindow::GetWidth(), (float)RWindow::GetHeight() * shutterPos, Color(0, 0.5f, 0.5f, 1), true);
 	}
 }

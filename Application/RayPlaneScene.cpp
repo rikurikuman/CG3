@@ -102,10 +102,7 @@ void RayPlaneScene::Update()
 
 void RayPlaneScene::Draw()
 {
-	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
-
-	sphere.DrawCommands();
-	ray.DrawCommands();
-	plane.DrawCommands();
+	sphere.Draw();
+	ray.Draw();
+	plane.Draw();
 }

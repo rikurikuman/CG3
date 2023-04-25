@@ -78,10 +78,7 @@ void SimpleDrawer::DrawString(float x, float y, std::string text, Color color, s
 	info->sprite.material.color = color;
 	info->sprite.TransferBuffer();
 
-	RDirectX::GetCommandList()->SetPipelineState(instance->pipelineStateForString.ptr.Get());
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(instance->rootSignatureForString.ptr.Get());
-
-	info->sprite.DrawCommands();
+	info->sprite.Draw();
 
 	TextureManager::UnRegisterAtEndFrame(tex);
 	instance->infoList.push_back(info);

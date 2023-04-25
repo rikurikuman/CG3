@@ -106,7 +106,7 @@ void RaySphereScene::Draw()
 	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
 	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
 
-	sphere.DrawCommands();
-	ray.DrawCommands();
-	sphere2.DrawCommands();
+	sphere.Draw();
+	ray.Draw();
+	sphere2.Draw();
 }

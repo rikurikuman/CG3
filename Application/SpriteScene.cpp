@@ -85,7 +85,5 @@ void SpriteScene::Update()
 
 void SpriteScene::Draw()
 {
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(SpriteManager::GetInstance()->GetRootSignature().ptr.Get());
-	RDirectX::GetCommandList()->SetPipelineState(SpriteManager::GetInstance()->GetGraphicsPipeline().ptr.Get());
-	sprite.DrawCommands();
+	sprite.Draw();
 }

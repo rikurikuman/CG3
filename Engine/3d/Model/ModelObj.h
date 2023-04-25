@@ -21,6 +21,9 @@ public:
 	//各データのバッファへの転送
 	void TransferBuffer(ViewProjection viewprojection) override;
 
+	//描画要求をRendererへ
+	void Draw();
+
 	//描画用のコマンドをまとめてコマンドリストに積む
 	void DrawCommands() override;
 };
