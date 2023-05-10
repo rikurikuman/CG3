@@ -2,6 +2,7 @@
 #include <memory>
 #include "ViewProjection.h"
 #include "RWindow.h"
+#include "RConstBuffer.h"
 
 class Camera
 {
@@ -10,16 +11,17 @@ protected:
 
 public:
 	ViewProjection viewProjection;
+	RConstBuffer<ViewProjectionBuffer> buff;
 
 	Camera() {
 		viewProjection.aspect = (float)RWindow::GetWidth() / RWindow::GetHeight();
 		viewProjection.UpdateMatrix();
+		viewProjection.Transfer(buff.constMap);
 	}
 	virtual ~Camera() {}
 
 	virtual void Update() {}
 
-	static std::unique_ptr<Camera> _def;
 	static Camera* nowCamera;
 };
 

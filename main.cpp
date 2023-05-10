@@ -45,6 +45,7 @@
 #include <RenderTarget.h>
 #include <Renderer.h>
 #include <TestRenderStage.h>
+#include <SRBuffer.h>
 
 using namespace std;
 using namespace DirectX;
@@ -81,6 +82,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	TimeManager::Init();
 
+	SRBufferAllocator::GetInstance();
+
 #ifdef _DEBUG
 	ComPtr<ID3D12InfoQueue> infoQueue;
 	if (SUCCEEDED(RDirectX::GetDevice()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
@@ -114,9 +117,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	DebugCamera camera({ 0, 0, -10 });
 
-	RenderTarget::CreateRenderTargetTexture(1280, 720, { 0.01f, 0.01f, 0.01f, 0 }, "hoge");
-	RenderTarget* hoge = RenderTarget::GetInstance();
-
 	//////////////////////////////////////
 
 	while (true) {
@@ -144,19 +144,56 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		RInput::Update();
 
+		SceneManager::Update();
+
+		//以下描画処理
+		RDirectX::PreDraw();
+		Renderer::SetAllParamaterToAuto();
+
+		//画面クリア～
+		RDirectX::ClearBackBuffer(Color(0.0f, 0.0f, 0.0f, 1.0f));
+
+		//描画コマンド
+		SceneManager::Draw();
+
+		SimpleDrawer::DrawInstancing();
+		Renderer::Execute();
+
 		//べんり！
 		{
-			ImGui::SetNextWindowSize({ 400, 300 });
+			ImGui::SetNextWindowSize({ 400, 350 });
 
 			ImGuiWindowFlags window_flags = 0;
-			 window_flags |= ImGuiWindowFlags_NoResize;
+			window_flags |= ImGuiWindowFlags_NoResize;
 			ImGui::Begin("Debug", NULL, window_flags);
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::Spacing();
+			ImGui::Text("MousePos:(%.1f,%.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
+			ImGui::Spacing();
+			UINT64 buffUsingSize = SRBufferAllocator::GetUsingBufferSize();
+			UINT64 buffTotalSize = SRBufferAllocator::GetBufferSize();
+			std::string buffUsingSizeStr;
+			std::string buffTotalSizeStr;
+			if (buffUsingSize < 1024 * 1024 - 1) {
+				buffUsingSizeStr = Util::StringFormat("%.2fKB", buffUsingSize / 1024.0f);
+			}
+			else {
+				buffUsingSizeStr = Util::StringFormat("%.2fMB", buffUsingSize / 1024.0f / 1024.0f);
+			}
+			if (buffTotalSize < 1024 * 1024 - 1) {
+				buffTotalSizeStr = Util::StringFormat("%.2fKB", buffTotalSize / 1024.0f);
+			}
+			else {
+				buffTotalSizeStr = Util::StringFormat("%.2fMB", buffTotalSize / 1024.0f / 1024.0f);
+			}
+			ImGui::Text("SRBuffer");
+			ImGui::Text(("Using : " + buffUsingSizeStr + " / " + buffTotalSizeStr + "(%.2lf%%)").c_str(), static_cast<double>(buffUsingSize) / buffTotalSize * 100);
+			ImGui::Text("(Raw : %lld / %lld)", buffUsingSize, buffTotalSize);
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int sceneNum = 0;
-			const char* scenes[] = {"MainTest", "Sphere&Plane", "Sphere&Polygon", "Ray&Plane", "Ray&Polygon", "Ray&Sphere", "Colliders"};
+			const char* scenes[] = { "MainTest", "Sphere&Plane", "Sphere&Polygon", "Ray&Plane", "Ray&Polygon", "Ray&Sphere", "Colliders" };
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
@@ -198,20 +235,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::Text("Mouse : Direction");
 			ImGui::End();
 		}
-
-		SceneManager::Update();
-
-		//以下描画処理
-		RDirectX::PreDraw();
-		Renderer::SetAllParamaterToAuto();
-
-		//画面クリア～
-		RDirectX::ClearBackBuffer(Color(0.0f, 0.0f, 0.0f, 1.0f));
-
-		//描画コマンド
-		SceneManager::Draw();
-
-		Renderer::Execute();
 
 		RImGui::Render();
 

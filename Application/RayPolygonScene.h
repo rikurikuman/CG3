@@ -4,10 +4,15 @@
 #include "ModelObj.h"
 #include <Camera.h>
 #include <LightGroup.h>
+#include <SRBuffer.h>
+#include <SRConstBuffer.h>
 
 class RayPolygonScene : public IScene {
 public:
 	RayPolygonScene();
+	~RayPolygonScene() override {
+		SRBufferAllocator::Free(vertBuffT);
+	}
 
 	void Init() override;
 	void Update() override;
@@ -36,4 +41,10 @@ private:
 	RConstBuffer<TransformBuffer> transformBuff;
 	RConstBuffer<MaterialBuffer> materialBuff;
 	RConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
+
+	SRConstBuffer<MaterialBuffer> materialBuffT;
+	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuffT;
+
+	SRBufferPtr vertBuffT;
+	D3D12_VERTEX_BUFFER_VIEW vertBuffView{};
 };

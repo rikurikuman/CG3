@@ -55,10 +55,10 @@ void Image3D::Draw()
 {
 	std::vector<RootData> rootData{
 		{TextureManager::Get(texture).gpuHandle},
-		{D3D12_ROOT_PARAMETER_TYPE_CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
-		{D3D12_ROOT_PARAMETER_TYPE_CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
-		{D3D12_ROOT_PARAMETER_TYPE_CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
-		{D3D12_ROOT_PARAMETER_TYPE_CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
 	};
 
 	Renderer::DrawCall("Opaque", &vertBuff.view, &indexBuff.view, 6, rootData);

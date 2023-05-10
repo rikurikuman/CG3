@@ -81,6 +81,22 @@ public:
 	//左スティックを下に倒した瞬間か
 	bool GetLStickDown();
 
+	/// <summary>
+	/// 左スティック入力を得る
+	/// </summary>
+	/// <param name="useWASD">WASDキーもスティックに見立てて処理する</param>
+	/// <param name="useArrow">矢印キーもスティックに見立てて処理する</param>
+	/// <returns>入力量</returns>
+	static Vector2 GetLStick(bool useWASD, bool useArrow);
+
+	/// <summary>
+	/// 右スティック入力を得る
+	/// </summary>
+	/// <param name="useWASD">WASDキーもスティックに見立てて処理する</param>
+	/// <param name="useArrow">矢印キーもスティックに見立てて処理する</param>
+	/// <returns>入力量</returns>
+	static Vector2 GetRStick(bool useWASD, bool useArrow);
+
 private:
 	RInput() {};
 	~RInput() = default;

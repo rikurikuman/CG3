@@ -226,3 +226,53 @@ bool RInput::GetLStickDown()
 	}
 	return false;
 }
+
+Vector2 RInput::GetLStick(bool useWASD, bool useArrow)
+{
+	RInput* instance = GetInstance();
+
+	Vector2 pad;
+	pad.x = static_cast<float>(instance->xInputState.Gamepad.sThumbLX) / 32767.0f;
+	pad.y = static_cast<float>(instance->xInputState.Gamepad.sThumbLY) / 32767.0f;
+
+	Vector2 wasd;
+	if (useWASD) {
+		wasd.x = static_cast<float>(instance->keyState[DIK_D] - instance->keyState[DIK_A]);
+		wasd.y = static_cast<float>(instance->keyState[DIK_W] - instance->keyState[DIK_S]);
+	}
+
+	Vector2 arrow;
+	if (useArrow) {
+		arrow.x = static_cast<float>(instance->keyState[DIK_RIGHT] - instance->keyState[DIK_LEFT]);
+		arrow.y = static_cast<float>(instance->keyState[DIK_UP] - instance->keyState[DIK_DOWN]);
+	}
+
+	Vector2 result = pad + wasd + arrow;
+	result.Normalize();
+	return result;
+}
+
+Vector2 RInput::GetRStick(bool useWASD, bool useArrow)
+{
+	RInput* instance = GetInstance();
+
+	Vector2 pad;
+	pad.x = static_cast<float>(instance->xInputState.Gamepad.sThumbRX) / 32767.0f;
+	pad.y = static_cast<float>(instance->xInputState.Gamepad.sThumbRY) / 32767.0f;
+
+	Vector2 wasd;
+	if (useWASD) {
+		wasd.x = static_cast<float>(instance->keyState[DIK_D] - instance->keyState[DIK_A]);
+		wasd.y = static_cast<float>(instance->keyState[DIK_W] - instance->keyState[DIK_S]);
+	}
+
+	Vector2 arrow;
+	if (useArrow) {
+		arrow.x = static_cast<float>(instance->keyState[DIK_RIGHT] - instance->keyState[DIK_LEFT]);
+		arrow.y = static_cast<float>(instance->keyState[DIK_UP] - instance->keyState[DIK_DOWN]);
+	}
+
+	Vector2 result = pad + wasd + arrow;
+	result.Normalize();
+	return result;
+}

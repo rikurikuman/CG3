@@ -1,10 +1,10 @@
-#include "Test.hlsli"
+#include "SimpleInstance.hlsli"
 
 struct VSInput
 {
     float4 pos : POSITION0;
-    float2 uv : TEXCOORD;
     float4 apos : POSITION1;
+    float4 color : COLOR;
     uint instanceID : SV_InstanceID;
 };
 
@@ -14,6 +14,6 @@ VSOutput main(VSInput input)
 
     output.svpos = float4((input.pos + input.apos).xyz, 1.0f);
     output.svpos = mul(matViewProjection, output.svpos); //À•W‚És—ñ‚ğæZ
-    output.uv = input.uv;
+    output.color = input.color;
 	return output;
 }

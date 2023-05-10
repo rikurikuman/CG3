@@ -24,7 +24,23 @@ RayPolygonScene::RayPolygonScene()
 		{posB, {0, 0, 0}, {0, 0}},
 		{posC, {0, 0, 0}, {0, 0}}
 	};
+
 	vertBuff.Init(verts, 3);
+
+	vertBuffT = SRBufferAllocator::Alloc(sizeof(VertexPNU) * 3, 1);
+
+	//GPU上のバッファに対応した仮想メモリを取得
+	//これは頂点バッファのマッピング
+	VertexPNU* vertMap = reinterpret_cast<VertexPNU*>(vertBuffT.Get());
+	//全頂点に対して
+	for (UINT i = 0; i < 3; i++) {
+		vertMap[i] = verts[i];
+	}
+
+	//頂点バッファビューの作成
+	vertBuffView.BufferLocation = vertBuffT.GetGPUVirtualAddress(); //GPU仮想アドレス
+	vertBuffView.SizeInBytes = sizeof(VertexPNU) * 3; //頂点バッファのサイズ
+	vertBuffView.StrideInBytes = sizeof(VertexPNU); //頂点一個のサイズ
 
 	camera.viewProjection.eye = { 0, 3, -10 };
 	camera.viewProjection.target = { 0, 3, 0 };
@@ -119,10 +135,19 @@ void RayPolygonScene::Update()
 		{posB, {0, 0, 0}, {0, 0}}
 	};
 	vertBuff.Update(verts, 3);
+
+	VertexPNU* vertMap = reinterpret_cast<VertexPNU*>(vertBuffT.Get());
+	vertMap[0] = posA;
+	vertMap[1] = posC;
+	vertMap[2] = posB;
+
 	transformBuff.constMap->matrix = Matrix4();
 	materialBuff.constMap->color = { 1, 1, 1, 1 };
 	materialBuff.constMap->ambient = { 1, 1, 1 };
+	materialBuffT->color = { 1, 1, 1, 1 };
+	materialBuffT->ambient = { 1, 1, 1 };
 	Camera::nowCamera->viewProjection.Transfer(viewProjectionBuff.constMap);
+	Camera::nowCamera->viewProjection.Transfer(viewProjectionBuffT.Get());
 }
 
 void RayPolygonScene::Draw()
@@ -134,12 +159,12 @@ void RayPolygonScene::Draw()
 	polygon.pipelineState = polygonPipeline.ptr.Get();
 	polygon.rootData = {
 		{TextureManager::Get("").gpuHandle},
-		{D3D12_ROOT_PARAMETER_TYPE_CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
-		{D3D12_ROOT_PARAMETER_TYPE_CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
-		{D3D12_ROOT_PARAMETER_TYPE_CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
-		{D3D12_ROOT_PARAMETER_TYPE_CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, materialBuffT.buff.GetGPUVirtualAddress()},
+		{RootDataType::CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, viewProjectionBuffT.buff.GetGPUVirtualAddress()},
+		{RootDataType::CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
 	};
-	polygon.vertView = &vertBuff.view;
+	polygon.vertView = &vertBuffView;
 	polygon.indexCount = 3;
 
 	Renderer::DrawCall("Opaque", polygon);

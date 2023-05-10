@@ -26,10 +26,10 @@ void ModelObj::Draw()
 	for (std::shared_ptr<ModelData> data : model->data) {
 		std::vector<RootData> rootData = {
 			{ TextureManager::Get(data->material.texture).gpuHandle },
-			{ D3D12_ROOT_PARAMETER_TYPE_CBV, data->materialBuff.constBuff->GetGPUVirtualAddress() },
-			{ D3D12_ROOT_PARAMETER_TYPE_CBV, transformBuff.constBuff->GetGPUVirtualAddress() },
-			{ D3D12_ROOT_PARAMETER_TYPE_CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress() },
-			{ D3D12_ROOT_PARAMETER_TYPE_CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress() }
+			{ RootDataType::CBV, data->materialBuff.constBuff->GetGPUVirtualAddress() },
+			{ RootDataType::CBV, transformBuff.constBuff->GetGPUVirtualAddress() },
+			{ RootDataType::CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress() },
+			{ RootDataType::LIGHT }
 		};
 
 		std::string stage = "Opaque";

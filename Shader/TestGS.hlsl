@@ -18,18 +18,26 @@ static const float2 uv_array[vnum] =
 	float2(1, 0)
 };
 
-[maxvertexcount(vnum)]
+[maxvertexcount(1)]
 void main(
-	point VSOutput input[1] : SV_POSITION, 
-	inout TriangleStream< GSOutput > output
+	point VSOutput input[1] : SV_POSITION,
+	inout TriangleStream<GSOutput> output
 )
 {
-	GSOutput element;
-
-	for (uint i = 0; i < vnum; i++) {
-		element.svpos = input[0].pos + offset_array[i];
-		element.svpos = mul(matViewProjection, element.svpos);
-		element.uv = uv_array[i];
-		output.Append(element);
-	}
 }
+
+//[maxvertexcount(vnum)]
+//void main(
+//	point VSOutput input[1] : SV_POSITION, 
+//	inout TriangleStream< GSOutput > output
+//)
+//{
+//	GSOutput element;
+
+//	for (uint i = 0; i < vnum; i++) {
+//		element.svpos = input[0].pos + offset_array[i];
+//		element.svpos = mul(matViewProjection, element.svpos);
+//		element.uv = uv_array[i];
+//		output.Append(element);
+//	}
+//}

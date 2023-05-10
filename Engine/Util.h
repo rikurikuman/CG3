@@ -3,6 +3,7 @@
 #include <vector>
 #include <stdexcept>
 #include <random>
+#include <chrono>
 
 namespace Util {
 	extern bool debugBool;
@@ -11,6 +12,8 @@ namespace Util {
 
     const int WIN_WIDTH = 1280;
     const int WIN_HEIGHT = 720;
+
+    extern std::chrono::system_clock::time_point memTimePoint;
 
 	//DegreeからRadianへ変換する
 	float AngleToRadian(float angle);
@@ -111,4 +114,16 @@ namespace Util {
 
     //乱数生成(一様分布)
     double GetRand(double min, double max);
+
+    /// <summary>
+    /// a~bの範囲内で、どの割合にpが位置しているかを返す
+    /// e.x. a=2,b=6,p=4 なら return 0.5f;
+    /// </summary>
+    /// <returns>割合</returns>
+    float GetRatio(float a, float b, float p);
+
+    //処理時間計測開始
+    void CalcElapsedTimeStart();
+    //処理時間計測出力
+    void CalcElapsedTimeEnd(std::string name);
 }

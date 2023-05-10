@@ -6,6 +6,8 @@ using namespace std;
 bool Util::debugBool = false;
 int Util::debugInt = 0;
 
+std::chrono::system_clock::time_point Util::memTimePoint;
+
 float Util::AngleToRadian(float angle)
 {
 	return angle * (PI / 180);
@@ -110,4 +112,25 @@ double Util::GetRand(double min, double max)
 	std::default_random_engine eng(rd());
 	std::uniform_real_distribution<double> distr(min, max);
 	return distr(eng);
+}
+
+float Util::GetRatio(float a, float b, float p)
+{
+	float size = b - a;
+	if (size == 0) {
+		return 1.0f;
+	}
+	return (p - a) / size;
+}
+
+void Util::CalcElapsedTimeStart() {
+	memTimePoint = std::chrono::system_clock::now();
+}
+
+void Util::CalcElapsedTimeEnd(std::string name) {
+	auto nowTimePoint = std::chrono::system_clock::now();
+	double elapsedMicro = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(nowTimePoint - memTimePoint).count());
+	double elapsedMili = elapsedMicro / 1000;
+	
+	OutputDebugStringA((name + ": " + StringFormat("%.3f", elapsedMili) + "ms / " + StringFormat("%.0f", elapsedMicro) + "us\n").c_str());
 }

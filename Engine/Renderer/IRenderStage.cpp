@@ -1,6 +1,8 @@
 #include "IRenderStage.h"
 #include <RDirectX.h>
 #include <RenderTarget.h>
+#include <LightGroup.h>
+#include <Camera.h>
 
 void IRenderStage::AllCall()
 {
@@ -8,7 +10,7 @@ void IRenderStage::AllCall()
 
 	for (RenderOrder& order : orders) {
 		//Ž©“®Ý’è€–Ú‚ÌÝ’è
-		if (order.primitiveTopology == D3D10_PRIMITIVE_TOPOLOGY_UNDEFINED) {
+		if (order.primitiveTopology == D3D_PRIMITIVE_TOPOLOGY_UNDEFINED) {
 			order.primitiveTopology = defParamater.primitiveTopology;
 		}
 		if (order.renderTargets.empty()) {
@@ -82,28 +84,51 @@ void IRenderStage::AllCall()
 			RDirectX::GetCommandList()->SetPipelineState(order.pipelineState);
 		}
 
-		RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, order.vertView);
-
+		if (order.instanceVertView != nullptr) {
+			const D3D12_VERTEX_BUFFER_VIEW buf[2] = {
+				*order.vertView,
+				*order.instanceVertView
+			};
+			RDirectX::GetCommandList()->IASetVertexBuffers(0, 2, buf);
+		}
+		else {
+			RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, order.vertView);
+		}
+		
 		if (order.indexView != nullptr) {
 			RDirectX::GetCommandList()->IASetIndexBuffer(order.indexView);
 		}
 
 		int rootIndex = 0;
 		for (RootData& data : order.rootData) {
-			if (data.type == D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE) {
+			if (data.type == RootDataType::DESCRIPTOR_TABLE) {
 				RDirectX::GetCommandList()->SetGraphicsRootDescriptorTable(rootIndex, data.descriptor);
 			}
-			else if (data.type == D3D12_ROOT_PARAMETER_TYPE_CBV) {
+			else if (data.type == RootDataType::CBV) {
 				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, data.address);
+			}
+			else if (data.type == RootDataType::SRBUFFER_CBV) {
+				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, data.addressSRBuff.GetGPUVirtualAddress());
+			}
+			else if (data.type == RootDataType::CAMERA) {
+				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, Camera::nowCamera->buff.constBuff->GetGPUVirtualAddress());
+			}
+			else if (data.type == RootDataType::LIGHT) {
+				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress());
+			}
+			else {
+#ifdef _DEBUG
+				OutputDebugStringA("RKEngine WARNING: IRenderStage::AllCall() : Undefined RootDataType.\n");
+#endif
 			}
 			rootIndex++;
 		}
 
 		if (order.indexView != nullptr) {
-			RDirectX::GetCommandList()->DrawIndexedInstanced(static_cast<UINT>(order.indexCount), 1, 0, 0, 0);
+			RDirectX::GetCommandList()->DrawIndexedInstanced(static_cast<UINT>(order.indexCount), order.instanceCount, 0, 0, 0);
 		}
 		else {
-			RDirectX::GetCommandList()->DrawInstanced(static_cast<UINT>(order.indexCount), 1, 0, 0);
+			RDirectX::GetCommandList()->DrawInstanced(static_cast<UINT>(order.indexCount), order.instanceCount, 0, 0);
 		}
 	}
 }

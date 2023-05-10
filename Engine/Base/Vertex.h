@@ -4,13 +4,21 @@
 #include "Vector3.h"
 #include <vector>
 
-class VertexP
+struct VertexP
 {
-public:
 	Vector3 pos;
 
 	VertexP(Vector3 pos = { 0, 0, 0 })
 		: pos(pos) {}
+};
+
+struct VertexPU
+{
+	Vector3 pos;
+	Vector2 uv;
+
+	VertexPU(Vector3 pos = { 0, 0, 0 }, Vector2 uv = {0, 0})
+		: pos(pos), uv(uv) {}
 };
 
 class VertexPNU

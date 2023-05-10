@@ -5,6 +5,7 @@
 #include "ModelObj.h"
 #include "Sprite.h"
 #include "PostEffect.h"
+#include "SRConstBuffer.h"
 
 class MainTestScene : public IScene
 {
@@ -23,6 +24,15 @@ private:
 	ModelObj sphere2;
 	Sprite sprite;
 	Sprite sprite2;
+
+	RootSignature testRootSignature;
+	GraphicsPipeline testPipeline;
+
+	SRBufferPtr vertBuffT;
+	D3D12_VERTEX_BUFFER_VIEW vertBuffView{};
+	SRBufferPtr instanceVertBuffT;
+	D3D12_VERTEX_BUFFER_VIEW instanceVertBuffView{};
+	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuffT;
 
 	PostEffect hoge;
 

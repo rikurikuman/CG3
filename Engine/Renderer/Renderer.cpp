@@ -48,12 +48,14 @@ void Renderer::DrawCall(std::string stageID, RenderOrder order)
 		IRenderStage* stage = itr->get();
 		if (stage->GetTypeIndentifier() == stageID) {
 
-			order.renderTargets = instance->renderTargets;
-			order.primitiveTopology = instance->primitiveTopology;
-			order.viewports = instance->viewports;
-			order.scissorRects = instance->scissorRects;
-			order.rootSignature = instance->rootSignature;
-			order.pipelineState = instance->pipelineState;
+			//未設定の項目をレンダラーの設定で自動で補完する
+			//ここでも未設定のままになった場合はレンダーステージに任せる
+			if(order.renderTargets.empty()) order.renderTargets = instance->renderTargets;
+			if(order.primitiveTopology == D3D_PRIMITIVE_TOPOLOGY_UNDEFINED) order.primitiveTopology = instance->primitiveTopology;
+			if(order.viewports.empty()) order.viewports = instance->viewports;
+			if(order.scissorRects.empty()) order.scissorRects = instance->scissorRects;
+			if(order.rootSignature == nullptr) order.rootSignature = instance->rootSignature;
+			if(order.pipelineState == nullptr) order.pipelineState = instance->pipelineState;
 
 			stage->orders.push_back(order);
 			return;

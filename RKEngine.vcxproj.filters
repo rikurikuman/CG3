@@ -368,6 +368,8 @@
     <FxCompile Include="Shader\FinalPS.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
+    <FxCompile Include="Shader\SimpleInstancePS.hlsl" />
+    <FxCompile Include="Shader\SimpleInstanceVS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\2d\Sprite.h">
@@ -601,11 +603,14 @@
     <ClInclude Include="Engine\Renderer\FinalRenderStage.h">
       <Filter>ヘッダー ファイル\Engine\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Renderer\TransparentRenderStage.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Renderer\OpaqueRenderStage.h">
       <Filter>ヘッダー ファイル\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Renderer\TransparentRenderStage.h">
+      <Filter>ヘッダー ファイル\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\SRConstBuffer.h">
+      <Filter>ヘッダー ファイル\Engine\Buffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -630,5 +635,6 @@
     <None Include="Shader\Final.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
+    <None Include="Shader\SimpleInstance.hlsli" />
   </ItemGroup>
 </Project>

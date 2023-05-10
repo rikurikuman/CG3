@@ -5,19 +5,35 @@
 #include <Viewport.h>
 #include <Rect.h>
 #include <Vector3.h>
+#include <SRBuffer.h>
+
+enum class RootDataType {
+	UNDEFINED,
+	DATA_32BIT_CONSTANTS,
+	DESCRIPTOR_TABLE,
+	CBV,
+	SRV,
+	UAV,
+	SRBUFFER_CBV,
+	CAMERA,
+	LIGHT,
+};
 
 struct RootData {
-	D3D12_ROOT_PARAMETER_TYPE type;
+	RootDataType type = RootDataType::UNDEFINED;
 	union {
 		D3D12_GPU_DESCRIPTOR_HANDLE descriptor;
 		D3D12_GPU_VIRTUAL_ADDRESS address;
+		SRBufferPtr addressSRBuff;
 	};
 
 	RootData() 
-		: type(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE), address(0) {}
+		: type(RootDataType::UNDEFINED), address(0) {}
 	RootData(D3D12_GPU_DESCRIPTOR_HANDLE& descriptor)
-		: type(D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE), descriptor(descriptor) {}
-	RootData(D3D12_ROOT_PARAMETER_TYPE type, D3D12_GPU_VIRTUAL_ADDRESS address)
+		: type(RootDataType::DESCRIPTOR_TABLE), descriptor(descriptor) {}
+	RootData(RootDataType type)
+		: type(type), address(0) {}
+	RootData(RootDataType type, D3D12_GPU_VIRTUAL_ADDRESS address)
 		: type(type), address(address) {}
 };
 
@@ -33,9 +49,9 @@ public:
 	ID3D12PipelineState* pipelineState = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW* vertView = nullptr;
 	D3D12_INDEX_BUFFER_VIEW* indexView = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW* instanceVertView = nullptr;
 	UINT indexCount = 0;
+	UINT instanceCount = 1;
 	std::vector<RootData> rootData;
-
-	void Execute();
 };
 
