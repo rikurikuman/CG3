@@ -9,7 +9,7 @@ float4 main(VSOutput input) : SV_TARGET
 	texcolor = texcolor * m_color;
 	
 	//光沢度
-    const float shininess = 4.0f;
+    const float shininess = 20.0f;
 	
 	//視点へのベクトル
     float3 eyedir = normalize(cameraPos - input.wpos.xyz);

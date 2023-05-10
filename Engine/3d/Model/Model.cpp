@@ -406,7 +406,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
         aiProcess_JoinIdenticalVertices |
         aiProcess_SortByPType |
         aiProcess_GenSmoothNormals |
-//        aiProcess_FixInfacingNormals |
+        aiProcess_FixInfacingNormals |
         aiProcess_CalcTangentSpace
     );
 

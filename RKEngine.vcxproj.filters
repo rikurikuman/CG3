@@ -370,6 +370,12 @@
     </FxCompile>
     <FxCompile Include="Shader\SimpleInstancePS.hlsl" />
     <FxCompile Include="Shader\SimpleInstanceVS.hlsl" />
+    <FxCompile Include="Shader\ToonPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\ToonVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\2d\Sprite.h">
@@ -636,5 +642,8 @@
       <Filter>シェーダー ファイル</Filter>
     </None>
     <None Include="Shader\SimpleInstance.hlsli" />
+    <None Include="Shader\Toon.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

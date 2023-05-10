@@ -22,19 +22,14 @@ private:
 
 	ModelObj sphere;
 	ModelObj sphere2;
-	Sprite sprite;
-	Sprite sprite2;
 
-	RootSignature testRootSignature;
-	GraphicsPipeline testPipeline;
+	bool useToon = false;
+	Vector3 ambientColor = { 0.3f, 0.3f, 0.3f };
+	Vector3 lightColor = { 1, 1, 1 };
+	bool lightActive = true;
+	Vector3 ambient = { 0.3f, 0, 0 };
+	Vector3 diffuse = { 0.8f, 0, 0 };
+	Vector3 specular = { 1, 1, 1 };
 
-	SRBufferPtr vertBuffT;
-	D3D12_VERTEX_BUFFER_VIEW vertBuffView{};
-	SRBufferPtr instanceVertBuffT;
-	D3D12_VERTEX_BUFFER_VIEW instanceVertBuffView{};
-	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuffT;
-
-	PostEffect hoge;
-
-	float radius = 1;
+	GraphicsPipeline toon;
 };

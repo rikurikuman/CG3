@@ -161,7 +161,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//Ç◊ÇÒÇËÅI
 		{
-			ImGui::SetNextWindowSize({ 400, 350 });
+			ImGui::SetNextWindowSize({ 400, 380 });
 
 			ImGuiWindowFlags window_flags = 0;
 			window_flags |= ImGuiWindowFlags_NoResize;
@@ -193,7 +193,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int sceneNum = 0;
-			const char* scenes[] = { "MainTest", "Sphere&Plane", "Sphere&Polygon", "Ray&Plane", "Ray&Polygon", "Ray&Sphere", "Colliders" };
+			const char* scenes[] = { "MainTest" };
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
