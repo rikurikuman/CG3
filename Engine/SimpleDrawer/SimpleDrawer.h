@@ -22,7 +22,16 @@ public:
 		instance->circleInstance.clear();
 	}
 
+	/// <summary>
+	/// 円を描画する
+	/// </summary>
+	/// <param name="x">スクリーン座標X</param>
+	/// <param name="y">スクリーン座標Y</param>
+	/// <param name="r">半径</param>
+	/// <param name="color">色</param>
 	static void DrawCircle(int x, int y, int r, Color color);
+
+
 	static void DrawString(float x, float y, std::string text, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), std::string fontTypeFace = "", UINT fontSize = 20, Vector2 anchor = {0, 0});
 
 	//インスタンシング描画によって提供されるものを全部描画する
