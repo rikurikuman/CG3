@@ -26,14 +26,7 @@ private:
 
 	static void SubtractCount(const void* p) {
 		std::lock_guard<std::recursive_mutex> lock(mutex);
-		if (countMap[p] == 0) {
-			int hoge = 0;
-		}
 		countMap[p]--;
-
-#ifdef _SRCONSTBUFFER_DEBUG_
-		OutputDebugString((std::wstring(L"SRConstBuffer(") + Util::ConvertStringToWString(Util::StringFormat("%p", p)) + L") Subtract : " + std::to_wstring(countMap[p]) + L"\n").c_str());
-#endif
 
 		if (countMap[p] == 0) {
 			countMap.erase(p);
@@ -70,6 +63,12 @@ public:
 		SRConstBuffer::AddCount(buff.GetRegionPtr());
 	}
 	SRConstBuffer(const SRConstBuffer& o) {
+		if (buff != nullptr) {
+			SRConstBuffer::SubtractCount(buff.GetRegionPtr());
+			if (SRConstBuffer::GetCount(buff.GetRegionPtr()) == 0) {
+				SRBufferAllocator::Free(buff);
+			}
+		}
 		buff = o.buff;
 		SRConstBuffer::AddCount(buff.GetRegionPtr());
 	}
@@ -86,6 +85,9 @@ public:
 		if (this != &o) {
 			if (buff != nullptr) {
 				SRConstBuffer::SubtractCount(buff.GetRegionPtr());
+				if (SRConstBuffer::GetCount(buff.GetRegionPtr()) == 0) {
+					SRBufferAllocator::Free(buff);
+				}
 			}
 			buff = o.buff;
 			SRConstBuffer::AddCount(buff.GetRegionPtr());

@@ -54,6 +54,7 @@ private:
 class SRBufferAllocator
 {
 public:
+	std::recursive_mutex mutex; //ñ{ìñÇÕåˆäJÇµÇΩÇ≠Ç»Ç¢ÇÒÇæÇØÇ«ç°ÇÕë√ã¶
 	static bool optAutoDeflag;
 	static bool optAutoReCreateBuffer;
 
@@ -63,14 +64,17 @@ public:
 	static void Free(SRBufferPtr& ptr);
 	
 	static D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() {
+		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
 		return GetInstance()->buffer->GetGPUVirtualAddress();
 	}
 
 	static byte* GetBufferAddress() {
+		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
 		return GetInstance()->pBufferBegin;
 	}
 
 	static UINT64 GetUsingBufferSize() {
+		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
 		UINT64 size = 0;
 		for (auto& itr : GetInstance()->usingRegions) {
 			size += static_cast<UINT64>(itr.size);
@@ -79,6 +83,7 @@ public:
 	}
 
 	static UINT64 GetBufferSize() {
+		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
 		return static_cast<UINT64>(GetInstance()->pBufferEnd - GetInstance()->pBufferBegin + 1);
 	}
 
@@ -86,9 +91,8 @@ public:
 	void ResizeBuffer();
 
 private:
-	constexpr static UINT64 defSize = 1024 * 1024 * 100; //1MB
+	constexpr static UINT64 defSize = 1024 * 1024 * 16; //16MB
 
-	std::recursive_mutex mutex;
 	Microsoft::WRL::ComPtr<ID3D12Resource> buffer = nullptr;
 	UINT8* pBufferBegin = nullptr;
 	UINT8* pBufferEnd = nullptr;

@@ -27,21 +27,6 @@ RayPolygonScene::RayPolygonScene()
 
 	vertBuff.Init(verts, 3);
 
-	vertBuffT = SRBufferAllocator::Alloc(sizeof(VertexPNU) * 3, 1);
-
-	//GPU上のバッファに対応した仮想メモリを取得
-	//これは頂点バッファのマッピング
-	VertexPNU* vertMap = reinterpret_cast<VertexPNU*>(vertBuffT.Get());
-	//全頂点に対して
-	for (UINT i = 0; i < 3; i++) {
-		vertMap[i] = verts[i];
-	}
-
-	//頂点バッファビューの作成
-	vertBuffView.BufferLocation = vertBuffT.GetGPUVirtualAddress(); //GPU仮想アドレス
-	vertBuffView.SizeInBytes = sizeof(VertexPNU) * 3; //頂点バッファのサイズ
-	vertBuffView.StrideInBytes = sizeof(VertexPNU); //頂点一個のサイズ
-
 	camera.viewProjection.eye = { 0, 3, -10 };
 	camera.viewProjection.target = { 0, 3, 0 };
 	camera.viewProjection.UpdateMatrix();
@@ -136,11 +121,6 @@ void RayPolygonScene::Update()
 	};
 	vertBuff.Update(verts, 3);
 
-	VertexPNU* vertMap = reinterpret_cast<VertexPNU*>(vertBuffT.Get());
-	vertMap[0] = posA;
-	vertMap[1] = posC;
-	vertMap[2] = posB;
-
 	transformBuff.constMap->matrix = Matrix4();
 	materialBuff.constMap->color = { 1, 1, 1, 1 };
 	materialBuff.constMap->ambient = { 1, 1, 1 };
@@ -164,7 +144,7 @@ void RayPolygonScene::Draw()
 		{RootDataType::CBV, viewProjectionBuffT.buff.GetGPUVirtualAddress()},
 		{RootDataType::CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
 	};
-	polygon.vertView = &vertBuffView;
+	polygon.vertBuff = vertBuff;
 	polygon.indexCount = 3;
 
 	Renderer::DrawCall("Opaque", polygon);

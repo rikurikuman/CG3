@@ -33,6 +33,17 @@ void Renderer::DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView,
 	Renderer::DrawCall(stageID, order);
 }
 
+void Renderer::DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, UINT indexCount, const std::vector<RootData>& rootData, Vector3& anchorPoint)
+{
+	RenderOrder order;
+	order.anchorPoint = anchorPoint;
+	order.vertBuff = vertBuff;
+	order.indexBuff = indexBuff;
+	order.indexCount = indexCount;
+	order.rootData = rootData;
+	Renderer::DrawCall(stageID, order);
+}
+
 void Renderer::DrawCall(std::string stageID, RenderOrder order)
 {
 	Renderer* instance = GetInstance();

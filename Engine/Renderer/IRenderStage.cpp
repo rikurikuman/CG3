@@ -84,15 +84,31 @@ void IRenderStage::AllCall()
 			RDirectX::GetCommandList()->SetPipelineState(order.pipelineState);
 		}
 
+		//頂点nullチェック
+		if (!order.vertBuff.IsValid() && order.vertView == nullptr) {
+#ifdef _DEBUG
+			OutputDebugStringA(Util::StringFormat("RKEngine WARNING: IRenderStage::AllCall() : Vertex is null. Draw skip.\n").c_str());
+#endif
+			continue;
+		}
+
+		D3D12_VERTEX_BUFFER_VIEW useVertView{};
+		if (order.vertBuff.IsValid()) {
+			useVertView = order.vertBuff.GetVertView();
+		}
+		else {
+			useVertView = *order.vertView;
+		}
+
 		if (order.instanceVertView != nullptr) {
 			const D3D12_VERTEX_BUFFER_VIEW buf[2] = {
-				*order.vertView,
+				useVertView,
 				*order.instanceVertView
 			};
 			RDirectX::GetCommandList()->IASetVertexBuffers(0, 2, buf);
 		}
 		else {
-			RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, order.vertView);
+			RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, &useVertView);
 		}
 		
 		if (order.indexView != nullptr) {

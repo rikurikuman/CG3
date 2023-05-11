@@ -17,6 +17,13 @@ public:
 	void Draw() override;
 
 private:
+	struct TestObj {
+	public:
+		ModelObj obj;
+		Vector3 speed;
+		float timer;
+	};
+
 	DebugCamera camera = DebugCamera({0, 0, -5});
 	LightGroup light;
 
@@ -25,16 +32,9 @@ private:
 	Sprite sprite;
 	Sprite sprite2;
 
-	RootSignature testRootSignature;
-	GraphicsPipeline testPipeline;
-
-	SRBufferPtr vertBuffT;
-	D3D12_VERTEX_BUFFER_VIEW vertBuffView{};
-	SRBufferPtr instanceVertBuffT;
-	D3D12_VERTEX_BUFFER_VIEW instanceVertBuffView{};
-	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuffT;
+	std::list<TestObj> testObjList;
 
 	PostEffect hoge;
 
-	float radius = 1;
+	float timer = 0;
 };

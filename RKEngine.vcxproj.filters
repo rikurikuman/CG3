@@ -321,6 +321,12 @@
     <ClCompile Include="Engine\Renderer\TransparentRenderStage.cpp">
       <Filter>ソース ファイル\Engine\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Base\SRVertexBuffer.cpp">
+      <Filter>ソース ファイル\Engine\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="SRIndexBuffer.cpp">
+      <Filter>ソース ファイル\Engine\Buffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\TestVS.hlsl">
@@ -610,6 +616,12 @@
       <Filter>ヘッダー ファイル\Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Base\SRConstBuffer.h">
+      <Filter>ヘッダー ファイル\Engine\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\SRVertexBuffer.h">
+      <Filter>ヘッダー ファイル\Engine\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\SRIndexBuffer.h">
       <Filter>ヘッダー ファイル\Engine\Buffer</Filter>
     </ClInclude>
   </ItemGroup>

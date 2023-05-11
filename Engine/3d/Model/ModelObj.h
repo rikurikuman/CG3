@@ -3,7 +3,7 @@
 #include "Model.h"
 #include "Material.h"
 #include "Texture.h"
-#include "RConstBuffer.h"
+#include "SRConstBuffer.h"
 
 class ModelObj : public Obj3D
 {
@@ -11,8 +11,8 @@ public:
 	Model* model = nullptr;
 	Material tuneMaterial = Material(true);
 
-	RConstBuffer<TransformBuffer> transformBuff;
-	RConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
+	SRConstBuffer<TransformBuffer> transformBuff;
+	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
 
 	ModelObj() {};
 	ModelObj(Model* model) : model(model) {};
@@ -23,8 +23,5 @@ public:
 
 	//描画要求をRendererへ
 	void Draw();
-
-	//描画用のコマンドをまとめてコマンドリストに積む
-	void DrawCommands() override;
 };
 

@@ -6,6 +6,8 @@
 #include <Rect.h>
 #include <Vector3.h>
 #include <SRBuffer.h>
+#include <SRVertexBuffer.h>
+#include <SRIndexBuffer.h>
 
 enum class RootDataType {
 	UNDEFINED,
@@ -35,6 +37,8 @@ struct RootData {
 		: type(type), address(0) {}
 	RootData(RootDataType type, D3D12_GPU_VIRTUAL_ADDRESS address)
 		: type(type), address(address) {}
+	RootData(RootDataType type, SRBufferPtr& ptr)
+		: type(type), addressSRBuff(ptr) {}
 };
 
 class RenderOrder
@@ -47,8 +51,10 @@ public:
 	D3D_PRIMITIVE_TOPOLOGY primitiveTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 	ID3D12RootSignature* rootSignature = nullptr;
 	ID3D12PipelineState* pipelineState = nullptr;
-	D3D12_VERTEX_BUFFER_VIEW* vertView = nullptr;
-	D3D12_INDEX_BUFFER_VIEW* indexView = nullptr;
+	SRVertexBuffer vertBuff;
+	SRIndexBuffer indexBuff;
+	D3D12_VERTEX_BUFFER_VIEW* vertView = nullptr; //SRVertexBufferを使わない場合はこっちにビューを直で
+	D3D12_INDEX_BUFFER_VIEW* indexView = nullptr; //SRIndexBufferを使わない場合はこっちにビューを直で
 	D3D12_VERTEX_BUFFER_VIEW* instanceVertView = nullptr;
 	UINT indexCount = 0;
 	UINT instanceCount = 1;

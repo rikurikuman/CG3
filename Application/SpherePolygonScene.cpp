@@ -121,7 +121,7 @@ void SpherePolygonScene::Draw()
 		{RootDataType::CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
 		{RootDataType::CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
 	};
-	polygon.vertView = &vertBuff.view;
+	polygon.vertBuff = vertBuff;
 	polygon.indexCount = 3;
 
 	Renderer::DrawCall("Opaque", polygon);

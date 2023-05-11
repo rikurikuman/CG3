@@ -157,6 +157,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		SceneManager::Draw();
 
 		SimpleDrawer::DrawInstancing();
+
+		//描画の実行中に別スレッドとかでSRBufferとかの操作をされるとぶっ飛ぶので雑にロックする
+		//いずれもっと良い制御にしたい
+		std::unique_lock<std::recursive_mutex> bufferLockInDrawing(SRBufferAllocator::GetInstance()->mutex);
 		Renderer::Execute();
 
 		//べんり！
@@ -239,6 +243,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		RImGui::Render();
 
 		RDirectX::PostDraw();
+		bufferLockInDrawing.unlock();
 
 		TimeManager::Update();
 

@@ -8,6 +8,7 @@
 using namespace std;
 
 void SimpleDrawer::DrawCircle(int x, int y, int r, Color color) {
+	return;
 	SimpleDrawer* instance = GetInstance();
 	shared_ptr<DrawCircleInfo> info = make_shared<DrawCircleInfo>();
 

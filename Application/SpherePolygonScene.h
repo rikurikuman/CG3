@@ -4,6 +4,7 @@
 #include "ModelObj.h"
 #include <Camera.h>
 #include <LightGroup.h>
+#include <SRVertexBuffer.h>
 
 class SpherePolygonScene : public IScene {
 public:
@@ -31,7 +32,7 @@ private:
 	Vector3	posC = { 1, 0, -1 };
 
 	GraphicsPipeline polygonPipeline;
-	VertexBuffer vertBuff;
+	SRVertexBuffer vertBuff;
 	RConstBuffer<TransformBuffer> transformBuff;
 	RConstBuffer<MaterialBuffer> materialBuff;
 	RConstBuffer<ViewProjectionBuffer> viewProjectionBuff;

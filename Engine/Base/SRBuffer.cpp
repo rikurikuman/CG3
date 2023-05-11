@@ -3,7 +3,7 @@
 #include <Util.h>
 
 bool SRBufferAllocator::optAutoDeflag = true;
-bool SRBufferAllocator::optAutoReCreateBuffer = false;
+bool SRBufferAllocator::optAutoReCreateBuffer = true;
 
 SRBufferAllocator* SRBufferAllocator::GetInstance()
 {
@@ -82,7 +82,7 @@ MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag
 		break;
 	}
 
-	//確保できなかったらnullのまま返す
+	//確保できなかったら
 	if (newLoc == nullptr) {
 		if (deflag) {
 			//デフラグして再確保を試みる
@@ -94,6 +94,7 @@ MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag
 			instance->ResizeBuffer();
 			return _Alloc(needSize, align, false);
 		}
+		//可能な限り頑張ったけど無理だったのでごめんねする
 #ifdef _DEBUG
 		OutputDebugStringA("RKEngine ERROR: SRBufferAllocator::_Alloc() : Failed Alloc. Out of memory.\n");
 #endif
@@ -259,7 +260,7 @@ void SRBufferAllocator::ResizeBuffer() {
 
 	// 再度確保
 	Microsoft::WRL::ComPtr<ID3D12Resource> newBuff;
-	size_t rebufferSize = GetBufferSize() * 10;
+	size_t rebufferSize = GetBufferSize() * 2; //とりあえず2倍のサイズに
 	HRESULT result;
 
 	// ヒープ設定

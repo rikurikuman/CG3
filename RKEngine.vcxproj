@@ -238,6 +238,8 @@
     <ClCompile Include="Engine\Collision\PolygonCollider.cpp" />
     <ClCompile Include="Engine\Collision\RayCollider.cpp" />
     <ClCompile Include="Engine\Collision\SphereCollider.cpp" />
+    <ClCompile Include="Engine\Base\SRVertexBuffer.cpp" />
+    <ClCompile Include="SRIndexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BasicPS.hlsl">
@@ -371,6 +373,7 @@
     <ClInclude Include="Engine\Base\Rect.h" />
     <ClInclude Include="Engine\Base\RenderTarget.h" />
     <ClInclude Include="Engine\Base\SRConstBuffer.h" />
+    <ClInclude Include="Engine\Base\SRIndexBuffer.h" />
     <ClInclude Include="Engine\Base\Viewport.h" />
     <ClInclude Include="Engine\Collision\Colliders.h" />
     <ClInclude Include="Application\CollidersScene.h" />
@@ -444,6 +447,7 @@
     <ClInclude Include="Engine\Collision\PolygonCollider.h" />
     <ClInclude Include="Engine\Collision\RayCollider.h" />
     <ClInclude Include="Engine\Collision\SphereCollider.h" />
+    <ClInclude Include="Engine\Base\SRVertexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli">
