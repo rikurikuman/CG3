@@ -13,15 +13,11 @@ class SRConstBuffer
 {
 private:
 	static std::recursive_mutex mutex;
-	static std::map<const void*, size_t> countMap;
+	static std::unordered_map<const void*, size_t> countMap;
 
 	static void AddCount(const void* p) {
 		std::lock_guard<std::recursive_mutex> lock(mutex);
 		countMap[p]++;
-
-#ifdef _SRCONSTBUFFER_DEBUG_
-		OutputDebugString((std::wstring(L"SRConstBuffer(") + Util::ConvertStringToWString(Util::StringFormat("%p", p)) + L") Add      : " + std::to_wstring(countMap[p]) + L"\n").c_str());
-#endif
 	}
 
 	static void SubtractCount(const void* p) {
@@ -43,7 +39,8 @@ private:
 	}
 
 	void Init() {
-		buff = SRBufferAllocator::Alloc(sizeof(T), D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
+		//buff = SRBufferAllocator::Alloc(sizeof(T), D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
+		buff = SRBufferAllocator::Alloc((sizeof(T) + 0xff) & ~0xff, D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
 		*reinterpret_cast<T*>(buff.Get()) = T();
 	}
 
@@ -62,16 +59,6 @@ public:
 		Init();
 		SRConstBuffer::AddCount(buff.GetRegionPtr());
 	}
-	SRConstBuffer(const SRConstBuffer& o) {
-		if (buff != nullptr) {
-			SRConstBuffer::SubtractCount(buff.GetRegionPtr());
-			if (SRConstBuffer::GetCount(buff.GetRegionPtr()) == 0) {
-				SRBufferAllocator::Free(buff);
-			}
-		}
-		buff = o.buff;
-		SRConstBuffer::AddCount(buff.GetRegionPtr());
-	}
 	~SRConstBuffer() {
 		if (buff != nullptr) {
 			SRConstBuffer::SubtractCount(buff.GetRegionPtr());
@@ -81,6 +68,11 @@ public:
 		}
 	}
 	
+	//ÉRÉsÅ[
+	SRConstBuffer(const SRConstBuffer& o) {
+		buff = o.buff;
+		SRConstBuffer::AddCount(buff.GetRegionPtr());
+	}
 	SRConstBuffer& operator=(const SRConstBuffer& o) {
 		if (this != &o) {
 			if (buff != nullptr) {
@@ -97,7 +89,7 @@ public:
 };
 
 template<typename T>
-std::map<const void*, size_t> SRConstBuffer<T>::countMap = std::map<const void*, size_t>();
+std::unordered_map<const void*, size_t> SRConstBuffer<T>::countMap = std::unordered_map<const void*, size_t>();
 
 template<typename T>
 std::recursive_mutex SRConstBuffer<T>::mutex;

@@ -19,6 +19,11 @@ void RWindow::InitInternal()
 	wndClassEx.lpszClassName = windowName.c_str();
 	wndClassEx.hInstance = GetModuleHandle(nullptr);
 	wndClassEx.hCursor = LoadCursor(NULL, IDC_ARROW);
+	
+	if (iconID != 0) {
+		wndClassEx.hIcon = LoadIcon(wndClassEx.hInstance, MAKEINTRESOURCE(iconID));
+		wndClassEx.hIconSm = LoadIcon(wndClassEx.hInstance, MAKEINTRESOURCE(iconID));
+	}
 
 	RegisterClassEx(&wndClassEx);
 	RECT wrc = { 0, 0, windowWidth, windowHeight };

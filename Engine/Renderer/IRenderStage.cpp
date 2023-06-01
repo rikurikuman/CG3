@@ -100,19 +100,34 @@ void IRenderStage::AllCall()
 			useVertView = *order.vertView;
 		}
 
-		if (order.instanceVertView != nullptr) {
+		if (order.instanceVertBuff.IsValid() || order.instanceVertView != nullptr) {
+			D3D12_VERTEX_BUFFER_VIEW useInstanceView{};
+			if (order.instanceVertBuff.IsValid()) {
+				useInstanceView = order.instanceVertBuff.GetVertView();
+			}
+			else {
+				useInstanceView = *order.instanceVertView;
+			}
+
 			const D3D12_VERTEX_BUFFER_VIEW buf[2] = {
 				useVertView,
-				*order.instanceVertView
+				useInstanceView
 			};
 			RDirectX::GetCommandList()->IASetVertexBuffers(0, 2, buf);
 		}
 		else {
 			RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, &useVertView);
 		}
-		
-		if (order.indexView != nullptr) {
-			RDirectX::GetCommandList()->IASetIndexBuffer(order.indexView);
+
+		if (order.indexBuff.IsValid() || order.indexView != nullptr) {
+			D3D12_INDEX_BUFFER_VIEW useIndexView{};
+			if (order.indexBuff.IsValid()) {
+				useIndexView = order.indexBuff.GetIndexView();
+			}
+			else {
+				useIndexView = *order.indexView;
+			}
+			RDirectX::GetCommandList()->IASetIndexBuffer(&useIndexView);
 		}
 
 		int rootIndex = 0;
@@ -140,7 +155,7 @@ void IRenderStage::AllCall()
 			rootIndex++;
 		}
 
-		if (order.indexView != nullptr) {
+		if (order.indexBuff.IsValid() || order.indexView != nullptr) {
 			RDirectX::GetCommandList()->DrawIndexedInstanced(static_cast<UINT>(order.indexCount), order.instanceCount, 0, 0, 0);
 		}
 		else {

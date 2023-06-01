@@ -248,7 +248,7 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 
 	string _handle = handle;
 	if (_handle.empty()) {
-		_handle = "NoNameStringTextureHandle_" + text;
+		_handle = "NoNameStringTextureHandle_" + fontTypeFace + "_" + to_string(fontSize) + text;
 	}
 	return TextureManager::Register(texture, _handle);
 }

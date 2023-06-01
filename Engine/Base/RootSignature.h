@@ -1,7 +1,9 @@
 #pragma once
 #include <d3d12.h>
 #include <wrl.h>
+#include <string>
 #include <vector>
+#include <unordered_map>
 
 typedef D3D12_DESCRIPTOR_RANGE DescriptorRange;
 typedef D3D12_STATIC_SAMPLER_DESC StaticSamplerDesc;
@@ -31,5 +33,10 @@ public:
     RootSignatureDesc desc{};
 
 	void Create();
+
+    static RootSignature& GetOrCreate(std::string id, RootSignatureDesc desc);
+
+private:
+    static std::unordered_map<std::string, RootSignature> rootSignatureMap;
 };
 

@@ -10,6 +10,7 @@ struct MemoryRegion {
 	byte* pEnd = nullptr;
 	UINT64 size = 0;
 	UINT align = 0;
+	std::list<MemoryRegion>::iterator memItr;
 
 	MemoryRegion() {}
 	MemoryRegion(byte* pBegin, byte* pEnd, UINT align = 0)
@@ -18,32 +19,35 @@ struct MemoryRegion {
 
 struct MemoryRegionPtr {
 	MemoryRegion* region = nullptr;
+	std::list<MemoryRegionPtr>::iterator memItr;
 };
 
 class SRBufferPtr {
 public:
 	SRBufferPtr() {}
 
-	byte* Get() {
-		return ptr->region->pBegin;
-	}
+	byte* Get();
 
-	const MemoryRegionPtr* GetRegionPtr() {
+	const MemoryRegionPtr* GetRegionPtr() const {
 		return ptr;
 	}
 
-	D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress();
+	D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const;
 
-	bool operator==(const void* ptr) {
+	bool operator==(const void* ptr) const {
 		return this->ptr == ptr;
 	}
-	bool operator!=(const void* ptr) {
-		return !(this == ptr);
+	bool operator!=(const void* ptr) const {
+		return this->ptr != ptr;
+	}
+	bool operator==(const SRBufferPtr& ptr) const {
+		return this->ptr == ptr.ptr;
+	}
+	bool operator!=(const SRBufferPtr& ptr) const {
+		return !(*this == ptr);
 	}
 
-	operator bool() {
-		return ptr != nullptr && ptr->region != nullptr;
-	}
+	operator bool() const;
 
 private:
 	friend class SRBufferAllocator;
@@ -54,7 +58,7 @@ private:
 class SRBufferAllocator
 {
 public:
-	std::recursive_mutex mutex; //本当は公開したくないんだけど今は妥協
+	static std::recursive_mutex mutex; //本当は公開したくないんだけど今は妥協
 	static bool optAutoDeflag;
 	static bool optAutoReCreateBuffer;
 
@@ -74,6 +78,10 @@ public:
 	}
 
 	static UINT64 GetUsingBufferSize() {
+		return GetInstance()->usingBufferSizeCounter;
+	}
+
+	static UINT64 GetStrictUsingBufferSize() {
 		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
 		UINT64 size = 0;
 		for (auto& itr : GetInstance()->usingRegions) {
@@ -91,7 +99,7 @@ public:
 	void ResizeBuffer();
 
 private:
-	constexpr static UINT64 defSize = 1024 * 1024 * 16; //16MB
+	constexpr static UINT64 defSize = 1024 * 1024 * 64; //64MB
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> buffer = nullptr;
 	UINT8* pBufferBegin = nullptr;
@@ -99,9 +107,11 @@ private:
 	std::list<MemoryRegion> freeRegions;
 	std::list<MemoryRegion> usingRegions;
 	std::list<MemoryRegionPtr> regionPtrs;
+	UINT64 usingBufferSizeCounter = 0;
 
 	static MemoryRegion* _Alloc(UINT64 needSize, UINT align, bool deflag);
-	static void _Free(byte* ptr);
+	//static void _Free(byte* ptr);
+	static void _Free(SRBufferPtr& ptr);
 
 	SRBufferAllocator();
 	SRBufferAllocator(const SRBufferAllocator& a) = delete;

@@ -13,7 +13,8 @@ namespace Util {
     const int WIN_WIDTH = 1280;
     const int WIN_HEIGHT = 720;
 
-    extern std::chrono::system_clock::time_point memTimePoint;
+    extern std::chrono::high_resolution_clock::time_point memTimePoint;
+    extern double memElapsedTime;
 
 	//DegreeからRadianへ変換する
 	float AngleToRadian(float angle);
@@ -125,5 +126,11 @@ namespace Util {
     //処理時間計測開始
     void CalcElapsedTimeStart();
     //処理時間計測出力
-    void CalcElapsedTimeEnd(std::string name);
+    void CalcElapsedTimeEnd(std::string name, bool consecutive = true);
+
+    //デバッグ出力(デバッグビルドでのみ処理)
+    void DebugLog(std::string log);
+
+    //デバッグ出力(debugBoolが立っている時処理)
+    void DebugLogC(std::string log);
 }

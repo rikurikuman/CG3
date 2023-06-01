@@ -1,6 +1,10 @@
 #pragma once
-#include "Vector3.h"
 #include <DirectXMath.h>
+
+//掛ける相手の宣言だけしておく
+//実際の計算はcppに置いてあるので本物の相手はそっちがincludeする
+class Vector3;
+class Float4;
 
 class Matrix4
 {
@@ -76,8 +80,13 @@ public:
 	static Matrix4 OrthoGraphicProjection(float left, float right, float top, float bottom, float nearZ, float farZ);
 	//透視投影変換行列らくらく生成
 	static Matrix4 PerspectiveProjection(float fov, float aspect, float nearZ, float farZ);
+
+	//ビューポート行列
+	static Matrix4 Viewport(float x, float y, float width, float height, float minDepth, float maxDepth);
 };
 
 Vector3 operator*(const Vector3 vec, const Matrix4 mat);
 Vector3& operator*=(Vector3& vec, const Matrix4 mat);
 
+Float4 operator*(const Float4 f, const Matrix4 mat);
+Float4& operator*=(Float4& f, const Matrix4 mat);

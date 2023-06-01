@@ -2,7 +2,8 @@
 #include "RDirectX.h"
 #include <Util.h>
 
-bool SRBufferAllocator::optAutoDeflag = true;
+std::recursive_mutex SRBufferAllocator::mutex;
+bool SRBufferAllocator::optAutoDeflag = false;
 bool SRBufferAllocator::optAutoReCreateBuffer = true;
 
 SRBufferAllocator* SRBufferAllocator::GetInstance()
@@ -22,13 +23,15 @@ SRBufferPtr SRBufferAllocator::Alloc(UINT64 needSize, UINT align)
 {
 	SRBufferAllocator* instance = GetInstance();
 	std::lock_guard<std::recursive_mutex> lock(instance->mutex);
-	
+
 	MemoryRegion* reg = nullptr;
 
 	reg = _Alloc(needSize, align, optAutoDeflag);
 	if (reg == nullptr) return SRBufferPtr();
 
-	instance->regionPtrs.push_back({reg});
+	instance->regionPtrs.emplace_back();
+	instance->regionPtrs.back().region = reg;
+	instance->regionPtrs.back().memItr = --instance->regionPtrs.end();
 	return SRBufferPtr(&instance->regionPtrs.back());
 }
 
@@ -37,15 +40,17 @@ void SRBufferAllocator::Free(SRBufferPtr& ptr)
 	SRBufferAllocator* instance = GetInstance();
 	std::lock_guard<std::recursive_mutex> lock(instance->mutex);
 
-	if (ptr.ptr == nullptr) {
+	if (ptr.ptr == nullptr || ptr.ptr->region == nullptr) {
 #ifdef _DEBUG
 		OutputDebugStringA(Util::StringFormat("RKEngine WARNING: SRBufferAllocator::Free() : Attempted to free an invalid pointer(%p).\n", ptr.ptr).c_str());
 #endif
 		return;
 	}
 
-	_Free(ptr.Get());
-	instance->regionPtrs.remove_if([&](MemoryRegionPtr i) { return i.region == ptr.ptr->region; });
+	_Free(ptr);
+	//もっと安全に消せるように何とかする
+	ptr.ptr->region = nullptr;
+	instance->regionPtrs.erase(ptr.ptr->memItr);
 	ptr.ptr = nullptr;
 }
 
@@ -100,6 +105,7 @@ MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag
 #endif
 		return nullptr;
 	}
+
 	//空き領域情報を編集する
 	//確保領域の先頭アドレスが含まれている空き領域を探す
 	for (auto itr = instance->freeRegions.begin(); itr != instance->freeRegions.end(); itr++) {
@@ -125,41 +131,49 @@ MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag
 		break;
 	}
 
-	instance->usingRegions.push_back(MemoryRegion(newLoc, newLoc + needSize - 1, align));;
+	instance->usingRegions.push_back(MemoryRegion(newLoc, newLoc + needSize - 1, align));
+	instance->usingRegions.back().memItr = --instance->usingRegions.end();
+	instance->usingBufferSizeCounter += needSize;
 	return &instance->usingRegions.back();
 }
 
-void SRBufferAllocator::_Free(byte* ptr)
+void SRBufferAllocator::_Free(SRBufferPtr& ptr)
 {
 	SRBufferAllocator* instance = GetInstance();
 	std::lock_guard<std::recursive_mutex> lock(instance->mutex);
 
 	//使用中領域から指定アドレスを先頭とする領域を探す
-	bool regionFound = false;
+	//bool regionFound = false;
 	MemoryRegion usingRegion;
-	for (auto itr = instance->usingRegions.begin(); itr != instance->usingRegions.end(); itr++) {
-		if (itr->pBegin == ptr) {
-			//見つけたら覚えて、消す
-			regionFound = true;
-			usingRegion = *itr;
-			instance->usingRegions.erase(itr);
+	//for (auto itr = instance->usingRegions.begin(); itr != instance->usingRegions.end(); itr++) {
+	//	if (itr->pBegin == ptr) {
+	//		//見つけたら覚えて、消す
+	//		regionFound = true;
+	//		usingRegion = *itr;
+	//		instance->usingRegions.erase(itr);
 
-			//消す時に分かりやすく0xddにする
-			for (byte* ptr = usingRegion.pBegin; ptr <= usingRegion.pEnd; ptr++) {
-				*ptr = 0xdd;
-			}
-			break;
-		}
+	//		//消す時に分かりやすく0xddにする
+	//		for (byte* ptr = usingRegion.pBegin; ptr <= usingRegion.pEnd; ptr++) {
+	//			*ptr = 0xdd;
+	//		}
+	//		break;
+	//	}
+	//}
+	usingRegion = *ptr.ptr->region->memItr;
+	instance->usingRegions.erase(ptr.ptr->region->memItr);
+	//消す時に分かりやすく0xddにする
+	for (byte* ptr = usingRegion.pBegin; ptr <= usingRegion.pEnd; ptr++) {
+		*ptr = 0xdd;
 	}
 
 	//見つからなかったら不正なポインタを解放しようとしてるので怒る
-	if (!regionFound) {
-		//けど今は警告出力してreturnでいいや
-#ifdef _DEBUG
-		OutputDebugStringA(Util::StringFormat("RKEngine WARNING: SRBufferAllocator::Free() : Attempted to free an invalid pointer(%p).\n", ptr).c_str());
-#endif
-		return;
-	}
+//	if (!regionFound) {
+//		//けど今は警告出力してreturnでいいや
+//#ifdef _DEBUG
+//		OutputDebugStringA(Util::StringFormat("RKEngine WARNING: SRBufferAllocator::Free() : Attempted to free an invalid pointer(%p).\n", ptr).c_str());
+//#endif
+//		return;
+//	}
 
 	//解放する領域を空き領域に追加する
 	auto prev = instance->freeRegions.end();
@@ -222,6 +236,8 @@ void SRBufferAllocator::_Free(byte* ptr)
 			instance->freeRegions.emplace_back(usingRegion.pBegin, usingRegion.pEnd);
 		}
 	}
+
+	instance->usingBufferSizeCounter -= usingRegion.size;
 }
 
 void SRBufferAllocator::DeFlag()
@@ -235,6 +251,7 @@ void SRBufferAllocator::DeFlag()
 		map[&ptr] = MemoryRegion(*ptr.region);
 	}
 	usingRegions.clear();
+	usingBufferSizeCounter = 0;
 	for (MemoryRegionPtr& ptr : regionPtrs) {
 		MemoryRegion& old = map[&ptr];
 		auto newReg = _Alloc(old.size, old.align, false);
@@ -305,6 +322,7 @@ void SRBufferAllocator::ResizeBuffer() {
 		map[&ptr] = MemoryRegion(*ptr.region);
 	}
 	usingRegions.clear();
+	usingBufferSizeCounter = 0;
 	for (MemoryRegionPtr& ptr : regionPtrs) {
 		MemoryRegion& old = map[&ptr];
 		auto newReg = _Alloc(old.size, old.align, false);
@@ -368,9 +386,21 @@ SRBufferAllocator::SRBufferAllocator() {
 	}
 }
 
-D3D12_GPU_VIRTUAL_ADDRESS SRBufferPtr::GetGPUVirtualAddress()
+byte* SRBufferPtr::Get() {
+	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::mutex);
+	if (ptr != nullptr && ptr->region != nullptr) return ptr->region->pBegin;
+	return nullptr;
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS SRBufferPtr::GetGPUVirtualAddress() const
 {
+	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::mutex);
 	D3D12_GPU_VIRTUAL_ADDRESS address = SRBufferAllocator::GetGPUVirtualAddress();
-	address += static_cast<UINT>(this->Get() - SRBufferAllocator::GetBufferAddress());
+	address += static_cast<UINT>(ptr->region->pBegin - SRBufferAllocator::GetBufferAddress());
 	return address;
+}
+
+SRBufferPtr::operator bool() const {
+	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::mutex);
+	return ptr != nullptr && ptr->region != nullptr;
 }

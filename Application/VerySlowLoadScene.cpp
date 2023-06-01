@@ -17,5 +17,5 @@ void VerySlowLoadScene::Init()
 
 void VerySlowLoadScene::Draw()
 {
-	SimpleDrawer::DrawString(0, static_cast<float>(RWindow::GetHeight()), "このシーンのコンストラクタは5秒Sleepしています", { 1, 1, 1, 1 }, "", 60, { 0, 1 });
+	SimpleDrawer::DrawString(0, static_cast<float>(RWindow::GetHeight()), 0, "このシーンのコンストラクタは5秒Sleepしています", { 1, 1, 1, 1 }, "", 60, { 0, 1 });
 }

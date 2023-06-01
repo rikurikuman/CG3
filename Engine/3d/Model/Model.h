@@ -32,17 +32,12 @@ public:
 	std::string name;
 	VertexBuffer vertexBuff;
 	IndexBuffer indexBuff;
-	RConstBuffer<MaterialBuffer> materialBuff;
 
 	std::vector<VertexPNU> vertexs;
 	std::vector<UINT> indices;
 	Material material;
 
 	void CalcSmoothedNormals();
-
-	void UpdateMaterial() {
-		material.Transfer(materialBuff.constMap);
-	}
 
 	bool operator==(const ModelData& o) const;
 	bool operator!=(const ModelData& o) const;

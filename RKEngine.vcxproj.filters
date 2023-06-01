@@ -324,8 +324,20 @@
     <ClCompile Include="Engine\Base\SRVertexBuffer.cpp">
       <Filter>ソース ファイル\Engine\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="SRIndexBuffer.cpp">
+    <ClCompile Include="Engine\Renderer\PostEffectRenderStage.cpp">
+      <Filter>ソース ファイル\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\SRIndexBuffer.cpp">
       <Filter>ソース ファイル\Engine\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer\BackSpriteRenderStage.cpp">
+      <Filter>ソース ファイル\Engine\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PostEffect\Bloom.cpp">
+      <Filter>ソース ファイル\Engine\PostEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Math\Float4.cpp">
+      <Filter>ソース ファイル\Engine\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -374,8 +386,51 @@
     <FxCompile Include="Shader\FinalPS.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\SimpleInstancePS.hlsl" />
-    <FxCompile Include="Shader\SimpleInstanceVS.hlsl" />
+    <FxCompile Include="Shader\BloomPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\BloomVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\BrightCutPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\BrightCutVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\GaussianBlurVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\NoneShadingPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\NoneShadingVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SimpleInstancePS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SimpleInstanceVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SimpleLineGS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SimpleLinePS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SimpleLineVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SimpleMeshPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SimpleMeshVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\2d\Sprite.h">
@@ -624,6 +679,18 @@
     <ClInclude Include="Engine\Base\SRIndexBuffer.h">
       <Filter>ヘッダー ファイル\Engine\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Renderer\BackSpriteRenderStage.h">
+      <Filter>ヘッダー ファイル\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Renderer\PostEffectRenderStage.h">
+      <Filter>ヘッダー ファイル\Engine\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PostEffect\Bloom.h">
+      <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\Float4.h">
+      <Filter>ヘッダー ファイル\Engine\Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli">
@@ -647,6 +714,26 @@
     <None Include="Shader\Final.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
-    <None Include="Shader\SimpleInstance.hlsli" />
+    <None Include="Shader\Bloom.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\BrightCut.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\GaussianBlur.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\NoneShading.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\SimpleInstance.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\SimpleLine.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\SimpleMesh.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

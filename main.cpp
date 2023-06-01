@@ -155,8 +155,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//描画コマンド
 		SceneManager::Draw();
-
-		SimpleDrawer::DrawInstancing();
+		SimpleDrawer::DrawAll();
 
 		//描画の実行中に別スレッドとかでSRBufferとかの操作をされるとぶっ飛ぶので雑にロックする
 		//いずれもっと良い制御にしたい

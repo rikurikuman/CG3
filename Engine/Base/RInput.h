@@ -52,16 +52,16 @@ public:
 	static Vector3 GetMouseMove();
 
 	//パッドに接続されてるか
-	bool GetPadConnect();
+	static bool GetPadConnect();
 
 	//パッドのボタンが押されているか
-	bool GetPadButton(UINT button);
+	static bool GetPadButton(UINT button);
 
 	//パッドのボタンが離れた瞬間か
-	bool GetPadButtonUp(UINT button);
+	static bool GetPadButtonUp(UINT button);
 
 	//パッドのボタンが押された瞬間か
-	bool GetPadButtonDown(UINT button);
+	static bool GetPadButtonDown(UINT button);
 
 	//パッドの左スティック
 	Vector2 GetPadLStick();

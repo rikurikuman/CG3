@@ -1,6 +1,23 @@
 #include "GraphicsPipeline.h"
 #include "RDirectX.h"
 
+std::unordered_map<std::string, GraphicsPipeline> GraphicsPipeline::pipelineMap;
+
+GraphicsPipeline& GraphicsPipeline::GetOrCreate(std::string id, PipelineStateDesc desc)
+{
+    auto& map = GraphicsPipeline::pipelineMap;
+    auto itr = map.find(id);
+    if (itr != map.end()) {
+        return itr->second;
+    }
+
+    GraphicsPipeline newPipeline;
+    newPipeline.desc = desc;
+    newPipeline.Create();
+    map[id] = newPipeline;
+    return map[id];
+}
+
 void GraphicsPipeline::Create()
 {
 	HRESULT result;

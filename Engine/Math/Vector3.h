@@ -1,5 +1,9 @@
 #pragma once
 
+//仲良し相手宣言
+class Vector2;
+class Float4;
+
 class Vector3
 {
 public:
@@ -59,6 +63,12 @@ public:
 	//正規化ベクトルを取得
 	//（このインスタンスは書き換えずに別のインスタンスとして取得する）
 	Vector3 GetNormalize() const;
+
+	//z成分を捨ててVector2へキャスト
+	operator Vector2() const;
+
+	//w成分を1としてFloat4へキャスト
+	operator Float4() const;
 };
 
 //左辺にfloatを置いたときに*, /が出来ないのでそれ対策

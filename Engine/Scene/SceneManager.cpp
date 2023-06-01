@@ -52,6 +52,7 @@ void SceneManager::Update() {
 				&& sc.future->wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
 			sc.scene = sc.future->get();
 			sc.future2 = std::make_shared<std::future<bool>>(std::async(std::launch::async, [&sc] {
+				std::lock_guard<std::recursive_mutex> lockSR(SRBufferAllocator::mutex);
 				SceneManager* instance = GetInstance();
 				std::lock_guard<std::mutex> lock(instance->mutex);
 				std::shared_ptr<IScene> scene = std::move(sc.scene);

@@ -4,10 +4,10 @@
 #include "Texture.h"
 #include "Material.h"
 #include "Transform.h"
-#include "RConstBuffer.h"
+#include "SRConstBuffer.h"
 #include "ViewProjection.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
+#include "SRVertexBuffer.h"
+#include "SRIndexBuffer.h"
 
 class Sprite
 {
@@ -22,11 +22,11 @@ private:
 	Vector2 size = { 0, 0 };
 	Vector2 anchor = { 0.5f, 0.5f };
 
-	VertexBuffer vertBuff;
-	IndexBuffer indexBuff;
-	RConstBuffer<MaterialBuffer> materialBuff;
-	RConstBuffer<TransformBuffer> transformBuff;
-	RConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
+	SRVertexBuffer vertBuff;
+	SRIndexBuffer indexBuff;
+	SRConstBuffer<MaterialBuffer> materialBuff;
+	SRConstBuffer<TransformBuffer> transformBuff;
+	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
 
 	//頂点を弄る
 	void UpdateVertex();
@@ -57,9 +57,6 @@ public:
 
 	//描画要求をRendererへ積む
 	void Draw();
-
-	//描画用のコマンドをまとめてコマンドリストに積む
-	void DrawCommands();
 };
 
 class SpriteManager

@@ -155,22 +155,22 @@ Vector3 RInput::GetMouseMove() {
 
 bool RInput::GetPadConnect()
 {
-	return isConnectPad;
+	return GetInstance()->isConnectPad;
 }
 
 bool RInput::GetPadButton(UINT button)
 {
-	return xInputState.Gamepad.wButtons == button;
+	return GetInstance()->xInputState.Gamepad.wButtons == button;
 }
 
 bool RInput::GetPadButtonUp(UINT button)
 {
-	return xInputState.Gamepad.wButtons != button && oldXInputState.Gamepad.wButtons == button;
+	return GetInstance()->xInputState.Gamepad.wButtons != button && GetInstance()->oldXInputState.Gamepad.wButtons == button;
 }
 
 bool RInput::GetPadButtonDown(UINT button)
 {
-	return xInputState.Gamepad.wButtons == button && oldXInputState.Gamepad.wButtons != button;
+	return GetInstance()->xInputState.Gamepad.wButtons == button && GetInstance()->oldXInputState.Gamepad.wButtons != button;
 }
 
 Vector2 RInput::GetPadLStick()

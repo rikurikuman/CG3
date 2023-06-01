@@ -21,7 +21,7 @@ public:
 	//描画コマンドを積みます
 	static void DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, UINT indexCount, const std::vector<RootData>& rootData, Vector3& anchorPoint = Vector3(0, 0, 0));
 	//描画コマンドを積みます
-	static void DrawCall(std::string stageID, RenderOrder order);
+	static void DrawCall(std::string stageID, RenderOrder& order);
 
 	//RenderStageを初期化します
 	static void InitRenderStages();
@@ -71,6 +71,9 @@ public:
 
 	//指定IDのRenderStageを削除します
 	static void RemoveRenderStage(std::string id);
+
+	//指定IDのRenderStageを取得します
+	static IRenderStage* GetRenderStage(std::string id);
 
 	//今後の描画に使うPrimitiveTopologyを指定します
 	//一度セットするとその後ずっと維持されます

@@ -1,11 +1,11 @@
 #pragma once
 #include "Obj3D.h"
-#include "RConstBuffer.h"
+#include "SRConstBuffer.h"
 #include "Material.h"
 #include "Texture.h"
 #include "Vector2.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
+#include "SRVertexBuffer.h"
+#include "SRIndexBuffer.h"
 
 class Image3D final : public Obj3D
 {
@@ -19,11 +19,11 @@ public:
 	Material material;
 	//TransformはObj3Dにある
 
-	VertexBuffer vertBuff;
-	IndexBuffer indexBuff;
-	RConstBuffer<MaterialBuffer> materialBuff;
-	RConstBuffer<TransformBuffer> transformBuff;
-	RConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
+	SRVertexBuffer vertBuff;
+	SRIndexBuffer indexBuff;
+	SRConstBuffer<MaterialBuffer> materialBuff;
+	SRConstBuffer<TransformBuffer> transformBuff;
+	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
 
 	Image3D() {};
 
@@ -67,8 +67,5 @@ public:
 
 	//描画要求をRendererへ
 	void Draw() override;
-
-	//描画用のコマンドをまとめてコマンドリストに積む
-	void DrawCommands() override;
 };
 

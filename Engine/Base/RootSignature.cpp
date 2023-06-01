@@ -2,6 +2,23 @@
 #include "RDirectX.h"
 #include <vector>
 
+std::unordered_map<std::string, RootSignature> RootSignature::rootSignatureMap;
+
+RootSignature& RootSignature::GetOrCreate(std::string id, RootSignatureDesc desc)
+{
+	auto& map = RootSignature::rootSignatureMap;
+	auto itr = map.find(id);
+	if (itr != map.end()) {
+		return itr->second;
+	}
+
+	RootSignature newRootSignature;
+	newRootSignature.desc = desc;
+	newRootSignature.Create();
+	map[id] = newRootSignature;
+	return map[id];
+}
+
 void RootSignature::Create()
 {
 	HRESULT result;

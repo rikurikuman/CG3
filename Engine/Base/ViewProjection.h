@@ -1,6 +1,8 @@
 #pragma once
 #include "Matrix4.h"
 #include "Util.h"
+#include <Vector2.h>
+#include "Vector3.h"
 
 struct ViewProjectionBuffer
 {
@@ -11,12 +13,19 @@ struct ViewProjectionBuffer
 class ViewProjection
 {
 public:
+	enum class Type {
+		Orthographic,
+		Perspective
+	};
+	Type type = Type::Perspective;
 	Matrix4 view;
 	Matrix4 projection;
 	Matrix4 matrix;
 	Vector3 eye = {0, 0, 0}; //視点座標
 	Vector3 target = {0, 0, 1}; //注視点座標
 	Vector3 up = {0, 1, 0}; //上方向ベクトル
+
+	Vector2 orthoSize = { 1, 1 };
 
 	float fov = Util::AngleToRadian(45); //画角(Rad)
 	float aspect = 1; //アスペクト比(横/縦)
@@ -31,4 +40,7 @@ public:
 	/// </summary>
 	/// <param name="target">対象のバッファへのポインタ</param>
 	void Transfer(ViewProjectionBuffer* target);
+
+	Vector2 WorldToScreen(Vector3 wPos);
+	Vector2 WorldToScreen(Vector3 wPos, float topLeftX, float topLeftY, float width, float height, float minDepth, float maxDepth);
 };

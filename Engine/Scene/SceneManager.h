@@ -51,6 +51,7 @@ public:
 
 		SceneChange sc{};
 		sc.future = std::make_shared<std::future<std::shared_ptr<IScene>>>(std::async(std::launch::async, [] {
+			std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::mutex);
 			SceneManager* instance = GetInstance();
 			std::shared_ptr<IScene> newScene = std::make_shared<SceneClassName>();
 			return newScene;

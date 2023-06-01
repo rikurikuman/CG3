@@ -1,5 +1,20 @@
 #include "Color.h"
 
+Color::Color(int hexcolor)
+{
+	int r, g, b;
+	this->a = 1;
+	r = hexcolor & 0xff0000;
+	r = r >> 16;
+	g = hexcolor & 0xff00;
+	g = g >> 8;
+	b = hexcolor & 0xff;
+
+	this->r = r / 255.0f;
+	this->g = g / 255.0f;
+	this->b = b / 255.0f;
+}
+
 bool Color::operator==(const Color& o) const
 {
 	return r == o.r && g == o.g && b == o.b && a == o.a;

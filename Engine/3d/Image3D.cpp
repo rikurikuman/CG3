@@ -46,41 +46,20 @@ void Image3D::Init()
 
 void Image3D::TransferBuffer(ViewProjection viewprojection)
 {
-	material.Transfer(materialBuff.constMap);
-	transform.Transfer(transformBuff.constMap);
-	viewProjectionBuff.constMap->matrix = viewprojection.matrix;
+	material.Transfer(materialBuff.Get());
+	transform.Transfer(transformBuff.Get());
+	viewProjectionBuff->matrix = viewprojection.matrix;
 }
 
 void Image3D::Draw()
 {
 	std::vector<RootData> rootData{
 		{TextureManager::Get(texture).gpuHandle},
-		{RootDataType::CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
+		{RootDataType::SRBUFFER_CBV, materialBuff.buff },
+		{RootDataType::SRBUFFER_CBV, transformBuff.buff },
+		{RootDataType::SRBUFFER_CBV, viewProjectionBuff.buff },
+		{RootDataType::LIGHT},
 	};
 
-	Renderer::DrawCall("Opaque", &vertBuff.view, &indexBuff.view, 6, rootData);
-}
-
-void Image3D::DrawCommands()
-{
-	//頂点バッファビューの設定コマンド
-	RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, &vertBuff.view);
-
-	//インデックスバッファビューの設定コマンド
-	RDirectX::GetCommandList()->IASetIndexBuffer(&indexBuff.view);
-
-	//定数バッファビューの設定コマンド
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(1, materialBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(2, transformBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(3, viewProjectionBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(4, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress());
-
-	//SRVヒープから必要なテクスチャデータをセットする(背景)
-	RDirectX::GetCommandList()->SetGraphicsRootDescriptorTable(0, TextureManager::Get(texture).gpuHandle);
-
-	//描画コマンド
-	RDirectX::GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0); // 全ての頂点を使って描画
+	Renderer::DrawCall("Opaque", vertBuff, indexBuff, 6, rootData);
 }

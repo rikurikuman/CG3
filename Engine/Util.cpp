@@ -6,7 +6,8 @@ using namespace std;
 bool Util::debugBool = false;
 int Util::debugInt = 0;
 
-std::chrono::system_clock::time_point Util::memTimePoint;
+std::chrono::high_resolution_clock::time_point Util::memTimePoint;
+double Util::memElapsedTime = 0;
 
 float Util::AngleToRadian(float angle)
 {
@@ -124,13 +125,29 @@ float Util::GetRatio(float a, float b, float p)
 }
 
 void Util::CalcElapsedTimeStart() {
-	memTimePoint = std::chrono::system_clock::now();
+	memTimePoint = std::chrono::high_resolution_clock::now();
+	memElapsedTime = 0;
 }
 
-void Util::CalcElapsedTimeEnd(std::string name) {
-	auto nowTimePoint = std::chrono::system_clock::now();
+void Util::CalcElapsedTimeEnd(std::string name, bool consecutive) {
+	auto nowTimePoint = std::chrono::high_resolution_clock::now();
 	double elapsedMicro = static_cast<double>(std::chrono::duration_cast<std::chrono::microseconds>(nowTimePoint - memTimePoint).count());
+	if (consecutive) elapsedMicro -= memElapsedTime;
 	double elapsedMili = elapsedMicro / 1000;
 	
 	OutputDebugStringA((name + ": " + StringFormat("%.3f", elapsedMili) + "ms / " + StringFormat("%.0f", elapsedMicro) + "us\n").c_str());
+	memElapsedTime += elapsedMicro;
+}
+
+void Util::DebugLog(std::string log) {
+#ifdef _DEBUG
+	OutputDebugStringA((log + "\n").c_str());
+#endif
+}
+
+void Util::DebugLogC(std::string log)
+{
+	if (debugBool) {
+		OutputDebugStringA((log + "\n").c_str());
+	}
 }

@@ -131,7 +131,6 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
                 if (smooth) loading.CalcSmoothedNormals();
                 loading.vertexBuff.Init(loading.vertexs);
                 loading.indexBuff.Init(loading.indices);
-                loading.material.Transfer(loading.materialBuff.constMap);
                 model.data.emplace_back(std::make_shared<ModelData>(loading));
             }
 
@@ -249,7 +248,6 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
                 if (smooth) loading.CalcSmoothedNormals();
                 loading.vertexBuff.Init(loading.vertexs);
                 loading.indexBuff.Init(loading.indices);
-                loading.material.Transfer(loading.materialBuff.constMap);
                 model.data.emplace_back(std::make_shared<ModelData>(loading));
                 loading = ModelData();
                 loading.name = oldname + "_ChangeMaterial";
@@ -267,7 +265,6 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
     if (smooth) loading.CalcSmoothedNormals();
     loading.vertexBuff.Init(loading.vertexs);
     loading.indexBuff.Init(loading.indices);
-    loading.material.Transfer(loading.materialBuff.constMap);
     model.data.emplace_back(std::make_shared<ModelData>(loading));
 
     lock.lock();
@@ -367,7 +364,6 @@ void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const 
 
         data.vertexBuff.Init(data.vertexs);
         data.indexBuff.Init(data.indices);
-        data.material.Transfer(data.materialBuff.constMap);
         model->data.push_back(make_shared<ModelData>(data));
     }
 
@@ -544,7 +540,7 @@ void ModelManager::Init()
     data.vertexs.push_back(VertexPNU({  1, -1,  1 }, { 0, 0, 0 }, { 1, 1 })); //1
     data.vertexs.push_back(VertexPNU({ -1, -1, -1 }, { 0, 0, 0 }, { 0, 1 })); //2
     data.vertexs.push_back(VertexPNU({  1, -1, -1 }, { 0, 0, 0 }, { 1, 1 })); //3
-    data.vertexs.push_back(VertexPNU({  0,  1,  0 }, { 0, 0, 0 }, { 0.5f, 0 })); //4
+    data.vertexs.push_back(VertexPNU({  0,  1,  0 }, { 0, 0, 0 }, { 0.5f, 0.0f })); //4
 
     data.indices.push_back(2);
     data.indices.push_back(3);
@@ -569,7 +565,6 @@ void ModelManager::Init()
 
     data.vertexBuff.Init(data.vertexs);
     data.indexBuff.Init(data.indices);
-    data.material.Transfer(data.materialBuff.constMap);
     model.data.emplace_back(std::make_shared<ModelData>(data));
     modelMap["PreRegisteredModel_Empty"] = model;
 }

@@ -100,8 +100,8 @@ void Sprite::TransferBuffer()
 		UpdateVertex();
 	}
 
-	material.Transfer(materialBuff.constMap);
-	transform.Transfer(transformBuff.constMap);
+	material.Transfer(materialBuff.Get());
+	transform.Transfer(transformBuff.Get());
 
 	Matrix4 matProjection = Matrix4::OrthoGraphicProjection(
 		0.0f, (float)RWindow::GetWidth(),
@@ -109,41 +109,25 @@ void Sprite::TransferBuffer()
 		0.0f, 1.0f
 	);
 	
-	viewProjectionBuff.constMap->matrix = matProjection;
+	viewProjectionBuff.Get()->matrix = matProjection;
 }
 
 void Sprite::Draw()
 {
 	std::vector<RootData> rootData{
 		{TextureManager::Get(texture).gpuHandle},
-		{RootDataType::CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
+		{RootDataType::SRBUFFER_CBV, materialBuff.buff},
+		{RootDataType::SRBUFFER_CBV, transformBuff.buff},
+		{RootDataType::SRBUFFER_CBV, viewProjectionBuff.buff},
 	};
 	
-	Renderer::DrawCall("Sprite", &vertBuff.view, &indexBuff.view, 6, rootData, transform.position);
-}
-
-void Sprite::DrawCommands()
-{
-	//頂点バッファビューの設定コマンド
-	RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, &vertBuff.view);
-
-	//インデックスバッファビューの設定コマンド
-	RDirectX::GetCommandList()->IASetIndexBuffer(&indexBuff.view);
-
-	//定数バッファビューの設定コマンド
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(1, materialBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(2, transformBuff.constBuff->GetGPUVirtualAddress());
-	RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(3, viewProjectionBuff.constBuff->GetGPUVirtualAddress());
-
-	//SRVヒープから必要なテクスチャデータをセットする
-	RDirectX::GetCommandList()->SetGraphicsRootDescriptorTable(0, TextureManager::Get(texture).gpuHandle);
-
-	TransferBuffer();
-
-	//描画コマンド
-	RDirectX::GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0); // 全ての頂点を使って描画
+	if (transform.position.z >= 0) {
+		Renderer::DrawCall("Sprite", vertBuff, indexBuff, 6, rootData, transform.position);
+	}
+	else {
+		transform.position.z *= -1;
+		Renderer::DrawCall("BackSprite", vertBuff, indexBuff, 6, rootData, transform.position);
+	}
 }
 
 void SpriteManager::Init()

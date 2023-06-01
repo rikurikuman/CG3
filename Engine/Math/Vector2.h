@@ -1,5 +1,9 @@
 #pragma once
 
+//仲良し相手宣言
+class Vector3;
+class Float4;
+
 class Vector2
 {
 public:
@@ -9,6 +13,8 @@ public:
 	//ゼロベクトル
 	Vector2(); 
 	
+	//任意の成分ベクトル
+	Vector2(int x, int y);
 	//任意の成分ベクトル
 	Vector2(float x, float y); 
 
@@ -53,6 +59,11 @@ public:
 	//正規化ベクトルを取得
 	//（このインスタンスは書き換えずに別のインスタンスとして取得する）
 	Vector2 GetNormalize() const;
+
+	//z成分を0としてVector3にキャスト
+	operator Vector3() const;
+	//z成分を0, w成分を1としてFloat4にキャスト
+	operator Float4() const;
 };
 
 //左辺にfloatを置いたときに*, /が出来ないのでそれ対策

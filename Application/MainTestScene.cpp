@@ -95,7 +95,7 @@ void MainTestScene::Draw()
 		obj.obj.Draw();
 	}
 
-	SimpleDrawer::DrawString(0, 0, Util::StringFormat("Count:%d", testObjList.size()), { 1, 1, 1, 1 }, "", 20);
+	SimpleDrawer::DrawString(0, 0, 0, Util::StringFormat("Count:%d", testObjList.size()), { 1, 1, 1, 1 }, "", 20);
 
 	for (int i = 0; i < 10; i++) {
 		//SimpleDrawer::DrawCircle(Util::GetRand(0, RWindow::GetWidth()), Util::GetRand(0, RWindow::GetHeight()), 5, Color(1, 0, 1, 1));

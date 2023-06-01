@@ -98,20 +98,10 @@ void RenderTarget::CreateRenderTargetTexture(const UINT width, const UINT height
 	RenderTargetTexture renderTarget;
 	Texture texture = Texture();
 
-	const UINT imageDataCount = width * height;
-	UINT* imageData = new UINT[imageDataCount];
-
-	for (size_t i = 0; i < imageDataCount; i++) {
-		imageData[i] = 0xff0000ff;
-	}
-
 	// テクスチャバッファ
 	// ヒープ設定
 	D3D12_HEAP_PROPERTIES textureHeapProp{};
-	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
-	textureHeapProp.CPUPageProperty =
-		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	textureHeapProp.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	textureHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
 	// リソース設定
 	D3D12_RESOURCE_DESC textureResourceDesc{};
 	textureResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -139,16 +129,6 @@ void RenderTarget::CreateRenderTargetTexture(const UINT width, const UINT height
 		IID_PPV_ARGS(&texture.resource)
 	);
 	assert(SUCCEEDED(result));
-
-	result = texture.resource->WriteToSubresource(
-		0,
-		nullptr,
-		imageData,
-		sizeof(UINT) * width,
-		sizeof(UINT) * (UINT)imageDataCount
-	);
-
-	delete[] imageData;
 
 	D3D12_RESOURCE_DESC depthResDesc{};
 	depthResDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;

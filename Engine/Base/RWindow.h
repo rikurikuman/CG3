@@ -20,6 +20,8 @@ private:
 	int windowHeight = 720; //ウィンドウの高さ
 	std::wstring windowName = L"DirectXGame";
 
+	unsigned int iconID = 0;
+
 	WNDCLASSEX wndClassEx{};
 	HWND wndHandle;
 	MSG msg{};
@@ -38,6 +40,10 @@ public:
 
 	static void SetWindowName(const std::wstring name) {
 		GetInstance()->windowName = name;
+	}
+
+	static void SetIcon(const int id) {
+		GetInstance()->iconID = id;
 	}
 
 	static int GetWidth() {

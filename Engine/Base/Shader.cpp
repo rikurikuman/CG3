@@ -20,7 +20,7 @@ void Shader::Register(std::string id, Shader shader)
 	ShaderRegister::GetInstance()->shaderRegister[id] = shader;
 }
 
-Shader Shader::Get(std::string id, std::string filename, std::string entrypoint, std::string target)
+Shader Shader::GetOrCreate(std::string id, std::string filename, std::string entrypoint, std::string target)
 {
 	Shader res = GetRegistered(id);
 	if (!res.succeeded) {

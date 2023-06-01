@@ -1,5 +1,7 @@
 #include "Vector3.h"
 #include <math.h>
+#include "Vector2.h"
+#include "Float4.h"
 
 const float EPSILON = 0.000001f;
 
@@ -134,6 +136,16 @@ Vector3 Vector3::GetNormalize() const {
 		dz = this->z / length;
 	}
 	return Vector3(dx, dy, dz);
+}
+
+Vector3::operator Vector2() const
+{
+	return Vector2(x, y);
+}
+
+Vector3::operator Float4() const
+{
+	return Float4(x, y, z, 1);
 }
 
 const Vector3 lerp(const Vector3& start, const Vector3& end, const float t)

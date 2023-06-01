@@ -8,37 +8,71 @@
 #include "ViewProjection.h"
 #include "Sprite.h"
 
-class SimpleDrawInfo
-{
+struct DrawBuffers {
+	SRVertexBuffer vert;
+	SRIndexBuffer index;
+	SRVertexBuffer instance;
 };
 
-class DrawBoxInfo : public SimpleDrawInfo {
-public:
+struct DrawCustomData {
+	float layer;
+	bool fillFlag;
+	float radius; //circleで使用
+
+	bool operator==(const DrawCustomData& l) const {
+		return this->layer == l.layer
+			&& this->fillFlag == l.fillFlag
+			&& this->radius == l.radius;
+	}
+};
+
+//unordered_map用にハッシュ関数OBJを追加してあげる
+namespace std {
+	template<>
+	class hash<DrawCustomData> {
+	public:
+		size_t operator() (const DrawCustomData& o) const {
+			return static_cast<size_t>(
+				o.layer * 2.0f +
+				o.fillFlag * 3.0f +
+				o.radius * 5.0f
+			);
+		}
+	};
+}
+
+struct SimpleDrawInfo {};
+
+struct DrawBoxInfo {
 	Vector2 start;
 	Vector2 end;
-
-	VertexBuffer vertBuff;
-	IndexBuffer indexBuff;
-	RConstBuffer<Color> colorBuff;
-	RConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
-
-	GraphicsPipeline pipelineState;
+	Color color;
 };
 
-class DrawCircleInfo : public SimpleDrawInfo {
-public:
-	Vector2 pos;
+struct DrawLineInfo {
+	Vector2 start;
+	Vector2 end;
+	float thickness;
 	Color color;
-	float r = 0;
+};
 
-	VertexBuffer vertBuff;
-	IndexBuffer indexBuff;
-	UINT indexCount = 0;
-	D3D12_VERTEX_BUFFER_VIEW vertView{};
-	D3D12_INDEX_BUFFER_VIEW indexView{};
-	SRConstBuffer<Color> colorBuff;
+struct DrawCircleInfo {
+	Vector2 center;
+	Color color;
+};
 
-	GraphicsPipeline pipelineState;
+struct DrawCircleVertIndex {
+	std::vector<VertexP> vert;
+	std::vector<UINT> index;
+};
+
+struct DrawLine3DInfo {
+	Vector3 start;
+	Vector3 end;
+	float width;
+	float height;
+	Vector3 upVec;
+	Color color;
 };
 
 class DrawStringInfo : public SimpleDrawInfo {

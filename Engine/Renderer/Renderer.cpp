@@ -4,10 +4,13 @@
 #include <RenderTarget.h>
 #include <RWindow.h>
 
+#include <BackSpriteRenderStage.h>
 #include <OpaqueRenderStage.h>
 #include <TransparentRenderStage.h>
 #include <SpriteRenderStage.h>
 #include <FinalRenderStage.h>
+#include <Util.h>
+#include <PostEffectRenderStage.h>
 
 void Renderer::Execute()
 {
@@ -44,7 +47,7 @@ void Renderer::DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBu
 	Renderer::DrawCall(stageID, order);
 }
 
-void Renderer::DrawCall(std::string stageID, RenderOrder order)
+void Renderer::DrawCall(std::string stageID, RenderOrder& order)
 {
 	Renderer* instance = GetInstance();
 
@@ -58,7 +61,6 @@ void Renderer::DrawCall(std::string stageID, RenderOrder order)
 	for (auto itr = instance->stages.begin(); itr != instance->stages.end(); itr++) {
 		IRenderStage* stage = itr->get();
 		if (stage->GetTypeIndentifier() == stageID) {
-
 			//未設定の項目をレンダラーの設定で自動で補完する
 			//ここでも未設定のままになった場合はレンダーステージに任せる
 			if(order.renderTargets.empty()) order.renderTargets = instance->renderTargets;
@@ -68,7 +70,7 @@ void Renderer::DrawCall(std::string stageID, RenderOrder order)
 			if(order.rootSignature == nullptr) order.rootSignature = instance->rootSignature;
 			if(order.pipelineState == nullptr) order.pipelineState = instance->pipelineState;
 
-			stage->orders.push_back(order);
+			stage->orders.emplace_back(std::move(order));
 			return;
 		}
 	}
@@ -107,6 +109,26 @@ void Renderer::RemoveRenderStage(std::string id)
 #endif
 }
 
+IRenderStage* Renderer::GetRenderStage(std::string id)
+{
+	Renderer* instance = GetInstance();
+
+	if (id.empty()) {
+#ifdef _DEBUG
+		OutputDebugStringA("RKEngine WARNING: Renderer::GetRenderStage() called without an stageID.\n");
+#endif
+		return nullptr;
+	}
+
+	for (auto itr = instance->stages.begin(); itr != instance->stages.end(); itr++) {
+		IRenderStage* stage = itr->get();
+		if (stage->GetTypeIndentifier() == id) {
+			return stage;
+		}
+	}
+	return nullptr;
+}
+
 void Renderer::SetAllParamaterToAuto()
 {
 	SetRenderTargetToAuto();
@@ -137,8 +159,10 @@ void Renderer::Init()
 {
 	RenderTarget::CreateRenderTargetTexture(RWindow::GetWidth(), RWindow::GetHeight(), { 0, 0, 0, 1 }, "RenderingImage");
 	
+	AddDefRenderStageBack<BackSpriteRenderStage>();
 	AddDefRenderStageBack<OpaqueRenderStage>();
 	AddDefRenderStageBack<TransparentRenderStage>();
+	AddDefRenderStageBack<PostEffectRenderStage>();
 	AddDefRenderStageBack<SpriteRenderStage>();
 	AddDefRenderStageBack<FinalRenderStage>();
 }

@@ -24,6 +24,7 @@ public:
 
 	Color() {}
 	Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {}
+	Color(int hexcolor);
 
 	bool operator==(const Color& o) const;
 

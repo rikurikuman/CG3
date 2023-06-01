@@ -1,6 +1,8 @@
 #include "Matrix4.h"
 #include <stdexcept>
 #include "Util.h"
+#include "Vector3.h"
+#include "Float4.h"
 
 const float EPSILON = 0.000001f;
 
@@ -348,6 +350,18 @@ Matrix4 Matrix4::PerspectiveProjection(float fov, float aspect, float nearZ, flo
 	return mat;
 }
 
+Matrix4 Matrix4::Viewport(float x, float y, float width, float height, float minDepth, float maxDepth)
+{
+	Matrix4 result;
+	result[0][0] = width / 2.0f;
+	result[1][1] = -height / 2.0f;
+	result[2][2] = maxDepth - minDepth;
+	result[3][0] = x + width / 2.0f;
+	result[3][1] = y + height / 2.0f;
+	result[3][2] = minDepth;
+	return result;
+}
+
 Vector3 operator*(const Vector3 vec, const Matrix4 mat)
 {
 	Vector3 temp = vec;
@@ -362,4 +376,21 @@ Vector3& operator*=(Vector3& vec, const Matrix4 mat)
 	Vector3 temp = vec * mat;
 	vec = temp;
 	return vec;
+}
+
+Float4 operator*(const Float4 f, const Matrix4 mat)
+{
+	Float4 temp = f;
+	temp.x = f.x * mat[0][0] + f.y * mat[1][0] + f.z * mat[2][0] + f.w * mat[3][0];
+	temp.y = f.x * mat[0][1] + f.y * mat[1][1] + f.z * mat[2][1] + f.w * mat[3][1];
+	temp.z = f.x * mat[0][2] + f.y * mat[1][2] + f.z * mat[2][2] + f.w * mat[3][2];
+	temp.w = f.x * mat[0][3] + f.y * mat[1][3] + f.z * mat[2][3] + f.w * mat[3][3];
+	return temp;
+}
+
+Float4& operator*=(Float4& f, const Matrix4 mat)
+{
+	Float4 temp = f * mat;
+	f = temp;
+	return f;
 }

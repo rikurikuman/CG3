@@ -92,6 +92,110 @@ public:
 	//Vertex(PosNormalUv)の配列とその大きさで頂点バッファを更新する
 	void Update(VertexPNU* list, unsigned int size);
 
+	//任意の頂点データの配列とその大きさで作る
+	template<class T>
+	void Init(T* list, UINT size) {
+		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
+		std::lock_guard<std::recursive_mutex> lock2(mutex);
+
+		if (data != nullptr && data->buff.GetRegionPtr() != nullptr) {
+			SRBufferAllocator::Free(data->buff);
+		}
+		else {
+			data = new VertexBufferData(); //できればnewしたくねえ
+			data->count++;
+		}
+
+		UINT dataSize = static_cast<UINT>(sizeof(T) * size);
+
+		data->buff = SRBufferAllocator::Alloc(dataSize, 1);
+
+		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
+		for (UINT i = 0; i < size; i++) {
+			vertMap[i] = list[i];
+		}
+
+		data->dataSize = dataSize;
+		data->strideInBytes = sizeof(T);
+	}
+
+	//任意の頂点データのvectorで作る
+	template<class T>
+	void Init(std::vector<T> list) {
+		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
+		std::lock_guard<std::recursive_mutex> lock2(mutex);
+
+		if (data != nullptr && data->buff.GetRegionPtr() != nullptr) {
+			SRBufferAllocator::Free(data->buff);
+		}
+		else {
+			data = new VertexBufferData(); //できればnewしたくねえ
+			data->count++;
+		}
+
+		UINT dataSize = static_cast<UINT>(sizeof(T) * list.size());
+
+		data->buff = SRBufferAllocator::Alloc(dataSize, 1);
+
+		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
+		for (UINT i = 0; i < list.size(); i++) {
+			vertMap[i] = list[i];
+		}
+
+		data->dataSize = dataSize;
+		data->strideInBytes = sizeof(T);
+	}
+
+	//任意の頂点データの配列とその大きさで更新
+	template<class T>
+	void Update(T* list, UINT size) {
+		std::lock_guard<std::recursive_mutex> lock(mutex);
+		if (data == nullptr || data->buff.GetRegionPtr() == nullptr) {
+			Init(list, size);
+			return;
+		}
+
+		UINT dataSize = static_cast<UINT>(sizeof(T) * size);
+
+		if (data->dataSize != dataSize || data->strideInBytes != sizeof(T)) {
+			Init(list, size);
+			return;
+		}
+
+		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
+		for (UINT i = 0; i < size; i++) {
+			vertMap[i] = list[i];
+		}
+
+		data->dataSize = dataSize;
+		data->strideInBytes = sizeof(T);
+	}
+
+	//任意の頂点データのvectorで更新
+	template<class T>
+	void Update(std::vector<T> list) {
+		std::lock_guard<std::recursive_mutex> lock(mutex);
+		if (data == nullptr || data->buff.GetRegionPtr() == nullptr) {
+			Init(list);
+			return;
+		}
+
+		UINT dataSize = static_cast<UINT>(sizeof(T) * list.size());
+
+		if (data->dataSize != dataSize || data->strideInBytes != sizeof(T)) {
+			Init(list);
+			return;
+		}
+
+		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
+		for (UINT i = 0; i < list.size(); i++) {
+			vertMap[i] = list[i];
+		}
+
+		data->dataSize = dataSize;
+		data->strideInBytes = sizeof(T);
+	}
+
 	D3D12_VERTEX_BUFFER_VIEW GetVertView();
 
 private:

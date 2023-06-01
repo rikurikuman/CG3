@@ -1,7 +1,9 @@
 #pragma once
 #include <d3d12.h>
 #include <wrl.h>
+#include <string>
 #include <vector>
+#include <unordered_map>
 #include "Shader.h"
 
 typedef std::vector<D3D12_INPUT_ELEMENT_DESC> InputLayout;
@@ -37,5 +39,10 @@ public:
     PipelineStateDesc desc{};
 
 	void Create();
+
+    static GraphicsPipeline& GetOrCreate(std::string id, PipelineStateDesc desc);
+
+private:
+    static std::unordered_map<std::string, GraphicsPipeline> pipelineMap;
 };
 
