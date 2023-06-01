@@ -324,8 +324,14 @@
     <ClCompile Include="Engine\Base\SRVertexBuffer.cpp">
       <Filter>ソース ファイル\Engine\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="SRIndexBuffer.cpp">
+    <ClCompile Include="Engine\Base\SRIndexBuffer.cpp">
       <Filter>ソース ファイル\Engine\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\JsonWrapper.cpp">
+      <Filter>ソース ファイル\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\LevelLoader.cpp">
+      <Filter>ソース ファイル\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -374,8 +380,12 @@
     <FxCompile Include="Shader\FinalPS.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Shader\SimpleInstancePS.hlsl" />
-    <FxCompile Include="Shader\SimpleInstanceVS.hlsl" />
+    <FxCompile Include="Shader\SimpleInstancePS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\SimpleInstanceVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\2d\Sprite.h">
@@ -624,6 +634,12 @@
     <ClInclude Include="Engine\Base\SRIndexBuffer.h">
       <Filter>ヘッダー ファイル\Engine\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\JsonWrapper.h">
+      <Filter>ヘッダー ファイル\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\LevelLoader.h">
+      <Filter>ヘッダー ファイル\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli">
@@ -647,6 +663,8 @@
     <None Include="Shader\Final.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
-    <None Include="Shader\SimpleInstance.hlsli" />
+    <None Include="Shader\SimpleInstance.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

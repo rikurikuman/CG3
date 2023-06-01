@@ -168,6 +168,7 @@
     <ClCompile Include="Application\RaySphereScene.cpp" />
     <ClCompile Include="Application\SpherePolygonScene.cpp" />
     <ClCompile Include="Engine\Base\RenderTarget.cpp" />
+    <ClCompile Include="Engine\Base\SRIndexBuffer.cpp" />
     <ClCompile Include="Engine\Collision\Colliders.cpp" />
     <ClCompile Include="Application\CollidersScene.cpp" />
     <ClCompile Include="Engine\3d\BillboardImage.cpp" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Engine\Base\GraphicsPipeline.cpp" />
     <ClCompile Include="Engine\3d\Image3D.cpp" />
     <ClCompile Include="Engine\Base\IndexBuffer.cpp" />
+    <ClCompile Include="Engine\JsonWrapper.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffect.cpp" />
     <ClCompile Include="Engine\Renderer\FinalRenderStage.cpp" />
     <ClCompile Include="Engine\Renderer\OpaqueRenderStage.cpp" />
@@ -192,6 +194,7 @@
     <ClCompile Include="Engine\Renderer\TransparentRenderStage.cpp" />
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp" />
     <ClCompile Include="Engine\Light\LightGroup.cpp" />
+    <ClCompile Include="Engine\LevelLoader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Application\MainTestScene.cpp" />
     <ClCompile Include="Engine\Base\Material.cpp" />
@@ -239,7 +242,6 @@
     <ClCompile Include="Engine\Collision\RayCollider.cpp" />
     <ClCompile Include="Engine\Collision\SphereCollider.cpp" />
     <ClCompile Include="Engine\Base\SRVertexBuffer.cpp" />
-    <ClCompile Include="SRIndexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BasicPS.hlsl">
@@ -387,6 +389,7 @@
     <ClInclude Include="Engine\Base\GraphicsPipeline.h" />
     <ClInclude Include="Engine\3d\Image3D.h" />
     <ClInclude Include="Engine\Base\IndexBuffer.h" />
+    <ClInclude Include="Engine\JsonWrapper.h" />
     <ClInclude Include="Engine\Light\DirectionalLight.h" />
     <ClInclude Include="Engine\PostEffect\PostEffect.h" />
     <ClInclude Include="Engine\Renderer\FinalRenderStage.h" />
@@ -433,6 +436,7 @@
     <ClInclude Include="Engine\Base\SRBuffer.h" />
     <ClInclude Include="Engine\SimpleDrawer\TextDrawer.h" />
     <ClInclude Include="Engine\Base\Texture.h" />
+    <ClInclude Include="Engine\LevelLoader.h" />
     <ClInclude Include="Engine\TimeManager.h" />
     <ClInclude Include="Engine\Base\Transform.h" />
     <ClInclude Include="Engine\Util.h" />

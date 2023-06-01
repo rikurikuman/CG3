@@ -8,96 +8,53 @@
 
 MainTestScene::MainTestScene()
 {
-	sphere = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere", true));
+	levelData = LevelLoader::Load("Resources/untitled.json");
 
-	sphere.transform.position = { 0, 0, 0 };
-	sphere.transform.UpdateMatrix();
-
-	sphere2 = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere2", true));
-
-	sphere2.transform.position = { 0.5f, 0, -1 };
-	sphere2.transform.UpdateMatrix();
-
-	sphere2.tuneMaterial.color.a = 0.6f;
-
-	sprite.SetTexture("");
-	sprite.SetAnchor({ 0, 0 });
-	sprite.transform.position = { 100, 100, 0 };
-	sprite.transform.UpdateMatrix();
-	sprite.material.color = { 1, 1, 1, 1 };
-
-	sprite2.SetTexture("");
-	sprite2.SetAnchor({ 0, 0 });
-	sprite2.transform.position = { 120, 120, 0 };
-	sprite2.transform.UpdateMatrix();
-	sprite2.material.color = { 1, 0, 0, 0.5f };
-
-	camera.viewProjection.eye = { 0, 0, -10 };
-	camera.viewProjection.target = { 0, 0, 0 };
-	camera.viewProjection.UpdateMatrix();
+	for (LevelLoader::LevelObject& obj : levelData.objects) {
+		ConstructObjectFromLevelData(obj);
+	}
 }
 
 void MainTestScene::Init()
 {
 	Camera::nowCamera = &camera;
 	LightGroup::nowLight = &light;
-	PostEffect::InitPipeline();
-	hoge.SetTexture("RenderTargetTex_hoge");
 }
 
 void MainTestScene::Update()
 {
 	light.Update();
 	camera.Update();
-
-	timer += TimeManager::deltaTime;
-	if (timer >= 0.01f) {
-		timer = 0;
-		for (int i = 0; i < 10; i++) {
-			TestObj obj{};
-			obj.obj = ModelObj("Sphere");
-			obj.speed = Vector3(Util::GetRand(-1.0f, 1.0f), Util::GetRand(-1.0f, 1.0f), Util::GetRand(-1.0f, 1.0f));
-			obj.timer = 0;
-			testObjList.push_back(obj);
-		}
-	}
-
-	for (auto itr = testObjList.begin(); itr != testObjList.end();) {
-		TestObj& obj = *itr;
-		obj.timer += TimeManager::deltaTime;
-		if (obj.timer >= 5) {
-			itr = testObjList.erase(itr);
-			continue;
-		}
-		obj.obj.transform.position += obj.speed;
-		obj.obj.transform.UpdateMatrix();
-		obj.obj.TransferBuffer(camera.viewProjection);
-		itr++;
-	}
-
-	sphere.TransferBuffer(camera.viewProjection);
-	sphere2.TransferBuffer(camera.viewProjection);
-	sprite.TransferBuffer();
-	sprite2.TransferBuffer();
-	hoge.TransferBuffer();
 }
 
 void MainTestScene::Draw()
 {
-	sphere.Draw();
-	sphere2.Draw();
+	for (ModelObj& obj : objects) {
+		obj.TransferBuffer(Camera::nowCamera->viewProjection);
+		obj.Draw();
+	}
+}
 
-	sprite.Draw();
-	sprite2.Draw();
+void MainTestScene::ConstructObjectFromLevelData(LevelLoader::LevelObject& obj)
+{
+	if (obj.type == "MESH") {
+		objects.emplace_back("");
+		ModelObj& modelObj = objects.back();
 
-	for (auto itr = testObjList.begin(); itr != testObjList.end(); itr++) {
-		TestObj& obj = *itr;
-		obj.obj.Draw();
+		if (obj.hasFileName) {
+			modelObj.model = ModelManager::Get(obj.fileName);
+		}
+		if (obj.hasTransform) {
+			modelObj.transform.position = obj.transform.translation;
+			modelObj.transform.rotation = obj.transform.rotation;
+			modelObj.transform.scale = obj.transform.scaling;
+			modelObj.transform.UpdateMatrix();
+		}
 	}
 
-	SimpleDrawer::DrawString(0, 0, Util::StringFormat("Count:%d", testObjList.size()), { 1, 1, 1, 1 }, "", 20);
-
-	for (int i = 0; i < 10; i++) {
-		//SimpleDrawer::DrawCircle(Util::GetRand(0, RWindow::GetWidth()), Util::GetRand(0, RWindow::GetHeight()), 5, Color(1, 0, 1, 1));
+	if (!obj.children.empty()) {
+		for (LevelLoader::LevelObject child : obj.children) {
+			ConstructObjectFromLevelData(child);
+		}
 	}
 }
