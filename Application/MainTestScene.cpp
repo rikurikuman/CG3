@@ -8,7 +8,7 @@
 
 MainTestScene::MainTestScene()
 {
-	sphere = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere", true));
+	sphere = ModelObj(Model::LoadWithAIL("./Resources/Model/", "Sphere.obj", "Sphere"));
 
 	sphere.transform.position = { 0, 0, 0 };
 	sphere.transform.UpdateMatrix();
