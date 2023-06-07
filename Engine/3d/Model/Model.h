@@ -17,10 +17,10 @@
 #pragma warning(pop)
 
 #ifdef _DEBUG
-//#pragma comment(lib, "zlibstaticd.lib")
+#pragma comment(lib, "zlibstaticd.lib")
 #pragma comment(lib, "assimp-vc143-mtd.lib")
 #else
-//#pragma comment(lib, "zlibstatic.lib")
+#pragma comment(lib, "zlibstatic.lib")
 #pragma comment(lib, "assimp-vc143-mt.lib")
 #endif
 
