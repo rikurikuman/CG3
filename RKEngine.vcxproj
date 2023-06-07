@@ -81,13 +81,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Lib;$(SolutionDir)Lib\DirectXTex;$(SolutionDir)Lib\assimp;$(SolutionDir)Lib\ImGui</IncludePath>
-    <LibraryPath>$(SolutionDir)Lib;$(SolutionDir)Lib\assimp;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Lib;$(SolutionDir)Lib\DirectXTex;$(SolutionDir)Lib\assimp\include;$(SolutionDir)Lib\assimp\include\assimp;$(SolutionDir)Lib\ImGui</IncludePath>
+    <LibraryPath>$(SolutionDir)Lib\Product\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Lib;$(SolutionDir)Lib\DirectXTex;$(SolutionDir)Lib\assimp;$(SolutionDir)Lib\ImGui</IncludePath>
-    <LibraryPath>$(SolutionDir)Lib;$(SolutionDir)Lib\assimp;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)Lib;$(SolutionDir)Lib\DirectXTex;$(SolutionDir)Lib\assimp\include;$(SolutionDir)Lib\assimp\include\assimp;$(SolutionDir)Lib\ImGui</IncludePath>
+    <LibraryPath>$(SolutionDir)Lib\Product\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -554,6 +554,12 @@
     <None Include="Shader\Test.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Lib\assimp\code\assimp.vcxproj">
+      <Project>{477ab35d-58ec-3e5f-856c-32ea36354bb0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="Lib\assimp\contrib\zlib\zlibstatic.vcxproj">
+      <Project>{36af1665-db58-3fca-8211-badffc628cbc}</Project>
+    </ProjectReference>
     <ProjectReference Include="Lib\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
