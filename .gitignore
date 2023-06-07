@@ -357,6 +357,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/Lib/assimp/target
+/Lib/*/target
 /Lib/Product
 /Lib/assimp/contrib/zlib/zlibstatic.dir
