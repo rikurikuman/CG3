@@ -4,6 +4,7 @@
 #include "Float4.h"
 
 const float EPSILON = 0.000001f;
+const Vector3 Vector3::ZERO = Vector3();
 
 Vector3::Vector3() : x(0), y(0), z(0) {}
 
@@ -92,14 +93,14 @@ Vector3& Vector3::operator/=(const float a) {
 }
 
 float Vector3::Dot(const Vector3& a) const {
-	return this->x * a.x + this->y * a.y + this->z * a.z;
+	return x * a.x + y * a.y + z * a.z;
 }
 
 Vector3 Vector3::Cross(const Vector3& a) const {
-	float x = this->y * a.z - this->z * a.y;
-	float y = this->z * a.x - this->x * a.z;
-	float z = this->x * a.y - this->y * a.x;
-	return Vector3(x, y, z);
+	float nx = y * a.z - z * a.y;
+	float ny = z * a.x - x * a.z;
+	float nz = x * a.y - y * a.x;
+	return Vector3(nx, ny, nz);
 }
 
 float Vector3::Length() const {

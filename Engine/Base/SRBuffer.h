@@ -29,19 +29,19 @@ public:
 	byte* Get();
 
 	const MemoryRegionPtr* GetRegionPtr() const {
-		return ptr;
+		return ptr_;
 	}
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const;
 
 	bool operator==(const void* ptr) const {
-		return this->ptr == ptr;
+		return ptr_ == ptr;
 	}
 	bool operator!=(const void* ptr) const {
-		return this->ptr != ptr;
+		return ptr_ != ptr;
 	}
 	bool operator==(const SRBufferPtr& ptr) const {
-		return this->ptr == ptr.ptr;
+		return ptr_ == ptr.ptr_;
 	}
 	bool operator!=(const SRBufferPtr& ptr) const {
 		return !(*this == ptr);
@@ -51,8 +51,8 @@ public:
 
 private:
 	friend class SRBufferAllocator;
-	SRBufferPtr(MemoryRegionPtr* ptr) : ptr(ptr) {}
-	MemoryRegionPtr* ptr = nullptr;
+	SRBufferPtr(MemoryRegionPtr* ptr) : ptr_(ptr) {}
+	MemoryRegionPtr* ptr_ = nullptr;
 };
 
 class SRBufferAllocator

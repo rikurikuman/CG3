@@ -6,17 +6,17 @@
 
 Image3D::Image3D(TextureHandle texture, Vector2 size, bool forceSize)
 {
-	this->texture = texture;
+	mTexture = texture;
 
 	if (forceSize) {
-		this->size.x = size.x;
-		this->size.y = size.y;
+		mSize.x = size.x;
+		mSize.y = size.y;
 	}
 	else {
 		scale = size;
 		Texture tex = TextureManager::Get(texture);
-		this->size.x = tex.resource->GetDesc().Width / (float)tex.resource->GetDesc().Height * scale.x;
-		this->size.y = scale.y;
+		mSize.x = tex.resource->GetDesc().Width / (float)tex.resource->GetDesc().Height * scale.x;
+		mSize.y = scale.y;
 	}
 
 	Init();
@@ -26,10 +26,10 @@ void Image3D::Init()
 {
 	//頂点データ
 	VertexPNU vertices[] = {
-		{{ -0.5f * size.x, -0.5f * size.y, 0.0f }, {}, {0.0f, 1.0f}}, //左下
-		{{ -0.5f * size.x,  0.5f * size.y, 0.0f }, {}, {0.0f, 0.0f}}, //左上
-		{{  0.5f * size.x, -0.5f * size.y, 0.0f }, {}, {1.0f, 1.0f}}, //右下
-		{{  0.5f * size.x,  0.5f * size.y, 0.0f }, {}, {1.0f, 0.0f}}, //右上
+		{{ -0.5f * mSize.x, -0.5f * mSize.y, 0.0f }, {}, {0.0f, 1.0f}}, //左下
+		{{ -0.5f * mSize.x,  0.5f * mSize.y, 0.0f }, {}, {0.0f, 0.0f}}, //左上
+		{{  0.5f * mSize.x, -0.5f * mSize.y, 0.0f }, {}, {1.0f, 1.0f}}, //右下
+		{{  0.5f * mSize.x,  0.5f * mSize.y, 0.0f }, {}, {1.0f, 0.0f}}, //右上
 	};
 
 	//頂点インデックスデータ
@@ -54,7 +54,7 @@ void Image3D::TransferBuffer(ViewProjection viewprojection)
 void Image3D::Draw()
 {
 	std::vector<RootData> rootData{
-		{TextureManager::Get(texture).gpuHandle},
+		{TextureManager::Get(mTexture).gpuHandle},
 		{RootDataType::SRBUFFER_CBV, materialBuff.buff },
 		{RootDataType::SRBUFFER_CBV, transformBuff.buff },
 		{RootDataType::SRBUFFER_CBV, viewProjectionBuff.buff },

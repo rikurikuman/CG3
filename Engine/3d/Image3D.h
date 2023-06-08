@@ -10,10 +10,10 @@
 class Image3D final : public Obj3D
 {
 private:
-	TextureHandle texture;
+	TextureHandle mTexture;
 	Vector2 scale = { 1, 1 };
-	Vector2 size = { 1, 1 };
-	bool forceSize = false;
+	Vector2 mSize = { 1, 1 };
+	bool mForceSize = false;
 
 public:
 	Material material;
@@ -29,34 +29,33 @@ public:
 
 	Image3D(TextureHandle texture, Vector2 size = {1, 1}, bool forceSize = false);
 
-	void SetTexture(TextureHandle tex) {
-		texture = tex;
-		if (!forceSize) {
+	void SetTexture(TextureHandle texture) {
+		mTexture = texture;
+		if (!mForceSize) {
 			Texture tex = TextureManager::Get(texture);
-			this->size.x = tex.resource->GetDesc().Width / (float)tex.resource->GetDesc().Height * size.x;
-			this->size.y = size.y;
+			mSize.x = tex.resource->GetDesc().Width / (float)tex.resource->GetDesc().Height * mSize.x;
 		}
 	}
 
 	TextureHandle GetTexture() {
-		return texture;
+		return mTexture;
 	}
 
 	void SetSize(Vector2 size, bool forceSize = false) {
-		this->forceSize = forceSize;
+		mForceSize = forceSize;
 		if (forceSize) {
-			this->size = size;
+			mSize = size;
 		}
 		else {
 			scale = size;
-			Texture tex = TextureManager::Get(texture);
-			this->size.x = tex.resource->GetDesc().Width / (float)tex.resource->GetDesc().Height * scale.x;
-			this->size.y = scale.y;
+			Texture tex = TextureManager::Get(mTexture);
+			mSize.x = tex.resource->GetDesc().Width / (float)tex.resource->GetDesc().Height * scale.x;
+			mSize.y = scale.y;
 		}
 	}
 
 	Vector2 GetSize() {
-		return size;
+		return mSize;
 	}
 
 	//‰Šú‰»ˆ—

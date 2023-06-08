@@ -17,14 +17,11 @@ public:
 	static void Execute();
 
 	//描画コマンドを積みます
-	static void DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView, D3D12_INDEX_BUFFER_VIEW* indexView, UINT indexCount, const std::vector<RootData>& rootData, Vector3& anchorPoint = Vector3(0, 0, 0));
+	static void DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView, D3D12_INDEX_BUFFER_VIEW* indexView, UINT indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint = Vector3::ZERO);
 	//描画コマンドを積みます
-	static void DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, UINT indexCount, const std::vector<RootData>& rootData, Vector3& anchorPoint = Vector3(0, 0, 0));
+	static void DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, UINT indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint = Vector3::ZERO);
 	//描画コマンドを積みます
-	static void DrawCall(std::string stageID, RenderOrder& order);
-
-	//RenderStageを初期化します
-	static void InitRenderStages();
+	static void DrawCall(std::string stageID, RenderOrder order);
 
 	//RenderStageを指定IDのRenderStageの前に追加します
 	template<class T>
@@ -154,7 +151,7 @@ private:
 		Init();
 	};
 	~Renderer() = default;
-	Renderer(const Renderer& a) {};
+	Renderer(const Renderer&) {};
 	Renderer& operator=(const Renderer&) { return *this; }
 
 	void Init();

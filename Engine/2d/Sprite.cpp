@@ -14,15 +14,15 @@ Sprite::Sprite()
 
 Sprite::Sprite(TextureHandle texture, Vector2 anchor)
 {
-	this->texture = texture;
+	mTexture = texture;
 
 	//サイズをセットする
 	
-	this->size.x = (float)TextureManager::Get(texture).resource->GetDesc().Width;
-	this->size.y = (float)TextureManager::Get(texture).resource->GetDesc().Height;
+	this->size.x = (float)TextureManager::Get(mTexture).resource->GetDesc().Width;
+	this->size.y = (float)TextureManager::Get(mTexture).resource->GetDesc().Height;
 
 	//アンカーポイントをセットする
-	this->anchor = anchor;
+	mAnchor = anchor;
 
 	Init();
 }
@@ -30,8 +30,8 @@ Sprite::Sprite(TextureHandle texture, Vector2 anchor)
 void Sprite::UpdateVertex()
 {
 	Vector2 texSize = {
-		static_cast<float>(TextureManager::Get(texture).resource->GetDesc().Width),
-		static_cast<float>(TextureManager::Get(texture).resource->GetDesc().Height)
+		static_cast<float>(TextureManager::Get(mTexture).resource->GetDesc().Width),
+		static_cast<float>(TextureManager::Get(mTexture).resource->GetDesc().Height)
 	};
 
 	float uvLeft = srcPos.x / texSize.x;
@@ -41,10 +41,10 @@ void Sprite::UpdateVertex()
 
 	//頂点データ
 	VertexPNU vertices[] = {
-		{{ -anchor.x * size.x, (1 - anchor.y) * size.y, 0.0f}, {}, {uvLeft, uvBottom}}, //左下
-		{{ -anchor.x * size.x, -anchor.y * size.y, 0.0f }, {}, {uvLeft, uvTop}}, //左上
-		{{ (1 - anchor.x) * size.x, (1 - anchor.y) * size.y, 0.0f }, {}, {uvRight, uvBottom}}, //右下
-		{{ (1 - anchor.x) * size.x, -anchor.y * size.y, 0.0f }, {}, {uvRight, uvTop}}, //右上
+		{{ -mAnchor.x * size.x, (1 - mAnchor.y) * size.y, 0.0f}, {}, {uvLeft, uvBottom}}, //左下
+		{{ -mAnchor.x * size.x, -mAnchor.y * size.y, 0.0f }, {}, {uvLeft, uvTop}}, //左上
+		{{ (1 - mAnchor.x) * size.x, (1 - mAnchor.y) * size.y, 0.0f }, {}, {uvRight, uvBottom}}, //右下
+		{{ (1 - mAnchor.x) * size.x, -mAnchor.y * size.y, 0.0f }, {}, {uvRight, uvTop}}, //右上
 	};
 
 	vertBuff.Update(vertices, _countof(vertices));
@@ -52,16 +52,16 @@ void Sprite::UpdateVertex()
 
 void Sprite::SetTexture(TextureHandle texture)
 {
-	this->texture = texture;
+	mTexture = texture;
 	srcPos = { 0, 0 };
-	this->size.x = (float)TextureManager::Get(texture).resource->GetDesc().Width;
-	this->size.y = (float)TextureManager::Get(texture).resource->GetDesc().Height;
+	this->size.x = (float)TextureManager::Get(mTexture).resource->GetDesc().Width;
+	this->size.y = (float)TextureManager::Get(mTexture).resource->GetDesc().Height;
 	change = true;
 }
 
 void Sprite::SetAnchor(Vector2 anchor)
 {
-	this->anchor = anchor;
+	mAnchor = anchor;
 	change = true;
 }
 
@@ -76,10 +76,10 @@ void Sprite::Init()
 {
 	//頂点データ
 	VertexPNU vertices[] = {
-		{{ -anchor.x * size.x, (1 - anchor.y) * size.y, 0.0f}, {}, {0.0f, 1.0f}}, //左下
-		{{ -anchor.x * size.x, -anchor.y * size.y, 0.0f }, {}, {0.0f, 0.0f}}, //左上
-		{{ (1 - anchor.x) * size.x, (1 - anchor.y) * size.y, 0.0f }, {}, {1.0f, 1.0f}}, //右下
-		{{ (1 - anchor.x) * size.x, -anchor.y * size.y, 0.0f }, {}, {1.0f, 0.0f}}, //右上
+		{{ -mAnchor.x * size.x, (1 - mAnchor.y) * size.y, 0.0f}, {}, {0.0f, 1.0f}}, //左下
+		{{ -mAnchor.x * size.x, -mAnchor.y * size.y, 0.0f }, {}, {0.0f, 0.0f}}, //左上
+		{{ (1 - mAnchor.x) * size.x, (1 - mAnchor.y) * size.y, 0.0f }, {}, {1.0f, 1.0f}}, //右下
+		{{ (1 - mAnchor.x) * size.x, -mAnchor.y * size.y, 0.0f }, {}, {1.0f, 0.0f}}, //右上
 	};
 
 	//頂点インデックスデータ
@@ -115,7 +115,7 @@ void Sprite::TransferBuffer()
 void Sprite::Draw()
 {
 	std::vector<RootData> rootData{
-		{TextureManager::Get(texture).gpuHandle},
+		{TextureManager::Get(mTexture).gpuHandle},
 		{RootDataType::SRBUFFER_CBV, materialBuff.buff},
 		{RootDataType::SRBUFFER_CBV, transformBuff.buff},
 		{RootDataType::SRBUFFER_CBV, viewProjectionBuff.buff},

@@ -17,10 +17,10 @@ public:
 
 private:
 	bool change = false;
-	TextureHandle texture;
+	TextureHandle mTexture;
 	Vector2 srcPos = { 0, 0 };
 	Vector2 size = { 0, 0 };
-	Vector2 anchor = { 0.5f, 0.5f };
+	Vector2 mAnchor = { 0.5f, 0.5f };
 
 	SRVertexBuffer vertBuff;
 	SRIndexBuffer indexBuff;
@@ -80,7 +80,7 @@ private:
 		Init();
 	};
 	~SpriteManager() = default;
-	SpriteManager(const SpriteManager& a) {};
+	SpriteManager(const SpriteManager&) {};
 	SpriteManager& operator=(const SpriteManager&) { return *this; }
 
 	void Init();

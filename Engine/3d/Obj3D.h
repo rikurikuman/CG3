@@ -5,7 +5,7 @@
 class Obj3D
 {
 protected:
-	Obj3D* parent = nullptr;
+	Obj3D* mParent = nullptr;
 
 public:
 	virtual ~Obj3D() {}
@@ -13,12 +13,12 @@ public:
 	Transform transform;
 
 	void SetParent(Obj3D* parent) {
-		this->parent = parent;
+		mParent = parent;
 		this->transform.parent = &parent->transform;
 	}
 
 	const Obj3D* GetParent() {
-		return parent;
+		return mParent;
 	}
 
 	//各データのバッファへの転送

@@ -25,7 +25,7 @@ void Renderer::Execute()
 	}
 }
 
-void Renderer::DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView, D3D12_INDEX_BUFFER_VIEW* indexView, UINT indexCount, const std::vector<RootData>& rootData, Vector3& anchorPoint)
+void Renderer::DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView, D3D12_INDEX_BUFFER_VIEW* indexView, UINT indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint)
 {
 	RenderOrder order;
 	order.anchorPoint = anchorPoint;
@@ -36,7 +36,7 @@ void Renderer::DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView,
 	Renderer::DrawCall(stageID, order);
 }
 
-void Renderer::DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, UINT indexCount, const std::vector<RootData>& rootData, Vector3& anchorPoint)
+void Renderer::DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, UINT indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint)
 {
 	RenderOrder order;
 	order.anchorPoint = anchorPoint;
@@ -47,7 +47,7 @@ void Renderer::DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBu
 	Renderer::DrawCall(stageID, order);
 }
 
-void Renderer::DrawCall(std::string stageID, RenderOrder& order)
+void Renderer::DrawCall(std::string stageID, RenderOrder order)
 {
 	Renderer* instance = GetInstance();
 
@@ -78,11 +78,6 @@ void Renderer::DrawCall(std::string stageID, RenderOrder& order)
 #ifdef _DEBUG
 	OutputDebugStringA(("RKEngine WARNING: Renderer::DrawCall() : RenderStage(" + stageID + ") is not found.\n").c_str());
 #endif
-}
-
-void Renderer::InitRenderStages()
-{
-	Renderer* instance = GetInstance();
 }
 
 void Renderer::RemoveRenderStage(std::string id)

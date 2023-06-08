@@ -100,7 +100,7 @@ public:
 private:
 	RInput() {};
 	~RInput() = default;
-	RInput(const RInput& a) {};
+	RInput(const RInput&) {};
 	RInput& operator=(const RInput&) { return *this; }
 
 	bool initialized = false;

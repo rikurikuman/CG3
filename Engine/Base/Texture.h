@@ -16,7 +16,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource; //テクスチャのリソース
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = D3D12_CPU_DESCRIPTOR_HANDLE(); //SRVのハンドル(CPU側)
 	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = D3D12_GPU_DESCRIPTOR_HANDLE(); //SRVのハンドル(GPU側)
-	UINT heapIndex = -1;
+	UINT heapIndex = UINT32_MAX;
 	std::string filePath; //ファイルへのパス
 
 	Texture() {};
@@ -122,7 +122,7 @@ private:
 		Init();
 	};
 	~TextureManager() = default;
-	TextureManager(const TextureManager& a) {};
+	TextureManager(const TextureManager&) {};
 	TextureManager& operator=(const TextureManager&) { return *this; }
 
 	void Init();

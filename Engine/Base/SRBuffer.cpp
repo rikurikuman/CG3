@@ -40,7 +40,7 @@ void SRBufferAllocator::Free(SRBufferPtr& ptr)
 	SRBufferAllocator* instance = GetInstance();
 	std::lock_guard<std::recursive_mutex> lock(instance->mutex);
 
-	if (ptr.ptr == nullptr || ptr.ptr->region == nullptr) {
+	if (ptr.ptr_ == nullptr || ptr.ptr_->region == nullptr) {
 #ifdef _DEBUG
 		OutputDebugStringA(Util::StringFormat("RKEngine WARNING: SRBufferAllocator::Free() : Attempted to free an invalid pointer(%p).\n", ptr.ptr).c_str());
 #endif
@@ -49,9 +49,9 @@ void SRBufferAllocator::Free(SRBufferPtr& ptr)
 
 	_Free(ptr);
 	//もっと安全に消せるように何とかする
-	ptr.ptr->region = nullptr;
-	instance->regionPtrs.erase(ptr.ptr->memItr);
-	ptr.ptr = nullptr;
+	ptr.ptr_->region = nullptr;
+	instance->regionPtrs.erase(ptr.ptr_->memItr);
+	ptr.ptr_ = nullptr;
 }
 
 MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag)
@@ -159,11 +159,11 @@ void SRBufferAllocator::_Free(SRBufferPtr& ptr)
 	//		break;
 	//	}
 	//}
-	usingRegion = *ptr.ptr->region->memItr;
-	instance->usingRegions.erase(ptr.ptr->region->memItr);
+	usingRegion = *ptr.ptr_->region->memItr;
+	instance->usingRegions.erase(ptr.ptr_->region->memItr);
 	//消す時に分かりやすく0xddにする
-	for (byte* ptr = usingRegion.pBegin; ptr <= usingRegion.pEnd; ptr++) {
-		*ptr = 0xdd;
+	for (byte* p = usingRegion.pBegin; p <= usingRegion.pEnd; p++) {
+		*p = 0xdd;
 	}
 
 	//見つからなかったら不正なポインタを解放しようとしてるので怒る
@@ -388,7 +388,7 @@ SRBufferAllocator::SRBufferAllocator() {
 
 byte* SRBufferPtr::Get() {
 	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::mutex);
-	if (ptr != nullptr && ptr->region != nullptr) return ptr->region->pBegin;
+	if (ptr_ != nullptr && ptr_->region != nullptr) return ptr_->region->pBegin;
 	return nullptr;
 }
 
@@ -396,11 +396,11 @@ D3D12_GPU_VIRTUAL_ADDRESS SRBufferPtr::GetGPUVirtualAddress() const
 {
 	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::mutex);
 	D3D12_GPU_VIRTUAL_ADDRESS address = SRBufferAllocator::GetGPUVirtualAddress();
-	address += static_cast<UINT>(ptr->region->pBegin - SRBufferAllocator::GetBufferAddress());
+	address += static_cast<UINT>(ptr_->region->pBegin - SRBufferAllocator::GetBufferAddress());
 	return address;
 }
 
 SRBufferPtr::operator bool() const {
 	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::mutex);
-	return ptr != nullptr && ptr->region != nullptr;
+	return ptr_ != nullptr && ptr_->region != nullptr;
 }

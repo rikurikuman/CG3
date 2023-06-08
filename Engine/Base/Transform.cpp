@@ -20,8 +20,3 @@ void Transform::Transfer(TransformBuffer* target)
 {
 	target->matrix = this->matrix;
 }
-
-void Transform::Transfer(TransformBuffer* target, Matrix4 matrix)
-{
-	target->matrix = this->matrix * matrix;
-}

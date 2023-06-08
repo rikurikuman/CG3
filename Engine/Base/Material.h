@@ -7,9 +7,9 @@
 struct MaterialBuffer {
 	Color color;
 	Vector3 ambient;
-	float pad;
+	float pad = 0;
 	Vector3 diffuse;
-	float pad2;
+	float pad2 = 0;
 	Vector3 specular;
 };
 

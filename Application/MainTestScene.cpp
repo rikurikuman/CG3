@@ -41,8 +41,6 @@ void MainTestScene::Init()
 {
 	Camera::nowCamera = &camera;
 	LightGroup::nowLight = &light;
-	PostEffect::InitPipeline();
-	hoge.SetTexture("RenderTargetTex_hoge");
 }
 
 void MainTestScene::Update()
@@ -79,7 +77,6 @@ void MainTestScene::Update()
 	sphere2.TransferBuffer(camera.viewProjection);
 	sprite.TransferBuffer();
 	sprite2.TransferBuffer();
-	hoge.TransferBuffer();
 }
 
 void MainTestScene::Draw()

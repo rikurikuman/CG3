@@ -38,9 +38,6 @@ Texture TextureManager::GetEmptyTexture()
 	Color* imageData = new Color[imageDataCount];
 
 	for (size_t i = 0; i < imageDataCount; i++) {
-		size_t x = i % textureWidth;
-		size_t y = i / textureWidth;
-
 		imageData[i] = Color(1, 1, 1, 1);
 	}
 
@@ -479,7 +476,7 @@ Texture& TextureManager::GetInternal(const TextureHandle& handle)
 TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle handle)
 {
 	std::unique_lock<std::recursive_mutex> lock(mutex);
-	UINT useIndex = -1; 
+	UINT useIndex = UINT32_MAX;
 
 	auto itr = textureMap.find(handle);
 	if (itr != textureMap.end()) {
@@ -503,7 +500,7 @@ TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle ha
 	}
 	lock.unlock();
 
-	if (useIndex == -1) {
+	if (useIndex == UINT32_MAX) {
 		//over
 		return TextureHandle();
 	}

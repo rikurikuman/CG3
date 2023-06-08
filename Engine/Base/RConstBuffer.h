@@ -25,9 +25,6 @@ private:
 
 	static void SubtractCount(void* p) {
 		std::lock_guard<std::recursive_mutex> lock(mutex);
-		if (countMap[p] == 0) {
-			int hoge = 0;
-		}
 		countMap[p]--;
 
 #ifdef _RCONSTBUFFER_DEBUG_

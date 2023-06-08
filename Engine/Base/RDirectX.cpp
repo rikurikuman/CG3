@@ -260,8 +260,8 @@ void RDirectX::InitInternal() {
 
 
 	//フェンスの生成
-	UINT64 fenceVal = 0;
-	result = device->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
+	UINT64 fenceVal_ = 0;
+	result = device->CreateFence(fenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
 	//ルートシグネチャ
 	// デスクリプタレンジの設定

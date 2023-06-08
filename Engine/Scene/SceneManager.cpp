@@ -66,9 +66,10 @@ void SceneManager::Update() {
 			&& sc.transition->IsClosed()
 			&& sc.future2->wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
 			std::lock_guard<std::mutex> lock(instance->mutex);
+			auto trash = std::make_shared<IScene>();
 			instance->nowScene->Finalize();
 			std::swap(instance->nowScene, instance->changeScene);
-			std::swap(instance->changeScene, std::make_shared<IScene>());
+			std::swap(instance->changeScene, trash);
 			instance->nowScene->Init();
 			instance->loadingTimer = 0;
 			sc.transition->Open();

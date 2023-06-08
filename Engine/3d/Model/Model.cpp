@@ -113,8 +113,6 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
     vector<Vector2> vertTexcoordList;
     vector<Vector3> vertNormalList;
 
-    int cou = 0;
-
     string line = "";
     while (getline(file, line)) {
         istringstream line_stream(line);
@@ -208,22 +206,16 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
                     size_t b = Util::IndexOf(model.vertexs, _vertices[indexB]);
                     size_t c = Util::IndexOf(model.vertexs, _vertices[indexC]);*/
 
-                    size_t a = -1;
-                    size_t b = -1;
-                    size_t c = -1;
+                    size_t a = SIZE_T_MAX;
+                    size_t b = SIZE_T_MAX;
+                    size_t c = SIZE_T_MAX;
 
-                    if (a == -1) {
-                        loading.vertexs.emplace_back(_vertices[0]);
-                        a = loading.vertexs.size() - 1;
-                    }
-                    if (b == -1) {
-                        loading.vertexs.emplace_back(_vertices[indexB]);
-                        b = loading.vertexs.size() - 1;
-                    }
-                    if (c == -1) {
-                        loading.vertexs.emplace_back(_vertices[indexC]);
-                        c = loading.vertexs.size() - 1;
-                    }
+                    loading.vertexs.emplace_back(_vertices[0]);
+                    a = loading.vertexs.size() - 1;
+                    loading.vertexs.emplace_back(_vertices[indexB]);
+                    b = loading.vertexs.size() - 1;
+                    loading.vertexs.emplace_back(_vertices[indexC]);
+                    c = loading.vertexs.size() - 1;
 
                     loading.indices.emplace_back((UINT)a);
                     loading.indices.emplace_back((UINT)b);

@@ -183,7 +183,8 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 
 		Color* _image = new Color[_dataCount];
 
-		HRESULT result = tex.texture.resource->ReadFromSubresource(_image, (UINT)(sizeof(Color) * _width), (UINT)(sizeof(Color) * _height), 0, nullptr);
+		HRESULT result;
+		result = tex.texture.resource->ReadFromSubresource(_image, (UINT)(sizeof(Color) * _width), (UINT)(sizeof(Color) * _height), 0, nullptr);
 		assert(SUCCEEDED(result));
 
 		for (size_t i = 0; i < _dataCount; i++) {

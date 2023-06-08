@@ -294,9 +294,6 @@
     <ClCompile Include="Engine\Base\RenderTarget.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\PostEffect\PostEffect.cpp">
-      <Filter>ソース ファイル\Engine\PostEffect</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Renderer\IRenderStage.cpp">
       <Filter>ソース ファイル\Engine\Renderer</Filter>
     </ClCompile>
@@ -639,9 +636,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Base\RenderTarget.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\PostEffect\PostEffect.h">
-      <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Renderer\IRenderStage.h">
       <Filter>ヘッダー ファイル\Engine\Renderer</Filter>

@@ -11,7 +11,7 @@ class RWindow
 private:
 	RWindow() {};
 	~RWindow() = default;
-	RWindow(const RWindow& a) {};
+	RWindow(const RWindow&) {};
 	RWindow& operator=(const RWindow&) { return *this; }
 
 	LRESULT(*WindowProc)(HWND, UINT, WPARAM, LPARAM) = _DefWindowProc; //ウィンドウプロシージャへのポインタ

@@ -56,7 +56,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
@@ -69,11 +69,12 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -93,6 +94,7 @@
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -116,7 +118,6 @@
     <ClCompile Include="Engine\Base\IndexBuffer.cpp" />
     <ClCompile Include="Engine\Math\Float4.cpp" />
     <ClCompile Include="Engine\PostEffect\Bloom.cpp" />
-    <ClCompile Include="Engine\PostEffect\PostEffect.cpp" />
     <ClCompile Include="Engine\Renderer\BackSpriteRenderStage.cpp" />
     <ClCompile Include="Engine\Renderer\FinalRenderStage.cpp" />
     <ClCompile Include="Engine\Renderer\OpaqueRenderStage.cpp" />
@@ -377,7 +378,6 @@
     <ClInclude Include="Engine\Light\DirectionalLight.h" />
     <ClInclude Include="Engine\Math\Float4.h" />
     <ClInclude Include="Engine\PostEffect\Bloom.h" />
-    <ClInclude Include="Engine\PostEffect\PostEffect.h" />
     <ClInclude Include="Engine\Renderer\BackSpriteRenderStage.h" />
     <ClInclude Include="Engine\Renderer\FinalRenderStage.h" />
     <ClInclude Include="Engine\Renderer\OpaqueRenderStage.h" />

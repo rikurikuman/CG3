@@ -89,7 +89,7 @@ private:
 
 	RAudio() {};
 	~RAudio() = default;
-	RAudio(const RAudio& a) {};
+	RAudio(const RAudio&) {};
 	RAudio& operator=(const RAudio&) { return *this; }
 
 	void InitInternal();

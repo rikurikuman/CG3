@@ -17,7 +17,9 @@ void RenderTarget::SetToBackBuffer()
 	manager->currentRenderTargets.clear();
 
 	RDirectX::OpenResorceBarrier(RDirectX::GetCurrentBackBufferResource());
-	RDirectX::GetCommandList()->OMSetRenderTargets(1, &RDirectX::GetCurrentBackBufferHandle(), false, &RDirectX::GetBackBufferDSVHandle());
+	D3D12_CPU_DESCRIPTOR_HANDLE backBuffHandle = RDirectX::GetCurrentBackBufferHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE backBuffDSVHandle = RDirectX::GetBackBufferDSVHandle();
+	RDirectX::GetCommandList()->OMSetRenderTargets(1, &backBuffHandle, false, &backBuffDSVHandle);
 	manager->currentRenderTargets.push_back("");
 }
 
@@ -25,13 +27,13 @@ void RenderTarget::SetToTexture(std::string name)
 {
 	RenderTarget* manager = GetInstance();
 
-	for (std::string name : manager->currentRenderTargets) {
-		if (name.empty()) {
+	for (std::string current : manager->currentRenderTargets) {
+		if (current.empty()) {
 			RDirectX::CloseResourceBarrier(RDirectX::GetCurrentBackBufferResource());
 			continue;
 		}
 
-		RenderTargetTexture* tex = manager->GetRenderTargetTexture(name);
+		RenderTargetTexture* tex = manager->GetRenderTargetTexture(current);
 		if (tex != nullptr) tex->CloseResourceBarrier();
 	}
 	manager->currentRenderTargets.clear();
@@ -47,7 +49,9 @@ void RenderTarget::SetToTexture(std::string name)
 	}
 
 	tex->OpenResourceBarrier();
-	RDirectX::GetCommandList()->OMSetRenderTargets(1, &tex->GetRTVHandle(), false, &tex->GetDSVHandle());
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = tex->GetRTVHandle();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = tex->GetDSVHandle();
+	RDirectX::GetCommandList()->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 	manager->currentRenderTargets.push_back(name);
 }
 
@@ -162,7 +166,7 @@ void RenderTarget::CreateRenderTargetTexture(const UINT width, const UINT height
 	renderTarget.texHandle = texHandle;
 	renderTarget.clearColor = clearColor;
 
-	UINT useIndex = -1;
+	UINT useIndex = UINT32_MAX;
 
 	auto itr = manager->renderTargetMap.find(name);
 	if (itr != manager->renderTargetMap.end()) {
@@ -185,7 +189,7 @@ void RenderTarget::CreateRenderTargetTexture(const UINT width, const UINT height
 		}
 	}
 
-	if (useIndex == -1) {
+	if (useIndex == UINT32_MAX) {
 		//Over.
 		return;
 	}

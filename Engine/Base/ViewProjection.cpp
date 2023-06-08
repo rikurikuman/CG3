@@ -22,10 +22,10 @@ void ViewProjection::UpdateMatrix()
 	matrix = view * projection;
 }
 
-void ViewProjection::Transfer(ViewProjectionBuffer* target)
+void ViewProjection::Transfer(ViewProjectionBuffer* pBuff)
 {
-	target->matrix = this->matrix;
-	target->cameraPos = this->eye;
+	pBuff->matrix = this->matrix;
+	pBuff->cameraPos = this->eye;
 }
 
 Vector2 ViewProjection::WorldToScreen(Vector3 wPos)

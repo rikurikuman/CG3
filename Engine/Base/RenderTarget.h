@@ -9,7 +9,7 @@ public:
 	TextureHandle texHandle;
 	Color clearColor;
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuff;
-	UINT heapIndex = -1;
+	UINT heapIndex = UINT32_MAX;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle();
@@ -44,7 +44,7 @@ private:
 		CreateHeaps();
 	};
 	~RenderTarget() = default;
-	RenderTarget(const RenderTarget& a) {};
+	RenderTarget(const RenderTarget&) {};
 	RenderTarget& operator=(const RenderTarget&) { return *this; }
 
 	void CreateHeaps();

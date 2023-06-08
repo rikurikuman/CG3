@@ -5,8 +5,8 @@
 
 struct FontTexture {
 	Texture texture;
-	TEXTMETRIC tm;
-	GLYPHMETRICS gm;
+	TEXTMETRIC tm{};
+	GLYPHMETRICS gm{};
 };
 
 class TextDrawer

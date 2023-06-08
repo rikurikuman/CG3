@@ -174,17 +174,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::Spacing();
 			ImGui::Text("MousePos:(%.1f,%.1f)", ImGui::GetMousePos().x, ImGui::GetMousePos().y);
 			ImGui::Spacing();
-			UINT64 buffUsingSize = SRBufferAllocator::GetUsingBufferSize();
-			UINT64 buffTotalSize = SRBufferAllocator::GetBufferSize();
+			uint64_t buffUsingSize = SRBufferAllocator::GetUsingBufferSize();
+			uint64_t buffTotalSize = SRBufferAllocator::GetBufferSize();
 			std::string buffUsingSizeStr;
 			std::string buffTotalSizeStr;
-			if (buffUsingSize < 1024 * 1024 - 1) {
+			if (buffUsingSize < 1024Ui64 * 1024Ui64 - 1) {
 				buffUsingSizeStr = Util::StringFormat("%.2fKB", buffUsingSize / 1024.0f);
 			}
 			else {
 				buffUsingSizeStr = Util::StringFormat("%.2fMB", buffUsingSize / 1024.0f / 1024.0f);
 			}
-			if (buffTotalSize < 1024 * 1024 - 1) {
+			if (buffTotalSize < 1024Ui64 * 1024Ui64 - 1) {
 				buffTotalSizeStr = Util::StringFormat("%.2fKB", buffTotalSize / 1024.0f);
 			}
 			else {

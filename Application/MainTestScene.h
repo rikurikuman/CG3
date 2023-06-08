@@ -4,7 +4,6 @@
 #include "DebugCamera.h"
 #include "ModelObj.h"
 #include "Sprite.h"
-#include "PostEffect.h"
 #include "SRConstBuffer.h"
 
 class MainTestScene : public IScene
@@ -33,8 +32,6 @@ private:
 	Sprite sprite2;
 
 	std::list<TestObj> testObjList;
-
-	PostEffect hoge;
 
 	float timer = 0;
 };
