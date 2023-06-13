@@ -35,7 +35,8 @@ Texture TextureManager::GetEmptyTexture()
 	const size_t textureWidth = 100;
 	const size_t textureHeight = 100;
 	const size_t imageDataCount = textureWidth * textureHeight;
-	Color* imageData = new Color[imageDataCount];
+	vector<Color> imageData;
+	imageData.resize(imageDataCount);
 
 	for (size_t i = 0; i < imageDataCount; i++) {
 		imageData[i] = Color(1, 1, 1, 1);
@@ -72,12 +73,11 @@ Texture TextureManager::GetEmptyTexture()
 	result = texture.resource->WriteToSubresource(
 		0,
 		nullptr,
-		imageData,
+		&imageData[0],
 		sizeof(Color) * textureWidth,
 		sizeof(Color) * imageDataCount
 	);
 
-	delete[] imageData;
 	return texture;
 }
 
@@ -90,7 +90,8 @@ Texture TextureManager::GetHogeHogeTexture()
 	const size_t textureWidth = 256;
 	const size_t textureHeight = 256;
 	const size_t imageDataCount = textureWidth * textureHeight;
-	Color* imageData = new Color[imageDataCount];
+	vector<Color> imageData;
+	imageData.resize(imageDataCount);
 
 	for (size_t i = 0; i < imageDataCount; i++) {
 		size_t x = i % textureWidth;
@@ -136,12 +137,11 @@ Texture TextureManager::GetHogeHogeTexture()
 	result = texture.resource->WriteToSubresource(
 		0,
 		nullptr,
-		imageData,
+		&imageData[0],
 		sizeof(Color) * textureWidth,
 		sizeof(Color) * imageDataCount
 	);
 
-	delete[] imageData;
 	return texture;
 }
 
@@ -153,7 +153,8 @@ TextureHandle TextureManager::CreateInternal(const Color color, const UINT64 wid
 	Texture texture = Texture();
 
 	const size_t imageDataCount = width * height;
-	Color* imageData = new Color[imageDataCount];
+	vector<Color> imageData;
+	imageData.resize(imageDataCount);
 
 	for (size_t i = 0; i < imageDataCount; i++) {
 		imageData[i] = color;
@@ -190,12 +191,11 @@ TextureHandle TextureManager::CreateInternal(const Color color, const UINT64 wid
 	result = texture.resource->WriteToSubresource(
 		0,
 		nullptr,
-		imageData,
+		&imageData[0],
 		sizeof(Color) * static_cast<UINT>(width),
 		sizeof(Color) * static_cast<UINT>(imageDataCount)
 	);
 
-	delete[] imageData;
 	return RegisterInternal(texture, handle);
 }
 

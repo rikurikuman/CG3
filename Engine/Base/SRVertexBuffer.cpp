@@ -31,7 +31,7 @@ void SRVertexBuffer::Init(VertexP* list, unsigned int size)
 		SRBufferAllocator::Free(data->buff);
 	}
 	else {
-		data = new VertexBufferData(); //‚Å‚«‚ê‚Înew‚µ‚½‚­‚Ë‚¦
+		data = std::make_shared<VertexBufferData>();
 		data->count++;
 	}
 
@@ -57,7 +57,7 @@ void SRVertexBuffer::Init(std::vector<VertexP> list)
 		SRBufferAllocator::Free(data->buff);
 	}
 	else {
-		data = new VertexBufferData(); //‚Å‚«‚ê‚Înew‚µ‚½‚­‚Ë‚¦
+		data = std::make_shared<VertexBufferData>();
 		data->count++;
 	}
 
@@ -83,7 +83,7 @@ void SRVertexBuffer::Init(VertexPNU* list, unsigned int size)
 		SRBufferAllocator::Free(data->buff);
 	}
 	else {
-		data = new VertexBufferData(); //‚Å‚«‚ê‚Înew‚µ‚½‚­‚Ë‚¦
+		data = std::make_shared<VertexBufferData>();
 		data->count++;
 	}
 
@@ -109,7 +109,7 @@ void SRVertexBuffer::Init(std::vector<VertexPNU> list)
 		SRBufferAllocator::Free(data->buff);
 	}
 	else {
-		data = new VertexBufferData(); //‚Å‚«‚ê‚Înew‚µ‚½‚­‚Ë‚¦
+		data = std::make_shared<VertexBufferData>();
 		data->count++;
 	}
 

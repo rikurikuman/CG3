@@ -459,16 +459,16 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
                         material.texture = TextureManager::Load(embedTex->pcData, embedTex->mWidth, path, texHandle);
                     }
                     else {
-                        Color* data = new Color[embedTex->mWidth * embedTex->mHeight];
+                        vector<Color> data;
+                        data.resize(embedTex->mWidth * embedTex->mHeight);
 
                         for (UINT i = 0; i < embedTex->mWidth * embedTex->mHeight; i++) {
                             aiTexel texel = embedTex->pcData[i];
                             //data[i] = Color(texel.r, texel.g, texel.b, texel.a);
                         }
 
-                        material.texture = TextureManager::Create(data, embedTex->mWidth, embedTex->mHeight, path, texHandle);
+                        material.texture = TextureManager::Create(&data[0], embedTex->mWidth, embedTex->mHeight, path, texHandle);
                         
-                        delete[] data;
                     }
                 }
                 else {
@@ -480,16 +480,15 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
                             material.texture = TextureManager::Load(tex->pcData, tex->mWidth, path, texHandle);
                         }
                         else {
-                            Color* data = new Color[tex->mWidth * tex->mHeight];
+                            vector<Color> data;
+                            data.resize(tex->mWidth * tex->mHeight);
 
                             for (UINT i = 0; i < tex->mWidth * tex->mHeight; i++) {
                                 aiTexel texel = tex->pcData[i];
                                 //data[i] = Color(texel.r, texel.g, texel.b, texel.a);
                             }
 
-                            material.texture = TextureManager::Create(data, tex->mWidth, tex->mHeight, path, texHandle);
-
-                            delete[] data;
+                            material.texture = TextureManager::Create(&data[0], tex->mWidth, tex->mHeight, path, texHandle);
                         }
                     }
                     else {

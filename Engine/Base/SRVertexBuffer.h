@@ -5,8 +5,7 @@
 class SRVertexBuffer
 {
 private:
-	class VertexBufferData {
-	public:
+	struct VertexBufferData {
 		size_t count = 0;
 		UINT dataSize = 0;
 		UINT strideInBytes = 0;
@@ -25,7 +24,6 @@ public:
 			data->count--;
 			if (data->count == 0) {
 				SRBufferAllocator::Free(data->buff);
-				delete data;
 			}
 		}
 	}
@@ -37,7 +35,6 @@ public:
 			data->count--;
 			if (data->count == 0) {
 				SRBufferAllocator::Free(data->buff);
-				delete data;
 			}
 		}
 		data = o.data;
@@ -51,7 +48,6 @@ public:
 				data->count--;
 				if (data->count == 0) {
 					SRBufferAllocator::Free(data->buff);
-					delete data;
 				}
 			}
 			data = o.data;
@@ -102,7 +98,7 @@ public:
 			SRBufferAllocator::Free(data->buff);
 		}
 		else {
-			data = new VertexBufferData(); //‚Å‚«‚ê‚Înew‚µ‚½‚­‚Ë‚¦
+			data = std::make_shared<VertexBufferData>();
 			data->count++;
 		}
 
@@ -129,7 +125,7 @@ public:
 			SRBufferAllocator::Free(data->buff);
 		}
 		else {
-			data = new VertexBufferData(); //‚Å‚«‚ê‚Înew‚µ‚½‚­‚Ë‚¦
+			data = std::make_shared<VertexBufferData>();
 			data->count++;
 		}
 
@@ -199,6 +195,6 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW GetVertView();
 
 private:
-	VertexBufferData* data = nullptr;
+	std::shared_ptr<VertexBufferData> data = nullptr;
 };
 

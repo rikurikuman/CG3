@@ -360,3 +360,4 @@ FodyWeavers.xsd
 /Lib/*/target
 /Lib/Product
 /Lib/assimp/contrib/zlib/zlibstatic.dir
+/imgui.ini

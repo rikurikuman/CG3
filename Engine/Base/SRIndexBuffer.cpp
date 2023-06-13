@@ -21,7 +21,7 @@ void SRIndexBuffer::Init(UINT* list, UINT size)
 		SRBufferAllocator::Free(data->buff);
 	}
 	else {
-		data = new IndexBufferData(); //‚Å‚«‚ê‚Înew‚µ‚½‚­‚Ë‚¦
+		data = std::make_shared<IndexBufferData>();
 		data->count++;
 	}
 
@@ -47,7 +47,7 @@ void SRIndexBuffer::Init(std::vector<UINT> list)
 		SRBufferAllocator::Free(data->buff);
 	}
 	else {
-		data = new IndexBufferData(); //‚Å‚«‚ê‚Înew‚µ‚½‚­‚Ë‚¦
+		data = std::make_shared<IndexBufferData>();
 		data->count++;
 	}
 

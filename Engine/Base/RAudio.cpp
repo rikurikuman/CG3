@@ -58,16 +58,15 @@ AudioHandle RAudio::Load(const std::string filepath, std::string handle)
 		return "";
 	}
 
-	char* pBuffer = new char[data.size];
-	file.read(pBuffer, data.size);
-
-	file.close();
-
 	shared_ptr<WaveAudio> sound = make_shared<WaveAudio>();
 	sound->filepath = filepath;
 	sound->wfex = format.fmt;
-	sound->pBuffer = reinterpret_cast<BYTE*>(pBuffer);
 	sound->bufferSize = data.size;
+
+	sound->buffer.resize(data.size);
+	file.read(reinterpret_cast<char*>(&sound->buffer[0]), data.size);
+
+	file.close();
 
 	if (handle.empty()) {
 		handle = "NoNameHandle_" + filepath;
@@ -78,7 +77,7 @@ AudioHandle RAudio::Load(const std::string filepath, std::string handle)
 	return handle;
 }
 
-void RAudio::Play(const AudioHandle handle, const float volume, const bool loop)
+void RAudio::Play(const AudioHandle handle, const float volume, const float pitch, const bool loop)
 {
 	RAudio* instance = GetInstance();
 	HRESULT result;
@@ -98,7 +97,7 @@ void RAudio::Play(const AudioHandle handle, const float volume, const bool loop)
 		assert(SUCCEEDED(result));
 
 		XAUDIO2_BUFFER buf{};
-		buf.pAudioData = waveData->pBuffer;
+		buf.pAudioData = &waveData->buffer[0];
 		buf.AudioBytes = waveData->bufferSize;
 		buf.LoopCount = loop ? XAUDIO2_LOOP_INFINITE : 0;
 		buf.Flags = XAUDIO2_END_OF_STREAM;
@@ -106,6 +105,8 @@ void RAudio::Play(const AudioHandle handle, const float volume, const bool loop)
 		result = pSourceVoice->SubmitSourceBuffer(&buf);
 		assert(SUCCEEDED(result));
 		result = pSourceVoice->SetVolume(volume);
+		assert(SUCCEEDED(result));
+		result = pSourceVoice->SetFrequencyRatio(pitch);
 		assert(SUCCEEDED(result));
 		result = pSourceVoice->Start();
 		assert(SUCCEEDED(result));

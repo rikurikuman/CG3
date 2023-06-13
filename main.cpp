@@ -196,7 +196,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int sceneNum = 0;
-			const char* scenes[] = { "MainTest", "Sphere&Plane", "Sphere&Polygon", "Ray&Plane", "Ray&Polygon", "Ray&Sphere", "Colliders" };
+			const char* scenes[] = { "MainTest", "Sprite", "Model", "Sound", "Colliders" };
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
@@ -206,21 +206,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 						SceneManager::Change<MainTestScene, SimpleSceneTransition>();
 						break;
 					case 1:
-						SceneManager::Change<SpherePlaneScene, SimpleSceneTransition>();
+						SceneManager::Change<SpriteScene, SimpleSceneTransition>();
 						break;
 					case 2:
-						SceneManager::Change<SpherePolygonScene, SimpleSceneTransition>();
+						SceneManager::Change<ModelScene, SimpleSceneTransition>();
 						break;
 					case 3:
-						SceneManager::Change<RayPlaneScene, SimpleSceneTransition>();
+						SceneManager::Change<SoundScene, SimpleSceneTransition>();
 						break;
 					case 4:
-						SceneManager::Change<RayPolygonScene, SimpleSceneTransition>();
-						break;
-					case 5:
-						SceneManager::Change<RaySphereScene, SimpleSceneTransition>();
-						break;
-					case 6:
 						SceneManager::Change<CollidersScene, SimpleSceneTransition>();
 						break;
 					}

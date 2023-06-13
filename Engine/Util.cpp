@@ -75,17 +75,14 @@ wstring Util::ConvertStringToWString(string str) {
 		, -1, (wchar_t*)NULL, 0);
 
 	//配列を用意する
-	wchar_t* wArray = new wchar_t[_arraySize];
+	std::vector<wchar_t> wArray;
+	wArray.resize(_arraySize);
 
 	//変換してwchar_tの配列にぶち込む
-	MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, wArray
-		, _arraySize);
+	MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, &wArray[0], _arraySize);
 
 	//wstringにする
-	std::wstring wStr(wArray, wArray + _arraySize - 1);
-
-	//配列は罪深いことにnewしてしまったのでdeleteする
-	delete[] wArray;
+	std::wstring wStr(&wArray[0], &wArray.back());
 
 	//おしまい
 	return wStr;

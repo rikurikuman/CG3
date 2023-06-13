@@ -37,21 +37,14 @@ enum class AudioType {
 
 struct AudioData {
 	std::string filepath;
-	AudioType type;
+	AudioType type{};
 };
 
 struct WaveAudio : public AudioData
 {
-	WAVEFORMATEX wfex;
-	BYTE* pBuffer = nullptr;
-	unsigned int bufferSize;
-
-	~WaveAudio() {
-		if (pBuffer != nullptr) {
-			OutputDebugStringA(Util::StringFormat("Delete %p\n", pBuffer).c_str());
-			delete[] pBuffer;
-		}
-	}
+	WAVEFORMATEX wfex{};
+	std::vector<BYTE> buffer;
+	unsigned int bufferSize = 0;
 };
 
 class RAudio
@@ -71,7 +64,7 @@ public:
 	}
 
 	static AudioHandle Load(const std::string filepath, std::string handle = "");
-	static void Play(AudioHandle handle, const float volume = 1.0f, const bool loop = false);
+	static void Play(AudioHandle handle, const float volume = 1.0f, const float pitch = 1.0f, const bool loop = false);
 	static void Stop(AudioHandle handle);
 
 private:

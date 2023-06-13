@@ -4,8 +4,7 @@
 
 class SRIndexBuffer {
 private:
-	class IndexBufferData {
-	public:
+	struct IndexBufferData {
 		size_t count = 0;
 		UINT dataSize = 0;
 		UINT indexCount = 0;
@@ -24,7 +23,6 @@ public:
 			data->count--;
 			if (data->count == 0) {
 				SRBufferAllocator::Free(data->buff);
-				delete data;
 			}
 		}
 	}
@@ -36,7 +34,6 @@ public:
 			data->count--;
 			if (data->count == 0) {
 				SRBufferAllocator::Free(data->buff);
-				delete data;
 			}
 		}
 		data = o.data;
@@ -50,7 +47,6 @@ public:
 				data->count--;
 				if (data->count == 0) {
 					SRBufferAllocator::Free(data->buff);
-					delete data;
 				}
 			}
 			data = o.data;
@@ -78,5 +74,5 @@ public:
 	UINT GetIndexCount();
 
 private:
-	IndexBufferData* data = nullptr;
+	std::shared_ptr<IndexBufferData> data = nullptr;
 };

@@ -42,9 +42,10 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 #endif
 
 	DWORD size = GetGlyphOutline(hdc, code, GGO_GRAY4_BITMAP, &gm, 0, NULL, &Mat);
-	BYTE* ptr = new BYTE[size];
+	vector<BYTE> buffer;
+	buffer.resize(size);
 	GetTextMetrics(hdc, &tm);
-	GetGlyphOutline(hdc, code, GGO_GRAY4_BITMAP, &gm, size, ptr, &Mat);
+	GetGlyphOutline(hdc, code, GGO_GRAY4_BITMAP, &gm, size, &buffer[0], &Mat);
 
 	// オブジェクトの開放
 	SelectObject(hdc, oldFont);
@@ -69,7 +70,8 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 	OutputDebugString((wstring(L"fontHeight: ") + to_wstring(fontHeight) + L"(" + to_wstring(size / fontWidth) + L")\n").c_str());
 #endif
 
-	Color* imageData = new Color[fontDataCount];
+	vector<Color> imageData;
+	imageData.resize(fontDataCount);
 	for (size_t i = 0; i < fontDataCount; i++) {
 		imageData[i] = Color(0, 0, 0, 0);
 	}
@@ -81,7 +83,7 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 		size_t access = (posY * fontWidth) + posX;
 		assert(access < fontDataCount);
 
-		float grayScale = (float)ptr[i];
+		float grayScale = (float)buffer[i];
 		imageData[access].r = 1.0f;
 		imageData[access].g = 1.0f;
 		imageData[access].b = 1.0f;
@@ -124,14 +126,11 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 	result = ftex.texture.resource->WriteToSubresource(
 		0,
 		nullptr,
-		imageData,
+		&imageData[0],
 		sizeof(Color) * fontWidth,
 		sizeof(Color) * fontDataCount
 	);
 	assert(SUCCEEDED(result));
-
-	delete[] ptr;
-	delete[] imageData;
 
 	drawer->glyphMap[glyphData] = ftex;
 
@@ -169,7 +168,8 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 
 	UINT64 imageDataCount = textureWidth * textureHeight;
 
-	Color* imageData = new Color[imageDataCount];
+	vector<Color> imageData;
+	imageData.resize(imageDataCount);
 	for (size_t i = 0; i < imageDataCount; i++) {
 		imageData[i] = Color(0, 0, 0, 0);
 	}
@@ -181,10 +181,11 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 		size_t _height = tex.texture.resource->GetDesc().Height;
 		size_t _dataCount = _width * _height;
 
-		Color* _image = new Color[_dataCount];
+		vector<Color> _image;
+		_image.resize(_dataCount);
 
 		HRESULT result;
-		result = tex.texture.resource->ReadFromSubresource(_image, (UINT)(sizeof(Color) * _width), (UINT)(sizeof(Color) * _height), 0, nullptr);
+		result = tex.texture.resource->ReadFromSubresource(&_image[0], (UINT)(sizeof(Color) * _width), (UINT)(sizeof(Color) * _height), 0, nullptr);
 		assert(SUCCEEDED(result));
 
 		for (size_t i = 0; i < _dataCount; i++) {
@@ -201,8 +202,6 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 		}
 
 		currentPos += tex.gm.gmCellIncX;
-
-		delete[] _image;
 	}
 
 	Texture texture = Texture();
@@ -239,13 +238,11 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 	result = texture.resource->WriteToSubresource(
 		0,
 		nullptr,
-		imageData,
+		&imageData[0],
 		sizeof(Color) * (UINT)textureWidth,
 		sizeof(Color) * (UINT)imageDataCount
 	);
 	assert(SUCCEEDED(result));
-
-	delete[] imageData;
 
 	string _handle = handle;
 	if (_handle.empty()) {
