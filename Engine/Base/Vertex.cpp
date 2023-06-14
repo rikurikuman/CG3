@@ -32,10 +32,10 @@ void VertexPNU::CalcNormalVec(VertexPNU list[], const uint32_t indexlist[], cons
 
 void VertexPNU::CalcNormalVec(std::vector<VertexPNU> list, std::vector<uint32_t> indexlist) {
 	assert(indexlist.size() % 3 == 0);
-	for (uint32_t i = 0; i < list.size() / 3; i++) {
-		uint32_t index0 = indexlist[i * 3 + 0];
-		uint32_t index1 = indexlist[i * 3 + 1];
-		uint32_t index2 = indexlist[i * 3 + 2];
+	for (size_t i = 0; i < list.size() / 3; i++) {
+		size_t index0 = indexlist[i * 3 + 0];
+		size_t index1 = indexlist[i * 3 + 1];
+		size_t index2 = indexlist[i * 3 + 2];
 
 		Vector3 p0 = list[index0].pos;
 		Vector3 p1 = list[index1].pos;

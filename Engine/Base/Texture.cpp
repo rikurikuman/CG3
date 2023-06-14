@@ -1,6 +1,11 @@
 #include "Texture.h"
 #include "RDirectX.h"
+
+#pragma warning(push)
+#pragma warning(disable: 26813)
 #include <DirectXTex.h>
+#pragma warning(pop)
+
 #include "Color.h"
 #include "Util.h"
 
