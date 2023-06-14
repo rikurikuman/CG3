@@ -6,8 +6,8 @@ class SRIndexBuffer {
 private:
 	struct IndexBufferData {
 		size_t count = 0;
-		UINT dataSize = 0;
-		UINT indexCount = 0;
+		uint32_t dataSize = 0;
+		uint32_t indexCount = 0;
 		SRBufferPtr buff;
 	};
 
@@ -55,11 +55,11 @@ public:
 		return *this;
 	}
 
-	SRIndexBuffer(UINT* list, UINT size);
-	SRIndexBuffer(std::vector<UINT> list);
+	SRIndexBuffer(uint32_t* list, uint32_t size);
+	SRIndexBuffer(std::vector<uint32_t> list);
 
-	void Init(UINT* list, UINT size);
-	void Init(std::vector<UINT> list);
+	void Init(uint32_t* list, uint32_t size);
+	void Init(std::vector<uint32_t> list);
 
 	bool IsValid() {
 		std::lock_guard<std::recursive_mutex> lock(mutex);
@@ -71,7 +71,7 @@ public:
 	}
 
 	D3D12_INDEX_BUFFER_VIEW GetIndexView();
-	UINT GetIndexCount();
+	uint32_t GetIndexCount();
 
 private:
 	std::shared_ptr<IndexBufferData> data = nullptr;

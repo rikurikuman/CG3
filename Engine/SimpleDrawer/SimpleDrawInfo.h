@@ -63,7 +63,7 @@ struct DrawCircleInfo {
 
 struct DrawCircleVertIndex {
 	std::vector<VertexP> vert;
-	std::vector<UINT> index;
+	std::vector<uint32_t> index;
 };
 
 struct DrawLine3DInfo {

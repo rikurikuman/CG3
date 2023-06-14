@@ -8,13 +8,13 @@
 struct MemoryRegion {
 	byte* pBegin = nullptr;
 	byte* pEnd = nullptr;
-	UINT64 size = 0;
-	UINT align = 0;
+	size_t size = 0;
+	uint32_t align = 0;
 	std::list<MemoryRegion>::iterator memItr;
 
 	MemoryRegion() {}
-	MemoryRegion(byte* pBegin, byte* pEnd, UINT align = 0)
-		: pBegin(pBegin), pEnd(pEnd), size(UINT64(pEnd - pBegin + 1)), align(align) {}
+	MemoryRegion(byte* pBegin, byte* pEnd, uint32_t align = 0)
+		: pBegin(pBegin), pEnd(pEnd), size(size_t(pEnd - pBegin + 1)), align(align) {}
 };
 
 struct MemoryRegionPtr {
@@ -64,7 +64,7 @@ public:
 
 	static SRBufferAllocator* GetInstance();
 
-	static SRBufferPtr Alloc(UINT64 needSize, UINT align);
+	static SRBufferPtr Alloc(size_t needSize, uint32_t align);
 	static void Free(SRBufferPtr& ptr);
 	
 	static D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() {
@@ -77,29 +77,29 @@ public:
 		return GetInstance()->pBufferBegin;
 	}
 
-	static UINT64 GetUsingBufferSize() {
+	static size_t GetUsingBufferSize() {
 		return GetInstance()->usingBufferSizeCounter;
 	}
 
-	static UINT64 GetStrictUsingBufferSize() {
+	static size_t GetStrictUsingBufferSize() {
 		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
-		UINT64 size = 0;
+		size_t size = 0;
 		for (auto& itr : GetInstance()->usingRegions) {
-			size += static_cast<UINT64>(itr.size);
+			size += static_cast<size_t>(itr.size);
 		}
 		return size;
 	}
 
-	static UINT64 GetBufferSize() {
+	static size_t GetBufferSize() {
 		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
-		return static_cast<UINT64>(GetInstance()->pBufferEnd - GetInstance()->pBufferBegin + 1);
+		return static_cast<size_t>(GetInstance()->pBufferEnd - GetInstance()->pBufferBegin + 1);
 	}
 
 	void DeFlag();
 	void ResizeBuffer();
 
 private:
-	constexpr static UINT64 defSize = 1024 * 1024 * 64; //64MB
+	constexpr static size_t defSize = 1024 * 1024 * 64; //64MB
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> buffer = nullptr;
 	UINT8* pBufferBegin = nullptr;
@@ -107,9 +107,9 @@ private:
 	std::list<MemoryRegion> freeRegions;
 	std::list<MemoryRegion> usingRegions;
 	std::list<MemoryRegionPtr> regionPtrs;
-	UINT64 usingBufferSizeCounter = 0;
+	size_t usingBufferSizeCounter = 0;
 
-	static MemoryRegion* _Alloc(UINT64 needSize, UINT align, bool deflag);
+	static MemoryRegion* _Alloc(size_t needSize, uint32_t align, bool deflag);
 	//static void _Free(byte* ptr);
 	static void _Free(SRBufferPtr& ptr);
 

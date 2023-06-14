@@ -57,8 +57,8 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW* vertView = nullptr; //SRVertexBufferを使わない場合はこっちにビューを直で
 	D3D12_INDEX_BUFFER_VIEW* indexView = nullptr; //SRIndexBufferを使わない場合はこっちにビューを直で
 	D3D12_VERTEX_BUFFER_VIEW* instanceVertView = nullptr;
-	UINT indexCount = 0;
-	UINT instanceCount = 1;
+	uint32_t indexCount = 0;
+	uint32_t instanceCount = 1;
 	std::vector<RootData> rootData;
 };
 

@@ -35,12 +35,12 @@ void SRVertexBuffer::Init(VertexP* list, uint32_t size)
 		data->count++;
 	}
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexP) * size);
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexP) * size);
 
 	data->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
 	VertexP* vertMap = reinterpret_cast<VertexP*>(data->buff.Get());
-	for (UINT i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
 
@@ -61,12 +61,12 @@ void SRVertexBuffer::Init(std::vector<VertexP> list)
 		data->count++;
 	}
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexP) * list.size());
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexP) * list.size());
 
 	data->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
 	VertexP* vertMap = reinterpret_cast<VertexP*>(data->buff.Get());
-	for (UINT i = 0; i < list.size(); i++) {
+	for (uint32_t i = 0; i < list.size(); i++) {
 		vertMap[i] = list[i];
 	}
 
@@ -87,12 +87,12 @@ void SRVertexBuffer::Init(VertexPNU* list, uint32_t size)
 		data->count++;
 	}
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexPNU) * size);
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexPNU) * size);
 
 	data->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
 	VertexPNU* vertMap = reinterpret_cast<VertexPNU*>(data->buff.Get());
-	for (UINT i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
 
@@ -113,12 +113,12 @@ void SRVertexBuffer::Init(std::vector<VertexPNU> list)
 		data->count++;
 	}
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexPNU) * list.size());
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexPNU) * list.size());
 
 	data->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
 	VertexPNU* vertMap = reinterpret_cast<VertexPNU*>(data->buff.Get());
-	for (UINT i = 0; i < list.size(); i++) {
+	for (uint32_t i = 0; i < list.size(); i++) {
 		vertMap[i] = list[i];
 	}
 
@@ -134,7 +134,7 @@ void SRVertexBuffer::Update(VertexPNU* list, uint32_t size)
 		return;
 	}
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexPNU) * size);
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexPNU) * size);
 
 	if (data->dataSize != dataSize || data->strideInBytes != sizeof(VertexPNU)) {
 		Init(list, size);
@@ -142,7 +142,7 @@ void SRVertexBuffer::Update(VertexPNU* list, uint32_t size)
 	}
 
 	VertexPNU* vertMap = reinterpret_cast<VertexPNU*>(data->buff.Get());
-	for (UINT i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
 

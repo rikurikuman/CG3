@@ -57,7 +57,7 @@ void IRenderStage::AllCall()
 				viewport.MaxDepth = vp.maxDepth;
 				vec.push_back(viewport);
 			}
-			RDirectX::GetCommandList()->RSSetViewports(static_cast<UINT>(order.viewports.size()), &vec[0]);
+			RDirectX::GetCommandList()->RSSetViewports(static_cast<uint32_t>(order.viewports.size()), &vec[0]);
 		}
 
 		if (memo.scissorRects != order.scissorRects) {
@@ -71,7 +71,7 @@ void IRenderStage::AllCall()
 				rect.bottom = r.bottom;
 				vec.push_back(rect);
 			}
-			RDirectX::GetCommandList()->RSSetScissorRects(static_cast<UINT>(order.scissorRects.size()), &vec[0]);
+			RDirectX::GetCommandList()->RSSetScissorRects(static_cast<uint32_t>(order.scissorRects.size()), &vec[0]);
 		}
 
 		if (memo.rootSignature != order.rootSignature) {
@@ -156,10 +156,10 @@ void IRenderStage::AllCall()
 		}
 
 		if (order.indexBuff.IsValid() || order.indexView != nullptr) {
-			RDirectX::GetCommandList()->DrawIndexedInstanced(static_cast<UINT>(order.indexCount), order.instanceCount, 0, 0, 0);
+			RDirectX::GetCommandList()->DrawIndexedInstanced(static_cast<uint32_t>(order.indexCount), order.instanceCount, 0, 0, 0);
 		}
 		else {
-			RDirectX::GetCommandList()->DrawInstanced(static_cast<UINT>(order.indexCount), order.instanceCount, 0, 0);
+			RDirectX::GetCommandList()->DrawInstanced(static_cast<uint32_t>(order.indexCount), order.instanceCount, 0, 0);
 		}
 	}
 }

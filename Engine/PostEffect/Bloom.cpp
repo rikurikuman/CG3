@@ -14,7 +14,7 @@ Bloom::Bloom()
 	};
 
 	//頂点インデックスデータ
-	UINT indices[] = {
+	uint32_t indices[] = {
 		0, 1, 2,
 		1, 3, 2
 	};

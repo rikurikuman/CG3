@@ -17,7 +17,7 @@ void IndexBuffer::Init(uint32_t* list, uint32_t size)
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
 
-	UINT dataSize = static_cast<UINT>(sizeof(UINT) * size);
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(uint32_t) * size);
 
 	//インデックスバッファリソース設定
 	D3D12_RESOURCE_DESC resDesc{};
@@ -40,10 +40,10 @@ void IndexBuffer::Init(uint32_t* list, uint32_t size)
 
 	//GPU上のバッファに対応した仮想メモリを取得
 	//インデックスバッファをマッピング
-	UINT* indexMap = nullptr;
+	uint32_t* indexMap = nullptr;
 	result = buff->Map(0, nullptr, (void**)&indexMap);
 	//全インデックスに対して
-	for (UINT i = 0; i < size; i++)
+	for (uint32_t i = 0; i < size; i++)
 	{
 		indexMap[i] = list[i];
 	}
@@ -61,7 +61,7 @@ void IndexBuffer::Init(std::vector<uint32_t> list)
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
 
-	UINT dataSize = static_cast<UINT>(sizeof(UINT) * list.size());
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(uint32_t) * list.size());
 
 	//インデックスバッファリソース設定
 	D3D12_RESOURCE_DESC resDesc{};
@@ -84,10 +84,10 @@ void IndexBuffer::Init(std::vector<uint32_t> list)
 
 	//GPU上のバッファに対応した仮想メモリを取得
 	//インデックスバッファをマッピング
-	UINT* indexMap = nullptr;
+	uint32_t* indexMap = nullptr;
 	result = buff->Map(0, nullptr, (void**)&indexMap);
 	//全インデックスに対して
-	for (UINT i = 0; i < list.size(); i++)
+	for (uint32_t i = 0; i < list.size(); i++)
 	{
 		indexMap[i] = list[i];
 	}

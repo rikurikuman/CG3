@@ -104,7 +104,7 @@ void SimpleDrawer::DrawCircle(int32_t x, int32_t y, int32_t r, float layer, Colo
 
 			//ìÒÇ¬ÇÃâ~ÇÃí∏ì_ÇóZçáÇµÇƒç≈ã≠Ç…Ç∑ÇÈ
 			std::vector<VertexP> vertices;
-			std::vector<UINT> indices;
+			std::vector<uint32_t> indices;
 
 			std::vector<VertexP>& vertMin = instance->circleVertIndexMap[cDataMin].vert;
 			std::vector<VertexP>& vertMax = instance->circleVertIndexMap[cDataMax].vert;
@@ -146,7 +146,7 @@ void SimpleDrawer::DrawCircle(int32_t x, int32_t y, int32_t r, float layer, Colo
 	instance->circleInfoMap[cData].push_back({ Vector2(x, y), color });
 }
 
-void SimpleDrawer::DrawString(float x, float y, float layer, std::string text, Color color, std::string fontTypeFace, UINT fontSize, Vector2 anchor)
+void SimpleDrawer::DrawString(float x, float y, float layer, std::string text, Color color, std::string fontTypeFace, uint32_t fontSize, Vector2 anchor)
 {
 	SimpleDrawer* instance = GetInstance();
 	shared_ptr<DrawStringInfo> info = make_shared<DrawStringInfo>();
@@ -174,7 +174,7 @@ void SimpleDrawer::DrawAll() {
 			Color color;
 		};
 		std::vector<vert> vertices;
-		std::vector<UINT> indices;
+		std::vector<uint32_t> indices;
 		int32_t index = 0;
 		for (DrawBoxInfo& info : itr->second) {
 			Matrix4 mat = Matrix4::OrthoGraphicProjection(
@@ -256,7 +256,7 @@ void SimpleDrawer::DrawAll() {
 			RenderOrder order;
 			order.primitiveTopology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 			order.vertBuff = instance->lineBuffersMap[layer].vert;
-			order.indexCount = static_cast<UINT>(vertices.size());
+			order.indexCount = static_cast<uint32_t>(vertices.size());
 			order.rootData = {
 				{RootDataType::SRBUFFER_CBV, instance->lineVPBuff.buff }
 			};
@@ -295,9 +295,9 @@ void SimpleDrawer::DrawAll() {
 			order.primitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 			order.vertBuff = instance->circleBuffersMap[itr->first].vert;
 			order.indexBuff = instance->circleBuffersMap[itr->first].index;
-			order.indexCount = static_cast<UINT>(instance->circleBuffersMap[itr->first].index.GetIndexCount());
+			order.indexCount = static_cast<uint32_t>(instance->circleBuffersMap[itr->first].index.GetIndexCount());
 			order.instanceVertBuff = instance->circleBuffersMap[itr->first].instance;
-			order.instanceCount = static_cast<UINT>(itr->second.size());
+			order.instanceCount = static_cast<uint32_t>(itr->second.size());
 			order.rootData = {
 				{RootDataType::SRBUFFER_CBV, instance->circleVPBuff.buff }
 			};
@@ -542,7 +542,7 @@ void SimpleDrawer::CalcCircleVertAndIndex(DrawCustomData cData) {
 	SimpleDrawer* instance = GetInstance();
 
 	std::vector<VertexP> vertices;
-	std::vector<UINT> indices;
+	std::vector<uint32_t> indices;
 
 	float ang = 0;
 	for (int32_t i = 0; i < 360; i++) {
@@ -556,7 +556,7 @@ void SimpleDrawer::CalcCircleVertAndIndex(DrawCustomData cData) {
 	for (int32_t i = 0; i < vertices.size() - 2; i++) {
 		indices.push_back(i);
 		indices.push_back(i + 1);
-		indices.push_back(static_cast<UINT>(vertices.size() - 1));
+		indices.push_back(static_cast<uint32_t>(vertices.size() - 1));
 	}
 
 	//sin, cosÇégÇÌÇ»Ç¢éËñ@
@@ -592,13 +592,13 @@ void SimpleDrawer::CalcCircleVertAndIndex(DrawCustomData cData) {
 	vertices.push_back(VertexP({ 0, 0, 0 }));
 
 	for (int32_t i = 0; i < 8; i++) {
-		UINT index = i;
-		UINT count = 0;
+		uint32_t index = i;
+		uint32_t count = 0;
 
 		while (count < vertices.size() / 8 - 1) {
 			indices.push_back(index);
 			indices.push_back(index + 8);
-			indices.push_back(static_cast<UINT>(vertices.size() - 1));
+			indices.push_back(static_cast<uint32_t>(vertices.size() - 1));
 			index += 8;
 			count++;
 		}

@@ -2,17 +2,17 @@
 
 std::recursive_mutex SRIndexBuffer::mutex;
 
-SRIndexBuffer::SRIndexBuffer(UINT* list, UINT size)
+SRIndexBuffer::SRIndexBuffer(uint32_t* list, uint32_t size)
 {
 	Init(list, size);
 }
 
-SRIndexBuffer::SRIndexBuffer(std::vector<UINT> list)
+SRIndexBuffer::SRIndexBuffer(std::vector<uint32_t> list)
 {
 	Init(list);
 }
 
-void SRIndexBuffer::Init(UINT* list, UINT size)
+void SRIndexBuffer::Init(uint32_t* list, uint32_t size)
 {
 	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
 	std::lock_guard<std::recursive_mutex> lock2(mutex);
@@ -25,12 +25,12 @@ void SRIndexBuffer::Init(UINT* list, UINT size)
 		data->count++;
 	}
 
-	UINT dataSize = static_cast<UINT>(sizeof(UINT) * size);
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(uint32_t) * size);
 
 	data->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
-	UINT* vertMap = reinterpret_cast<UINT*>(data->buff.Get());
-	for (UINT i = 0; i < size; i++) {
+	uint32_t* vertMap = reinterpret_cast<uint32_t*>(data->buff.Get());
+	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
 
@@ -38,7 +38,7 @@ void SRIndexBuffer::Init(UINT* list, UINT size)
 	data->indexCount = size;
 }
 
-void SRIndexBuffer::Init(std::vector<UINT> list)
+void SRIndexBuffer::Init(std::vector<uint32_t> list)
 {
 	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
 	std::lock_guard<std::recursive_mutex> lock2(mutex);
@@ -51,17 +51,17 @@ void SRIndexBuffer::Init(std::vector<UINT> list)
 		data->count++;
 	}
 
-	UINT dataSize = static_cast<UINT>(sizeof(UINT) * list.size());
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(uint32_t) * list.size());
 
 	data->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
-	UINT* vertMap = reinterpret_cast<UINT*>(data->buff.Get());
-	for (UINT i = 0; i < list.size(); i++) {
+	uint32_t* vertMap = reinterpret_cast<uint32_t*>(data->buff.Get());
+	for (uint32_t i = 0; i < list.size(); i++) {
 		vertMap[i] = list[i];
 	}
 
 	data->dataSize = dataSize;
-	data->indexCount = static_cast<UINT>(list.size());
+	data->indexCount = static_cast<uint32_t>(list.size());
 }
 
 D3D12_INDEX_BUFFER_VIEW SRIndexBuffer::GetIndexView()
@@ -78,7 +78,7 @@ D3D12_INDEX_BUFFER_VIEW SRIndexBuffer::GetIndexView()
 	return view;
 }
 
-UINT SRIndexBuffer::GetIndexCount()
+uint32_t SRIndexBuffer::GetIndexCount()
 {
 	std::lock_guard<std::recursive_mutex> lock2(mutex);
 	if (data == nullptr) {

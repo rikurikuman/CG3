@@ -4,14 +4,14 @@
 
 using namespace std;
 
-FontTexture TextDrawer::GetFontTexture(std::string glyph, std::string fontTypeFace, UINT fontSize, bool useAlign)
+FontTexture TextDrawer::GetFontTexture(std::string glyph, std::string fontTypeFace, uint32_t fontSize, bool useAlign)
 {
 	wstring wGlyph = Util::ConvertStringToWString(glyph);
 	wstring wFontTypeFace = Util::ConvertStringToWString(fontTypeFace);
 	return GetFontTexture(wGlyph, wFontTypeFace, fontSize, useAlign);
 }
 
-FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontTypeFace, UINT fontSize, bool useAlign)
+FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontTypeFace, uint32_t fontSize, bool useAlign)
 {
 	TextDrawer* drawer = GetInstance();
 	lock_guard<recursive_mutex> lock(drawer->mutex);
@@ -35,7 +35,7 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 
 	HDC hdc = GetDC(NULL);
 	HFONT oldFont = (HFONT)SelectObject(hdc, _font);
-	UINT code = (UINT)*glyph.c_str();
+	uint32_t code = (uint32_t)*glyph.c_str();
 
 #ifdef _DEBUG
 	OutputDebugString((glyph + L"\n").c_str());
@@ -137,7 +137,7 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 	return ftex;
 }
 
-TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string fontTypeFace, UINT fontSize, std::string handle)
+TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string fontTypeFace, uint32_t fontSize, std::string handle)
 {
 	wstring wText = Util::ConvertStringToWString(text);
 	wstring _wTypeFace = Util::ConvertStringToWString(fontTypeFace);
@@ -148,9 +148,9 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 		glyphlist.push_back(GetFontTexture(wText.substr(i, 1), _wTypeFace, fontSize, true));
 	}
 
-	UINT64 originPos = 0;
-	UINT64 textureWidth = 0;
-	UINT textureHeight = 0;
+	size_t originPos = 0;
+	size_t textureWidth = 0;
+	uint32_t textureHeight = 0;
 
 	for (FontTexture fTex : glyphlist) {
 		originPos += fTex.gm.gmptGlyphOrigin.x;
@@ -160,13 +160,13 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 			textureWidth += originPos - textureWidth;
 		}
 
-		UINT height = fTex.texture.resource->GetDesc().Height;
+		uint32_t height = fTex.texture.resource->GetDesc().Height;
 		if (textureHeight < height) {
 			textureHeight = height;
 		}
 	}
 
-	UINT64 imageDataCount = textureWidth * textureHeight;
+	size_t imageDataCount = textureWidth * textureHeight;
 
 	vector<Color> imageData;
 	imageData.resize(imageDataCount);
@@ -174,7 +174,7 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 		imageData[i] = Color(0, 0, 0, 0);
 	}
 
-	UINT64 currentPos = 0; //現在の原点位置
+	size_t currentPos = 0; //現在の原点位置
 
 	for (FontTexture tex : glyphlist) {
 		size_t _width = tex.texture.resource->GetDesc().Width;

@@ -158,17 +158,17 @@ bool RInput::GetPadConnect()
 	return GetInstance()->isConnectPad;
 }
 
-bool RInput::GetPadButton(UINT button)
+bool RInput::GetPadButton(uint32_t button)
 {
 	return GetInstance()->xInputState.Gamepad.wButtons == button;
 }
 
-bool RInput::GetPadButtonUp(UINT button)
+bool RInput::GetPadButtonUp(uint32_t button)
 {
 	return GetInstance()->xInputState.Gamepad.wButtons != button && GetInstance()->oldXInputState.Gamepad.wButtons == button;
 }
 
-bool RInput::GetPadButtonDown(UINT button)
+bool RInput::GetPadButtonDown(uint32_t button)
 {
 	return GetInstance()->xInputState.Gamepad.wButtons == button && GetInstance()->oldXInputState.Gamepad.wButtons != button;
 }

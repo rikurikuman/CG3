@@ -85,7 +85,7 @@ void RDirectX::InitInternal() {
 	ComPtr<IDXGIAdapter4> tmpAdapter = nullptr;
 
 	//パフォーマンスが高い順に全てのアダプターを列挙する
-	for (UINT i = 0;
+	for (uint32_t i = 0;
 		dxgiFactory->EnumAdapterByGpuPreference(i,
 			DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
 			IID_PPV_ARGS(&tmpAdapter)) != DXGI_ERROR_NOT_FOUND;
@@ -260,7 +260,7 @@ void RDirectX::InitInternal() {
 
 
 	//フェンスの生成
-	UINT64 fenceVal_ = 0;
+	size_t fenceVal_ = 0;
 	result = device->CreateFence(fenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 
 	//ルートシグネチャ

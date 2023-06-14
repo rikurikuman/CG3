@@ -16,7 +16,7 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource; //テクスチャのリソース
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = D3D12_CPU_DESCRIPTOR_HANDLE(); //SRVのハンドル(CPU側)
 	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = D3D12_GPU_DESCRIPTOR_HANDLE(); //SRVのハンドル(GPU側)
-	UINT heapIndex = UINT32_MAX;
+	uint32_t heapIndex = UINT32_MAX;
 	std::string filePath; //ファイルへのパス
 
 	Texture() {};
@@ -48,7 +48,7 @@ public:
 	/// <param name="height">縦幅</param>
 	/// <param name="handle">必要なら、任意ハンドル名指定</param>
 	/// <returns>作られたテクスチャのハンドル</returns>
-	static TextureHandle Create(const Color color, const UINT64 width, const UINT height, const std::string handle = "");
+	static TextureHandle Create(const Color color, const size_t width, const uint32_t height, const std::string handle = "");
 
 	/// <summary>
 	/// 色情報の配列によってテクスチャを作る
@@ -59,7 +59,7 @@ public:
 	/// <param name="filepath">あれば、ファイルパス</param>
 	/// <param name="handle">必要なら、任意ハンドル名指定</param>
 	/// <returns>作られたテクスチャのハンドル</returns>
-	static TextureHandle Create(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath = "", const std::string handle = "");
+	static TextureHandle Create(const Color* pSource, const size_t width, const uint32_t height, const std::string filepath = "", const std::string handle = "");
 
 	/// <summary>
 	/// ファイルからテクスチャを読み込んで登録する
@@ -127,8 +127,8 @@ private:
 
 	void Init();
 	
-	TextureHandle CreateInternal(const Color color, const UINT64 width, const UINT height, const std::string handle = "");
-	TextureHandle CreateInternal(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath = "", const std::string handle = "");
+	TextureHandle CreateInternal(const Color color, const size_t width, const uint32_t height, const std::string handle = "");
+	TextureHandle CreateInternal(const Color* pSource, const size_t width, const uint32_t height, const std::string filepath = "", const std::string handle = "");
 	TextureHandle LoadInternal(const std::string filepath, const std::string handle = "");
 	TextureHandle LoadInternal(const void* pSource, const size_t size, const std::string filepath, const std::string handle = "");
 	Texture& GetInternal(const TextureHandle& handle);
@@ -138,7 +138,7 @@ private:
 	void EndFrameProcessInternal();
 
 	std::recursive_mutex mutex;
-	static const UINT numSRVDescritors = 2048; //デスクリプタヒープの数
+	static const uint32_t numSRVDescritors = 2048; //デスクリプタヒープの数
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap; //テクスチャ用SRVデスクリプタヒープ
 	std::map<TextureHandle, Texture> textureMap;
 	std::list<TextureHandle> unregisterScheduledList; //UnRegisterAtEndFrame予定リスト

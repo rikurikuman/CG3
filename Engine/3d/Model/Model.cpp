@@ -217,9 +217,9 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
                     loading.vertexs.emplace_back(_vertices[indexC]);
                     c = loading.vertexs.size() - 1;
 
-                    loading.indices.emplace_back((UINT)a);
-                    loading.indices.emplace_back((UINT)b);
-                    loading.indices.emplace_back((UINT)c);
+                    loading.indices.emplace_back((uint32_t)a);
+                    loading.indices.emplace_back((uint32_t)b);
+                    loading.indices.emplace_back((uint32_t)c);
                 }
             }
         }
@@ -286,7 +286,7 @@ aiMatrix4x4 GetNodeAbsoluteTransform(const aiNode* node) {
 }
 
 void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const vector<Material>* materials) {
-    for (UINT meshIndex = 0; meshIndex < node->mNumMeshes; meshIndex++) {
+    for (uint32_t meshIndex = 0; meshIndex < node->mNumMeshes; meshIndex++) {
         ModelData data;
 
         aiMesh* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
@@ -301,7 +301,7 @@ void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const 
         //頂点
         vector<VertexPNU> vertices;
 
-        for (UINT posIndex = 0; posIndex < mesh->mNumVertices; posIndex++) {
+        for (uint32_t posIndex = 0; posIndex < mesh->mNumVertices; posIndex++) {
             Vector3 pos = { 0, 0, 0 };
             Vector3 norm = { 0, 0, 0 };
             Vector2 uv = { 0, 0 };
@@ -343,9 +343,9 @@ void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const 
         }
 
         //面(インデックス)
-        for (UINT faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
+        for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
             aiFace face = mesh->mFaces[faceIndex];
-            for (UINT vertIndex = 0; vertIndex < face.mNumIndices; vertIndex++) {
+            for (uint32_t vertIndex = 0; vertIndex < face.mNumIndices; vertIndex++) {
                 data.indices.push_back(face.mIndices[vertIndex]);
             }
         }
@@ -359,7 +359,7 @@ void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const 
         model->data.push_back(make_shared<ModelData>(data));
     }
 
-    for (UINT childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
+    for (uint32_t childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
         NodeTraverse(scene, node->mChildren[childIndex], model, materials);
     }
 }
@@ -408,7 +408,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
     //マテリアル
     vector<Material> materials;
 
-    for (UINT materialIndex = 0; materialIndex < scene->mNumMaterials; materialIndex++) {
+    for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; materialIndex++) {
         Material material;
         aiMaterial* _material = scene->mMaterials[materialIndex];
 
@@ -462,7 +462,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
                         vector<Color> data;
                         data.resize(embedTex->mWidth * embedTex->mHeight);
 
-                        for (UINT i = 0; i < embedTex->mWidth * embedTex->mHeight; i++) {
+                        for (uint32_t i = 0; i < embedTex->mWidth * embedTex->mHeight; i++) {
                             aiTexel texel = embedTex->pcData[i];
                             //data[i] = Color(texel.r, texel.g, texel.b, texel.a);
                         }
@@ -483,7 +483,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
                             vector<Color> data;
                             data.resize(tex->mWidth * tex->mHeight);
 
-                            for (UINT i = 0; i < tex->mWidth * tex->mHeight; i++) {
+                            for (uint32_t i = 0; i < tex->mWidth * tex->mHeight; i++) {
                                 aiTexel texel = tex->pcData[i];
                                 //data[i] = Color(texel.r, texel.g, texel.b, texel.a);
                             }

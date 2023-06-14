@@ -55,13 +55,13 @@ public:
 	static bool GetPadConnect();
 
 	//パッドのボタンが押されているか
-	static bool GetPadButton(UINT button);
+	static bool GetPadButton(uint32_t button);
 
 	//パッドのボタンが離れた瞬間か
-	static bool GetPadButtonUp(UINT button);
+	static bool GetPadButtonUp(uint32_t button);
 
 	//パッドのボタンが押された瞬間か
-	static bool GetPadButtonDown(UINT button);
+	static bool GetPadButtonDown(uint32_t button);
 
 	//パッドの左スティック
 	Vector2 GetPadLStick();

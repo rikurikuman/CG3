@@ -50,7 +50,7 @@ public:
 	/// <param name="thickness">“h‚è‚Â‚Ô‚³‚È‚¢ê‡‚Ìü‚Ì‘¾‚³</param>
 	static void DrawCircle(int32_t x, int32_t y, int32_t r, float layer, Color color, bool fillFlag, float thickness = 1.0f);
 	
-	static void DrawString(float x, float y, float layer, std::string text, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), std::string fontTypeFace = "", UINT fontSize = 20, Vector2 anchor = {0, 0});
+	static void DrawString(float x, float y, float layer, std::string text, Color color = Color(1.0f, 1.0f, 1.0f, 1.0f), std::string fontTypeFace = "", uint32_t fontSize = 20, Vector2 anchor = {0, 0});
 
 	//Œã‰ñ‚µ•`‰æ‚É‚æ‚Á‚Ä’ñ‹Ÿ‚³‚ê‚é‚à‚Ì‚ğ‘S•”•`‰æ‚·‚é
 	static void DrawAll();

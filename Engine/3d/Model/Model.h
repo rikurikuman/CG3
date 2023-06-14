@@ -26,7 +26,7 @@ public:
 	IndexBuffer indexBuff;
 
 	std::vector<VertexPNU> vertexs;
-	std::vector<UINT> indices;
+	std::vector<uint32_t> indices;
 	Material material;
 
 	void CalcSmoothedNormals();

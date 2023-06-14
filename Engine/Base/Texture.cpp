@@ -145,7 +145,7 @@ Texture TextureManager::GetHogeHogeTexture()
 	return texture;
 }
 
-TextureHandle TextureManager::CreateInternal(const Color color, const UINT64 width, const UINT height, const std::string handle)
+TextureHandle TextureManager::CreateInternal(const Color color, const size_t width, const uint32_t height, const std::string handle)
 {
 	std::lock_guard<std::recursive_mutex> lock(mutex);
 	HRESULT result;
@@ -199,7 +199,7 @@ TextureHandle TextureManager::CreateInternal(const Color color, const UINT64 wid
 	return RegisterInternal(texture, handle);
 }
 
-TextureHandle TextureManager::CreateInternal(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath, const std::string handle)
+TextureHandle TextureManager::CreateInternal(const Color* pSource, const size_t width, const uint32_t height, const std::string filepath, const std::string handle)
 {
 	std::lock_guard<std::recursive_mutex> lock(mutex);
 	HRESULT result;
@@ -476,7 +476,7 @@ Texture& TextureManager::GetInternal(const TextureHandle& handle)
 TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle handle)
 {
 	std::unique_lock<std::recursive_mutex> lock(mutex);
-	UINT useIndex = UINT32_MAX;
+	uint32_t useIndex = UINT32_MAX;
 
 	auto itr = textureMap.find(handle);
 	if (itr != textureMap.end()) {
@@ -557,13 +557,13 @@ void TextureManager::EndFrameProcessInternal()
 	unregisterScheduledList.clear();
 }
 
-TextureHandle TextureManager::Create(const Color color, const UINT64 width, const UINT height, const std::string handle)
+TextureHandle TextureManager::Create(const Color color, const size_t width, const uint32_t height, const std::string handle)
 {
 	TextureManager* manager = TextureManager::GetInstance();
 	return manager->CreateInternal(color, width, height, handle);
 }
 
-TextureHandle TextureManager::Create(const Color* pSource, const UINT64 width, const UINT height, const std::string filepath, const std::string handle)
+TextureHandle TextureManager::Create(const Color* pSource, const size_t width, const uint32_t height, const std::string filepath, const std::string handle)
 {
 	TextureManager* manager = TextureManager::GetInstance();
 	return manager->CreateInternal(pSource, width, height, filepath, handle);

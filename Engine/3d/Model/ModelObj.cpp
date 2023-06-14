@@ -42,7 +42,7 @@ void ModelObj::Draw()
 
 		std::string stage = "Opaque";
 		if (data->material.color.a < 1.0f || tuneMaterial.color.a < 1.0f) stage = "Transparent";
-		Renderer::DrawCall(stage, &data->vertexBuff.view, &data->indexBuff.view, static_cast<UINT>(data->indices.size()), rootData);
+		Renderer::DrawCall(stage, &data->vertexBuff.view, &data->indexBuff.view, static_cast<uint32_t>(data->indices.size()), rootData);
 	}
 	
 }

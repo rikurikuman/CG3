@@ -12,14 +12,14 @@ SRBufferAllocator* SRBufferAllocator::GetInstance()
 	return &instance;
 }
 
-UINT64 Align(UINT64 location, UINT64 align) {
+size_t Align(size_t location, size_t align) {
 	if ((align == 0) || (align & (align - 1))) {
 		return 0;
 	}
 	return (location + (align - 1)) & ~(align - 1);
 }
 
-SRBufferPtr SRBufferAllocator::Alloc(UINT64 needSize, UINT align)
+SRBufferPtr SRBufferAllocator::Alloc(size_t needSize, uint32_t align)
 {
 	SRBufferAllocator* instance = GetInstance();
 	std::lock_guard<std::recursive_mutex> lock(instance->mutex);
@@ -54,7 +54,7 @@ void SRBufferAllocator::Free(SRBufferPtr& ptr)
 	ptr.ptr_ = nullptr;
 }
 
-MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag)
+MemoryRegion* SRBufferAllocator::_Alloc(size_t needSize, uint32_t align, bool deflag)
 {
 	SRBufferAllocator* instance = GetInstance();
 	std::lock_guard<std::recursive_mutex> lock(instance->mutex);
@@ -66,7 +66,7 @@ MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag
 	for (MemoryRegion& reg : instance->freeRegions) {
 
 		//要求境界にアライメントする
-		byte* alignedLoc = reinterpret_cast<byte*>(Align(reinterpret_cast<UINT64>(reg.pBegin), align));
+		byte* alignedLoc = reinterpret_cast<byte*>(Align(reinterpret_cast<size_t>(reg.pBegin), align));
 
 		//アライメントに失敗するようならnullのまま返す
 		if (alignedLoc == nullptr) {
@@ -77,7 +77,7 @@ MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag
 		}
 
 		//アライメントされた後のアドレスから要求サイズが確保できるか確認
-		UINT64 remainSize = UINT64(reg.pEnd - alignedLoc + 1);
+		size_t remainSize = size_t(reg.pEnd - alignedLoc + 1);
 		if (reg.pEnd < alignedLoc || remainSize < needSize) {
 			continue; //できないなら別の空き領域でもう一度
 		}
@@ -115,13 +115,13 @@ MemoryRegion* SRBufferAllocator::_Alloc(UINT64 needSize, UINT align, bool deflag
 		}
 
 		//あれば、空き領域の先頭から確保領域の先頭までを新たな空き領域として追加する
-		if (UINT64(newLoc - reg.pBegin) != 0) {
+		if (size_t(newLoc - reg.pBegin) != 0) {
 			itr = instance->freeRegions.emplace(itr, reg.pBegin, newLoc - 1);
 			itr++;
 		}
 
 		//あれば、確保領域の末尾から空き領域の末尾までを新たな空き領域として追加する
-		if (UINT64(reg.pEnd - (newLoc + needSize - 1)) != 0) {
+		if (size_t(reg.pEnd - (newLoc + needSize - 1)) != 0) {
 			itr = instance->freeRegions.emplace(itr++, newLoc + needSize, reg.pEnd);
 			itr++;
 		}
@@ -396,7 +396,7 @@ D3D12_GPU_VIRTUAL_ADDRESS SRBufferPtr::GetGPUVirtualAddress() const
 {
 	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::mutex);
 	D3D12_GPU_VIRTUAL_ADDRESS address = SRBufferAllocator::GetGPUVirtualAddress();
-	address += static_cast<UINT>(ptr_->region->pBegin - SRBufferAllocator::GetBufferAddress());
+	address += static_cast<uint32_t>(ptr_->region->pBegin - SRBufferAllocator::GetBufferAddress());
 	return address;
 }
 

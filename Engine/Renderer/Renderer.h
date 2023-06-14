@@ -17,9 +17,9 @@ public:
 	static void Execute();
 
 	//描画コマンドを積みます
-	static void DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView, D3D12_INDEX_BUFFER_VIEW* indexView, UINT indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint = Vector3::ZERO);
+	static void DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView, D3D12_INDEX_BUFFER_VIEW* indexView, uint32_t indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint = Vector3::ZERO);
 	//描画コマンドを積みます
-	static void DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, UINT indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint = Vector3::ZERO);
+	static void DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, uint32_t indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint = Vector3::ZERO);
 	//描画コマンドを積みます
 	static void DrawCall(std::string stageID, RenderOrder order);
 

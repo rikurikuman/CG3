@@ -27,7 +27,7 @@ void VertexBuffer::Init(VertexP* list, uint32_t size)
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexP) * size);
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexP) * size);
 
 	//頂点バッファリソース設定
 	D3D12_RESOURCE_DESC resDesc{};
@@ -55,7 +55,7 @@ void VertexBuffer::Init(VertexP* list, uint32_t size)
 	result = buff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
-	for (UINT i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
 	buff->Unmap(0, nullptr);
@@ -72,7 +72,7 @@ void VertexBuffer::Init(std::vector<VertexP> list)
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexP) * list.size());
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexP) * list.size());
 
 	//頂点バッファリソース設定
 	D3D12_RESOURCE_DESC resDesc{};
@@ -100,7 +100,7 @@ void VertexBuffer::Init(std::vector<VertexP> list)
 	result = buff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
-	for (UINT i = 0; i < list.size(); i++) {
+	for (uint32_t i = 0; i < list.size(); i++) {
 		vertMap[i] = list[i];
 	}
 	buff->Unmap(0, nullptr);
@@ -117,7 +117,7 @@ void VertexBuffer::Init(VertexPNU* list, uint32_t size)
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexPNU) * size);
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexPNU) * size);
 
 	//頂点バッファリソース設定
 	D3D12_RESOURCE_DESC resDesc{};
@@ -145,7 +145,7 @@ void VertexBuffer::Init(VertexPNU* list, uint32_t size)
 	result = buff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
-	for (UINT i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
 	buff->Unmap(0, nullptr);
@@ -162,7 +162,7 @@ void VertexBuffer::Init(std::vector<VertexPNU> list)
 	D3D12_HEAP_PROPERTIES heapProp{};
 	heapProp.Type = D3D12_HEAP_TYPE_UPLOAD; //GPUへの転送用
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexPNU) * list.size());
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexPNU) * list.size());
 
 	//頂点バッファリソース設定
 	D3D12_RESOURCE_DESC resDesc{};
@@ -190,7 +190,7 @@ void VertexBuffer::Init(std::vector<VertexPNU> list)
 	result = buff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
-	for (UINT i = 0; i < list.size(); i++) {
+	for (uint32_t i = 0; i < list.size(); i++) {
 		vertMap[i] = list[i];
 	}
 	buff->Unmap(0, nullptr);
@@ -205,7 +205,7 @@ void VertexBuffer::Update(VertexPNU* list, uint32_t size)
 {
 	HRESULT result;
 
-	UINT dataSize = static_cast<UINT>(sizeof(VertexPNU) * size);
+	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexPNU) * size);
 
 	assert(buff->GetDesc().Width >= dataSize);
 	if (buff->GetDesc().Width < dataSize) {
@@ -216,7 +216,7 @@ void VertexBuffer::Update(VertexPNU* list, uint32_t size)
 	result = buff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
-	for (UINT i = 0; i < size; i++) {
+	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
 	buff->Unmap(0, nullptr);

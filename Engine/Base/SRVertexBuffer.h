@@ -7,8 +7,8 @@ class SRVertexBuffer
 private:
 	struct VertexBufferData {
 		size_t count = 0;
-		UINT dataSize = 0;
-		UINT strideInBytes = 0;
+		uint32_t dataSize = 0;
+		uint32_t strideInBytes = 0;
 		SRBufferPtr buff;
 	};
 
@@ -90,7 +90,7 @@ public:
 
 	//任意の頂点データの配列とその大きさで作る
 	template<class T>
-	void Init(T* list, UINT size) {
+	void Init(T* list, uint32_t size) {
 		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
 		std::lock_guard<std::recursive_mutex> lock2(mutex);
 
@@ -102,12 +102,12 @@ public:
 			data->count++;
 		}
 
-		UINT dataSize = static_cast<UINT>(sizeof(T) * size);
+		uint32_t dataSize = static_cast<uint32_t>(sizeof(T) * size);
 
 		data->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
 		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
-		for (UINT i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			vertMap[i] = list[i];
 		}
 
@@ -129,12 +129,12 @@ public:
 			data->count++;
 		}
 
-		UINT dataSize = static_cast<UINT>(sizeof(T) * list.size());
+		uint32_t dataSize = static_cast<uint32_t>(sizeof(T) * list.size());
 
 		data->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
 		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
-		for (UINT i = 0; i < list.size(); i++) {
+		for (uint32_t i = 0; i < list.size(); i++) {
 			vertMap[i] = list[i];
 		}
 
@@ -144,14 +144,14 @@ public:
 
 	//任意の頂点データの配列とその大きさで更新
 	template<class T>
-	void Update(T* list, UINT size) {
+	void Update(T* list, uint32_t size) {
 		std::lock_guard<std::recursive_mutex> lock(mutex);
 		if (data == nullptr || data->buff.GetRegionPtr() == nullptr) {
 			Init(list, size);
 			return;
 		}
 
-		UINT dataSize = static_cast<UINT>(sizeof(T) * size);
+		uint32_t dataSize = static_cast<uint32_t>(sizeof(T) * size);
 
 		if (data->dataSize != dataSize || data->strideInBytes != sizeof(T)) {
 			Init(list, size);
@@ -159,7 +159,7 @@ public:
 		}
 
 		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
-		for (UINT i = 0; i < size; i++) {
+		for (uint32_t i = 0; i < size; i++) {
 			vertMap[i] = list[i];
 		}
 
@@ -176,7 +176,7 @@ public:
 			return;
 		}
 
-		UINT dataSize = static_cast<UINT>(sizeof(T) * list.size());
+		uint32_t dataSize = static_cast<uint32_t>(sizeof(T) * list.size());
 
 		if (data->dataSize != dataSize || data->strideInBytes != sizeof(T)) {
 			Init(list);
@@ -184,7 +184,7 @@ public:
 		}
 
 		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
-		for (UINT i = 0; i < list.size(); i++) {
+		for (uint32_t i = 0; i < list.size(); i++) {
 			vertMap[i] = list[i];
 		}
 

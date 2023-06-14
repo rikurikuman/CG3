@@ -93,7 +93,7 @@ void RenderTarget::SetToTexture(std::vector<std::string> names)
 	RDirectX::GetCommandList()->OMSetRenderTargets((UINT)names.size(), &rtvHandles[0], false, &dsvHandles[0]);
 }
 
-void RenderTarget::CreateRenderTargetTexture(const UINT width, const UINT height, const Color clearColor, TextureHandle name)
+void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_t height, const Color clearColor, TextureHandle name)
 {
 	RenderTarget* manager = GetInstance();
 
@@ -166,14 +166,14 @@ void RenderTarget::CreateRenderTargetTexture(const UINT width, const UINT height
 	renderTarget.texHandle = texHandle;
 	renderTarget.clearColor = clearColor;
 
-	UINT useIndex = UINT32_MAX;
+	uint32_t useIndex = UINT32_MAX;
 
 	auto itr = manager->renderTargetMap.find(name);
 	if (itr != manager->renderTargetMap.end()) {
 		useIndex = itr->second.heapIndex;
 	}
 	else {
-		for (UINT i = 0; i < numDescriptors; i++) {
+		for (uint32_t i = 0; i < numDescriptors; i++) {
 			bool ok = true;
 			for (std::pair<const std::string, RenderTargetTexture>& p : manager->renderTargetMap) {
 				if (p.second.heapIndex == i) {
@@ -230,7 +230,7 @@ RenderTargetTexture* RenderTarget::GetRenderTargetTexture(std::string name) {
 	return nullptr;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(UINT index)
+D3D12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(uint32_t index)
 {
 	RenderTarget* manager = RenderTarget::GetInstance();
 
@@ -240,7 +240,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(UINT index)
 	return rtvHeapHandle;
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetDSVHandle(UINT index)
+D3D12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetDSVHandle(uint32_t index)
 {
 	RenderTarget* manager = RenderTarget::GetInstance();
 

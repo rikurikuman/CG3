@@ -9,7 +9,7 @@ public:
 	TextureHandle texHandle;
 	Color clearColor;
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuff;
-	UINT heapIndex = UINT32_MAX;
+	uint32_t heapIndex = UINT32_MAX;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle();
@@ -30,10 +30,10 @@ public:
 	static void SetToTexture(std::string name);
 	static void SetToTexture(std::vector<std::string> names);
 
-	static void CreateRenderTargetTexture(const UINT width, const UINT height, const Color clearColor, TextureHandle name);
+	static void CreateRenderTargetTexture(const uint32_t width, const uint32_t height, const Color clearColor, TextureHandle name);
 	static RenderTargetTexture* GetRenderTargetTexture(std::string name);
-	static D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle(UINT index);
-	static D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle(UINT index);
+	static D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle(uint32_t index);
+	static D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle(uint32_t index);
 
 	static RenderTarget* GetInstance() {
 		static RenderTarget instance;
@@ -49,7 +49,7 @@ private:
 
 	void CreateHeaps();
 
-	static const UINT numDescriptors = 256;
+	static const uint32_t numDescriptors = 256;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap;
 

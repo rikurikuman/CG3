@@ -30,7 +30,7 @@ private:
 	ComPtr<ID3D12Resource> depthBuff = nullptr;
 	ComPtr<ID3D12DescriptorHeap> dsvHeap;
 	ComPtr<ID3D12Fence> fence = nullptr;
-	UINT64 fenceVal = 0;
+	size_t fenceVal = 0;
 	Shader basicVS;
 	Shader basicPS;
 	RootSignature rootSignature;
