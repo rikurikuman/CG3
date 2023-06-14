@@ -41,15 +41,14 @@ struct RootData {
 		: type(type), addressSRBuff(ptr) {}
 };
 
-class RenderOrder
+struct RenderOrder
 {
-public:
 	Vector3 anchorPoint;
 	std::vector<std::string> renderTargets;
 	std::vector<Viewport> viewports;
 	std::vector<Rect> scissorRects;
 	D3D_PRIMITIVE_TOPOLOGY primitiveTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
-	ID3D12RootSignature* rootSignature = nullptr;
+	ID3D12RootSignature* mRootSignature = nullptr;
 	ID3D12PipelineState* pipelineState = nullptr;
 	SRVertexBuffer vertBuff;
 	SRIndexBuffer indexBuff;

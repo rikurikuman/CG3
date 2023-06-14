@@ -29,19 +29,19 @@ public:
 	byte* Get();
 
 	const MemoryRegionPtr* GetRegionPtr() const {
-		return ptr_;
+		return mPtr;
 	}
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const;
 
 	bool operator==(const void* ptr) const {
-		return ptr_ == ptr;
+		return mPtr == ptr;
 	}
 	bool operator!=(const void* ptr) const {
-		return ptr_ != ptr;
+		return mPtr != ptr;
 	}
 	bool operator==(const SRBufferPtr& ptr) const {
-		return ptr_ == ptr.ptr_;
+		return mPtr == ptr.mPtr;
 	}
 	bool operator!=(const SRBufferPtr& ptr) const {
 		return !(*this == ptr);
@@ -51,16 +51,16 @@ public:
 
 private:
 	friend class SRBufferAllocator;
-	SRBufferPtr(MemoryRegionPtr* ptr) : ptr_(ptr) {}
-	MemoryRegionPtr* ptr_ = nullptr;
+	SRBufferPtr(MemoryRegionPtr* ptr) : mPtr(ptr) {}
+	MemoryRegionPtr* mPtr = nullptr;
 };
 
 class SRBufferAllocator
 {
 public:
-	static std::recursive_mutex mutex; //本当は公開したくないんだけど今は妥協
-	static bool optAutoDeflag;
-	static bool optAutoReCreateBuffer;
+	static std::recursive_mutex sMutex; //本当は公開したくないんだけど今は妥協
+	static bool mOptAutoDeflag;
+	static bool mOptAutoReCreateBuffer;
 
 	static SRBufferAllocator* GetInstance();
 
@@ -68,46 +68,46 @@ public:
 	static void Free(SRBufferPtr& ptr);
 	
 	static D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() {
-		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
-		return GetInstance()->buffer->GetGPUVirtualAddress();
+		std::lock_guard<std::recursive_mutex> lock(GetInstance()->sMutex);
+		return GetInstance()->mBuffer->GetGPUVirtualAddress();
 	}
 
 	static byte* GetBufferAddress() {
-		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
-		return GetInstance()->pBufferBegin;
+		std::lock_guard<std::recursive_mutex> lock(GetInstance()->sMutex);
+		return GetInstance()->mPtrBufferBegin;
 	}
 
 	static size_t GetUsingBufferSize() {
-		return GetInstance()->usingBufferSizeCounter;
+		return GetInstance()->mUsingBufferSizeCounter;
 	}
 
 	static size_t GetStrictUsingBufferSize() {
-		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
+		std::lock_guard<std::recursive_mutex> lock(GetInstance()->sMutex);
 		size_t size = 0;
-		for (auto& itr : GetInstance()->usingRegions) {
+		for (auto& itr : GetInstance()->mUsingRegions) {
 			size += static_cast<size_t>(itr.size);
 		}
 		return size;
 	}
 
 	static size_t GetBufferSize() {
-		std::lock_guard<std::recursive_mutex> lock(GetInstance()->mutex);
-		return static_cast<size_t>(GetInstance()->pBufferEnd - GetInstance()->pBufferBegin + 1);
+		std::lock_guard<std::recursive_mutex> lock(GetInstance()->sMutex);
+		return static_cast<size_t>(GetInstance()->mPtrBufferEnd - GetInstance()->mPtrBufferBegin + 1);
 	}
 
 	void DeFlag();
 	void ResizeBuffer();
 
 private:
-	constexpr static size_t defSize = 1024 * 1024 * 64; //64MB
+	constexpr static size_t DEFAULT_SIZE = 1024 * 1024 * 64; //64MB
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> buffer = nullptr;
-	UINT8* pBufferBegin = nullptr;
-	UINT8* pBufferEnd = nullptr;
-	std::list<MemoryRegion> freeRegions;
-	std::list<MemoryRegion> usingRegions;
-	std::list<MemoryRegionPtr> regionPtrs;
-	size_t usingBufferSizeCounter = 0;
+	Microsoft::WRL::ComPtr<ID3D12Resource> mBuffer = nullptr;
+	UINT8* mPtrBufferBegin = nullptr;
+	UINT8* mPtrBufferEnd = nullptr;
+	std::list<MemoryRegion> mFreeRegions;
+	std::list<MemoryRegion> mUsingRegions;
+	std::list<MemoryRegionPtr> mRegionPtrs;
+	size_t mUsingBufferSizeCounter = 0;
 
 	static MemoryRegion* _Alloc(size_t needSize, uint32_t align, bool deflag);
 	//static void _Free(byte* ptr);

@@ -35,24 +35,24 @@ void IndexBuffer::Init(uint32_t* list, uint32_t size)
 		&resDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&buff)
+		IID_PPV_ARGS(&mBuff)
 	);
 
 	//GPU上のバッファに対応した仮想メモリを取得
 	//インデックスバッファをマッピング
 	uint32_t* indexMap = nullptr;
-	result = buff->Map(0, nullptr, (void**)&indexMap);
+	result = mBuff->Map(0, nullptr, (void**)&indexMap);
 	//全インデックスに対して
 	for (uint32_t i = 0; i < size; i++)
 	{
 		indexMap[i] = list[i];
 	}
-	buff->Unmap(0, nullptr);
+	mBuff->Unmap(0, nullptr);
 
 	//インデックスバッファビューの作成
-	view.BufferLocation = buff->GetGPUVirtualAddress();
-	view.Format = DXGI_FORMAT_R32_UINT;
-	view.SizeInBytes = dataSize;
+	mView.BufferLocation = mBuff->GetGPUVirtualAddress();
+	mView.Format = DXGI_FORMAT_R32_UINT;
+	mView.SizeInBytes = dataSize;
 }
 
 void IndexBuffer::Init(std::vector<uint32_t> list)
@@ -79,22 +79,22 @@ void IndexBuffer::Init(std::vector<uint32_t> list)
 		&resDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&buff)
+		IID_PPV_ARGS(&mBuff)
 	);
 
 	//GPU上のバッファに対応した仮想メモリを取得
 	//インデックスバッファをマッピング
 	uint32_t* indexMap = nullptr;
-	result = buff->Map(0, nullptr, (void**)&indexMap);
+	result = mBuff->Map(0, nullptr, (void**)&indexMap);
 	//全インデックスに対して
 	for (uint32_t i = 0; i < list.size(); i++)
 	{
 		indexMap[i] = list[i];
 	}
-	buff->Unmap(0, nullptr);
+	mBuff->Unmap(0, nullptr);
 
 	//インデックスバッファビューの作成
-	view.BufferLocation = buff->GetGPUVirtualAddress();
-	view.Format = DXGI_FORMAT_R32_UINT;
-	view.SizeInBytes = dataSize;
+	mView.BufferLocation = mBuff->GetGPUVirtualAddress();
+	mView.Format = DXGI_FORMAT_R32_UINT;
+	mView.SizeInBytes = dataSize;
 }

@@ -8,25 +8,25 @@ void IRenderStage::AllCall()
 {
 	RenderOrder memo;
 
-	for (RenderOrder& order : orders) {
+	for (RenderOrder& order : mOrders) {
 		//Ž©“®Ý’è€–Ú‚ÌÝ’è
 		if (order.primitiveTopology == D3D_PRIMITIVE_TOPOLOGY_UNDEFINED) {
-			order.primitiveTopology = defParamater.primitiveTopology;
+			order.primitiveTopology = mDefParamater.primitiveTopology;
 		}
 		if (order.renderTargets.empty()) {
-			order.renderTargets = defParamater.renderTargets;
+			order.renderTargets = mDefParamater.renderTargets;
 		}
 		if (order.viewports.empty()) {
-			order.viewports = defParamater.viewports;
+			order.viewports = mDefParamater.viewports;
 		}
 		if (order.scissorRects.empty()) {
-			order.scissorRects = defParamater.scissorRects;
+			order.scissorRects = mDefParamater.scissorRects;
 		}
-		if (order.rootSignature == nullptr) {
-			order.rootSignature = defParamater.rootSignature;
+		if (order.mRootSignature == nullptr) {
+			order.mRootSignature = mDefParamater.mRootSignature;
 		}
 		if (order.pipelineState == nullptr) {
-			order.pipelineState = defParamater.pipelineState;
+			order.pipelineState = mDefParamater.pipelineState;
 		}
 
 		if (memo.primitiveTopology != order.primitiveTopology) {
@@ -74,9 +74,9 @@ void IRenderStage::AllCall()
 			RDirectX::GetCommandList()->RSSetScissorRects(static_cast<uint32_t>(order.scissorRects.size()), &vec[0]);
 		}
 
-		if (memo.rootSignature != order.rootSignature) {
-			memo.rootSignature = order.rootSignature;
-			RDirectX::GetCommandList()->SetGraphicsRootSignature(order.rootSignature);
+		if (memo.mRootSignature != order.mRootSignature) {
+			memo.mRootSignature = order.mRootSignature;
+			RDirectX::GetCommandList()->SetGraphicsRootSignature(order.mRootSignature);
 		}
 
 		if (memo.pipelineState != order.pipelineState) {
@@ -142,10 +142,10 @@ void IRenderStage::AllCall()
 				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, data.addressSRBuff.GetGPUVirtualAddress());
 			}
 			else if (data.type == RootDataType::CAMERA) {
-				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, Camera::nowCamera->buff.constBuff->GetGPUVirtualAddress());
+				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, Camera::sNowCamera->mBuff.mConstBuff->GetGPUVirtualAddress());
 			}
 			else if (data.type == RootDataType::LIGHT) {
-				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress());
+				RDirectX::GetCommandList()->SetGraphicsRootConstantBufferView(rootIndex, LightGroup::sNowLight->mBuffer.mConstBuff->GetGPUVirtualAddress());
 			}
 			else {
 #ifdef _DEBUG

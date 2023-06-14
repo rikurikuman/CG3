@@ -13,39 +13,39 @@ Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 Vector3::~Vector3() {}
 
 bool Vector3::operator==(const Vector3& a) const {
-	return this->x == a.x && this->y == a.y && this->z == a.z;
+	return x == a.x && y == a.y && z == a.z;
 }
 
 bool Vector3::operator!=(const Vector3& a) const {
-	return this->x != a.x || this->y != a.y || this->z == a.z;
+	return x != a.x || y != a.y || z == a.z;
 }
 
 bool Vector3::operator<(const Vector3& a) const
 {
-	if (this->x < a.x) return true;
-	if (this->x == a.x) {
-		if (this->y < a.y) return true;
-		if (this->y == a.y) {
-			if (this->z < a.z) return true;
+	if (x < a.x) return true;
+	if (x == a.x) {
+		if (y < a.y) return true;
+		if (y == a.y) {
+			if (z < a.z) return true;
 		}
 	}
 	return false;
 }
 
 Vector3 Vector3::operator+(const Vector3& a) const {
-	return Vector3(this->x + a.x, this->y + a.y, this->z + a.z);
+	return Vector3(x + a.x, y + a.y, z + a.z);
 }
 
 Vector3 Vector3::operator-(const Vector3& a) const {
-	return Vector3(this->x - a.x, this->y - a.y, this->z - a.z);
+	return Vector3(x - a.x, y - a.y, z - a.z);
 }
 
 Vector3 Vector3::operator-() const {
-	return Vector3(-this->x, -this->y, -this->z);
+	return Vector3(-x, -y, -z);
 }
 
 Vector3 Vector3::operator*(const float a) const {
-	return Vector3(this->x * a, this->y * a, this->z * a);
+	return Vector3(x * a, y * a, z * a);
 }
 
 Vector3 operator*(const float a, const Vector3& b) {
@@ -53,42 +53,42 @@ Vector3 operator*(const float a, const Vector3& b) {
 }
 
 Vector3 Vector3::operator/(const float a) const {
-	return Vector3(this->x / a, this->y / a, this->z / a);
+	return Vector3(x / a, y / a, z / a);
 }
 
 Vector3& Vector3::operator+=(const Vector3& a) {
-	this->x += a.x;
-	this->y += a.y;
-	this->z += a.z;
+	x += a.x;
+	y += a.y;
+	z += a.z;
 	return *this;
 }
 
 Vector3& Vector3::operator-=(const Vector3& a) {
-	this->x -= a.x;
-	this->y -= a.y;
-	this->z -= a.z;
+	x -= a.x;
+	y -= a.y;
+	z -= a.z;
 	return *this;
 }
 
 Vector3& Vector3::operator*=(const Vector3& a)
 {
-	this->x *= a.x;
-	this->y *= a.y;
-	this->z *= a.z;
+	x *= a.x;
+	y *= a.y;
+	z *= a.z;
 	return *this;
 }
 
 Vector3& Vector3::operator*=(const float a) {
-	this->x *= a;
-	this->y *= a;
-	this->z *= a;
+	x *= a;
+	y *= a;
+	z *= a;
 	return *this;
 }
 
 Vector3& Vector3::operator/=(const float a) {
-	this->x /= a;
-	this->y /= a;
-	this->z /= a;
+	x /= a;
+	y /= a;
+	z /= a;
 	return *this;
 }
 
@@ -108,33 +108,33 @@ float Vector3::Length() const {
 }
 
 float Vector3::LengthSq() const {
-	return this->x * this->x + this->y * this->y + this->z * this->z;
+	return x * x + y * y + z * z;
 }
 
 Vector3& Vector3::Normalize() {
-	float length = this->Length();
+	float length = Length();
 	if (length != 0) {
-		this->x = this->x / length;
-		this->y = this->y / length;
-		this->z = this->z / length;
+		x = x / length;
+		y = y / length;
+		z = z / length;
 	}
 	else {
-		this->x = 0;
-		this->y = 0;
-		this->z = 0;
+		x = 0;
+		y = 0;
+		z = 0;
 	}
 	return *this;
 }
 
 Vector3 Vector3::GetNormalize() const {
-	float length = this->Length();
+	float length = Length();
 	float dx = 0;
 	float dy = 0;
 	float dz = 0;
 	if (length != 0) {
-		dx = this->x / length;
-		dy = this->y / length;
-		dz = this->z / length;
+		dx = x / length;
+		dy = y / length;
+		dz = z / length;
 	}
 	return Vector3(dx, dy, dz);
 }

@@ -8,11 +8,11 @@ SpherePolygonScene::SpherePolygonScene()
 {
 	sphere = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere", true));
 
-	sphere.transform.position = { 0, 5, 0 };
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.position = { 0, 5, 0 };
+	sphere.mTransform.UpdateMatrix();
 
 	polygonPipeline = RDirectX::GetDefPipeline();
-	polygonPipeline.desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	polygonPipeline.mDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	polygonPipeline.Create();
 
 	VertexPNU verts[3] = {
@@ -22,15 +22,15 @@ SpherePolygonScene::SpherePolygonScene()
 	};
 	vertBuff.Init(verts, 3);
 
-	camera.viewProjection.eye = { 0, 3, -10 };
-	camera.viewProjection.target = { 0, 3, 0 };
-	camera.viewProjection.UpdateMatrix();
+	camera.mViewProjection.mEye = { 0, 3, -10 };
+	camera.mViewProjection.mTarget = { 0, 3, 0 };
+	camera.mViewProjection.UpdateMatrix();
 }
 
 void SpherePolygonScene::Init()
 {
-	Camera::nowCamera = &camera;
-	LightGroup::nowLight = &light;
+	Camera::sNowCamera = &camera;
+	LightGroup::sNowLight = &light;
 }
 
 void SpherePolygonScene::Update()
@@ -45,8 +45,8 @@ void SpherePolygonScene::Update()
 		ImGui::Begin("Control", NULL, window_flags);
 
 		if (ImGui::Button("Reset")) {
-			sphere.transform.position = { 0, 5, 0 };
-			sphere.transform.scale = { 1, 1, 1 };
+			sphere.mTransform.position = { 0, 5, 0 };
+			sphere.mTransform.scale = { 1, 1, 1 };
 			radius = 1;
 
 			posA = { 0, 0, 1 };
@@ -57,7 +57,7 @@ void SpherePolygonScene::Update()
 		ImGui::Text("Sphere");
 
 		ImGui::Checkbox("AutoMove", &autoMove);
-		ImGui::DragFloat3("Position", &sphere.transform.position.x, 0.01f);
+		ImGui::DragFloat3("Position", &sphere.mTransform.position.x, 0.01f);
 		ImGui::DragFloat("Scale", &radius, 0.01f);
 
 		ImGui::Text("Polygon");
@@ -69,32 +69,32 @@ void SpherePolygonScene::Update()
 	}
 
 	if (autoMove) {
-		sphere.transform.position.y += 5.0f * TimeManager::deltaTime * moveDir;
-		if (sphere.transform.position.y > 5
-			|| sphere.transform.position.y < 0) {
-			sphere.transform.position.y = Util::Clamp(sphere.transform.position.y, 0.0f, 5.0f);
+		sphere.mTransform.position.y += 5.0f * TimeManager::deltaTime * moveDir;
+		if (sphere.mTransform.position.y > 5
+			|| sphere.mTransform.position.y < 0) {
+			sphere.mTransform.position.y = Util::Clamp(sphere.mTransform.position.y, 0.0f, 5.0f);
 			moveDir *= -1;
 		}
 	}
 
-	colSphere.pos = sphere.transform.position;
+	colSphere.pos = sphere.mTransform.position;
 	colSphere.r = radius;
-	sphere.transform.scale = { radius, radius, radius };
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.scale = { radius, radius, radius };
+	sphere.mTransform.UpdateMatrix();
 
 	colPolygon.p0 = posA;
 	colPolygon.p1 = posC;
 	colPolygon.p2 = posB;
 
 	if (ColPrimitive3D::CheckSphereToTriangle(colSphere, colPolygon)) {
-		sphere.tuneMaterial.color = { 1, 0, 0, 1 };
+		sphere.mTuneMaterial.mColor = { 1, 0, 0, 1 };
 	}
 	else {
-		sphere.tuneMaterial.color = { 1, 1, 1, 1 };
+		sphere.mTuneMaterial.mColor = { 1, 1, 1, 1 };
 	}
 
 	light.Update();
-	sphere.TransferBuffer(Camera::nowCamera->viewProjection);
+	sphere.TransferBuffer(Camera::sNowCamera->mViewProjection);
 
 	VertexPNU verts[3] = {
 		{posA, {0, 0, 0}, {0, 0}},
@@ -102,10 +102,10 @@ void SpherePolygonScene::Update()
 		{posB, {0, 0, 0}, {0, 0}}
 	};
 	vertBuff.Update(verts, 3);
-	transformBuff.constMap->matrix = Matrix4();
-	materialBuff.constMap->color = { 1, 1, 1, 1 };
-	materialBuff.constMap->ambient = { 1, 1, 1 };
-	Camera::nowCamera->viewProjection.Transfer(viewProjectionBuff.constMap);
+	transformBuff.mConstMap->matrix = Matrix4();
+	materialBuff.mConstMap->color = { 1, 1, 1, 1 };
+	materialBuff.mConstMap->ambient = { 1, 1, 1 };
+	Camera::sNowCamera->mViewProjection.Transfer(viewProjectionBuff.mConstMap);
 }
 
 void SpherePolygonScene::Draw()
@@ -113,13 +113,13 @@ void SpherePolygonScene::Draw()
 	sphere.Draw();
 	
 	RenderOrder polygon;
-	polygon.pipelineState = polygonPipeline.ptr.Get();
+	polygon.pipelineState = polygonPipeline.mPtr.Get();
 	polygon.rootData = {
-		{TextureManager::Get("").gpuHandle},
-		{RootDataType::CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
+		{TextureManager::Get("").mGpuHandle},
+		{RootDataType::CBV, materialBuff.mConstBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, transformBuff.mConstBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, viewProjectionBuff.mConstBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, LightGroup::sNowLight->mBuffer.mConstBuff->GetGPUVirtualAddress()},
 	};
 	polygon.vertBuff = vertBuff;
 	polygon.indexCount = 3;

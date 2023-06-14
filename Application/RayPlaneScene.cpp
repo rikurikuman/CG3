@@ -9,23 +9,23 @@ RayPlaneScene::RayPlaneScene()
 	ray = ModelObj(Model::Load("./Resources/Model/", "Cube.obj", "Cube", false));
 	plane = ModelObj(Model::Load("./Resources/Model/Ground", "ground.obj", "ground", false));
 
-	sphere.transform.position = { 0, 5, 0 };
-	sphere.transform.scale = { 0.1f, 0.1f, 0.1f };
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.position = { 0, 5, 0 };
+	sphere.mTransform.scale = { 0.1f, 0.1f, 0.1f };
+	sphere.mTransform.UpdateMatrix();
 
 	colRay = { {0, 5, 0}, {0, -1, 0} };
 
 	colPlane = { {0, 1, 0}, 2 };
 
-	camera.viewProjection.eye = { 0, 3, -10 };
-	camera.viewProjection.target = { 0, 3, 0 };
-	camera.viewProjection.UpdateMatrix();
+	camera.mViewProjection.mEye = { 0, 3, -10 };
+	camera.mViewProjection.mTarget = { 0, 3, 0 };
+	camera.mViewProjection.UpdateMatrix();
 }
 
 void RayPlaneScene::Init()
 {
-	Camera::nowCamera = &camera;
-	LightGroup::nowLight = &light;
+	Camera::sNowCamera = &camera;
+	LightGroup::sNowLight = &light;
 }
 
 void RayPlaneScene::Update()
@@ -66,38 +66,38 @@ void RayPlaneScene::Update()
 		}
 	}
 
-	sphere.transform.position = colRay.start;
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.position = colRay.start;
+	sphere.mTransform.UpdateMatrix();
 
 	Vector3 planeN = colPlane.normal.GetNormalize();
-	plane.transform.position = Vector3(0, 0, 100) + planeN * colPlane.distance;
-	plane.transform.rotation = Quaternion::AngleAxis({ 0, 0, 1 }, Util::AngleToRadian(rotPlane)).ToEuler();
-	plane.transform.UpdateMatrix();
+	plane.mTransform.position = Vector3(0, 0, 100) + planeN * colPlane.distance;
+	plane.mTransform.rotation = Quaternion::AngleAxis({ 0, 0, 1 }, Util::AngleToRadian(rotPlane)).ToEuler();
+	plane.mTransform.UpdateMatrix();
 
 	colPlane.normal = Vector3(0, 1, 0) * Quaternion::AngleAxis({ 0, 0, 1 }, Util::AngleToRadian(rotPlane));
 
 	float dis = 0;
 	Vector3 inter;
 	if (ColPrimitive3D::CheckRayToPlane(colRay, colPlane, &dis, &inter)) {
-		sphere.tuneMaterial.color = { 1, 0, 0, 1 };
-		ray.tuneMaterial.color = { 0, 0, 1, 1 };
-		ray.transform.position = colRay.start;
-		ray.transform.position += colRay.dir * dis / 2.0f;
-		ray.transform.scale = { 0.1f, dis, 0.1f };
+		sphere.mTuneMaterial.mColor = { 1, 0, 0, 1 };
+		ray.mTuneMaterial.mColor = { 0, 0, 1, 1 };
+		ray.mTransform.position = colRay.start;
+		ray.mTransform.position += colRay.dir * dis / 2.0f;
+		ray.mTransform.scale = { 0.1f, dis, 0.1f };
 	}
 	else {
-		sphere.tuneMaterial.color = { 1, 1, 1, 1 };
-		ray.tuneMaterial.color = { 1, 1, 1, 1 };
-		ray.transform.position = colRay.start;
-		ray.transform.position += colRay.dir * 50;
-		ray.transform.scale = { 0.1f, 100, 0.1f };
+		sphere.mTuneMaterial.mColor = { 1, 1, 1, 1 };
+		ray.mTuneMaterial.mColor = { 1, 1, 1, 1 };
+		ray.mTransform.position = colRay.start;
+		ray.mTransform.position += colRay.dir * 50;
+		ray.mTransform.scale = { 0.1f, 100, 0.1f };
 	}
-	ray.transform.UpdateMatrix();
+	ray.mTransform.UpdateMatrix();
 
 	light.Update();
-	sphere.TransferBuffer(Camera::nowCamera->viewProjection);
-	ray.TransferBuffer(Camera::nowCamera->viewProjection);
-	plane.TransferBuffer(Camera::nowCamera->viewProjection);
+	sphere.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	ray.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	plane.TransferBuffer(Camera::sNowCamera->mViewProjection);
 }
 
 void RayPlaneScene::Draw()

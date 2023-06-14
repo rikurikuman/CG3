@@ -128,9 +128,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		RImGui::NewFrame();
 
-		if (Util::instanceof<DebugCamera>(*Camera::nowCamera)
+		if (Util::instanceof<DebugCamera>(*Camera::sNowCamera)
 			&& GetForegroundWindow() == RWindow::GetWindowHandle()
-			&& !dynamic_cast<DebugCamera*>(Camera::nowCamera)->freeFlag) {
+			&& !dynamic_cast<DebugCamera*>(Camera::sNowCamera)->mFreeFlag) {
 			RWindow::SetMouseHideFlag(true);
 			RWindow::SetMousePos(RWindow::GetWidth() / 2, RWindow::GetHeight() / 2);
 		}
@@ -159,12 +159,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 		//描画の実行中に別スレッドとかでSRBufferとかの操作をされるとぶっ飛ぶので雑にロックする
 		//いずれもっと良い制御にしたい
-		std::unique_lock<std::recursive_mutex> bufferLockInDrawing(SRBufferAllocator::GetInstance()->mutex);
+		std::unique_lock<std::recursive_mutex> bufferLockInDrawing(SRBufferAllocator::GetInstance()->sMutex);
 		Renderer::Execute();
 
 		//べんり！
 		{
-			ImGui::SetNextWindowSize({ 400, 350 });
+			ImGui::SetNextWindowSize({ 400, 450 });
 
 			ImGuiWindowFlags window_flags = 0;
 			window_flags |= ImGuiWindowFlags_NoResize;

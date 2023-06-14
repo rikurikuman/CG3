@@ -28,11 +28,11 @@ public:
 
 	//マウスの状態を得る
 	static inline DIMOUSESTATE2 GetMouseState() {
-		return GetInstance()->mouseState;
+		return GetInstance()->mMouseState;
 	}
 	//前回のマウスの状態を得る
 	static inline DIMOUSESTATE2 GetOldMouseState() {
-		return GetInstance()->oldMouseState;
+		return GetInstance()->mOldMouseState;
 	}
 
 	//マウスクリックされているか
@@ -103,19 +103,19 @@ private:
 	RInput(const RInput&) {};
 	RInput& operator=(const RInput&) { return *this; }
 
-	bool initialized = false;
-	Microsoft::WRL::ComPtr<IDirectInput8> directInput = nullptr;
-	Microsoft::WRL::ComPtr<IDirectInputDevice8> keyboard = nullptr;
-	Microsoft::WRL::ComPtr<IDirectInputDevice8> mouse = nullptr;
-	BYTE keyState[256] = {};
-	BYTE oldKeyState[256] = {};
-	DIMOUSESTATE2 mouseState = {};
-	DIMOUSESTATE2 oldMouseState = {};
-	Vector2 mousePos;
-	Vector2 oldMousePos;
-	XINPUT_STATE xInputState;
-	XINPUT_STATE oldXInputState;
-	bool isConnectPad = false;
+	bool mIsInitialized = false;
+	Microsoft::WRL::ComPtr<IDirectInput8> mDirectInput = nullptr;
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mKeyboard = nullptr;
+	Microsoft::WRL::ComPtr<IDirectInputDevice8> mMouse = nullptr;
+	BYTE mKeyState[256] = {};
+	BYTE mOldKeyState[256] = {};
+	DIMOUSESTATE2 mMouseState = {};
+	DIMOUSESTATE2 mOldMouseState = {};
+	Vector2 mMousePos;
+	Vector2 mOldMousePos;
+	XINPUT_STATE mXInputState{};
+	XINPUT_STATE mOldXInputState{};
+	bool mIsPadConnected = false;
 
 	void InitInternal();
 };

@@ -16,15 +16,15 @@ private:
 
 	LRESULT(*WindowProc)(HWND, UINT, WPARAM, LPARAM) = _DefWindowProc; //ウィンドウプロシージャへのポインタ
 
-	int32_t windowWidth = 1280; //ウィンドウの幅
-	int32_t windowHeight = 720; //ウィンドウの高さ
-	std::wstring windowName = L"DirectXGame";
+	int32_t mWindowWidth = 1280; //ウィンドウの幅
+	int32_t mWindowHeight = 720; //ウィンドウの高さ
+	std::wstring mWindowName = L"DirectXGame";
 
-	uint32_t iconID = 0;
+	uint32_t mIconID = 0;
 
-	WNDCLASSEX wndClassEx{};
-	HWND wndHandle;
-	MSG msg{};
+	WNDCLASSEX mWndClassEx{};
+	HWND mWndHandle{};
+	MSG mMsg{};
 
 	void InitInternal();
 
@@ -34,36 +34,36 @@ public:
 	static RWindow* GetInstance();
 
 	static void SetWindowSize(const int32_t width, const int32_t height) {
-		GetInstance()->windowWidth = width;
-		GetInstance()->windowHeight = height;
+		GetInstance()->mWindowWidth = width;
+		GetInstance()->mWindowHeight = height;
 	}
 
 	static void SetWindowName(const std::wstring name) {
-		GetInstance()->windowName = name;
+		GetInstance()->mWindowName = name;
 	}
 
 	static void SetIcon(const int32_t id) {
-		GetInstance()->iconID = id;
+		GetInstance()->mIconID = id;
 	}
 
 	static int32_t GetWidth() {
-		return GetInstance()->windowWidth;
+		return GetInstance()->mWindowWidth;
 	}
 
 	static int32_t GetHeight() {
-		return GetInstance()->windowHeight;
+		return GetInstance()->mWindowHeight;
 	}
 
 	static WNDCLASSEX GetWindowClassEx() {
-		return GetInstance()->wndClassEx;
+		return GetInstance()->mWndClassEx;
 	}
 
 	static HWND GetWindowHandle() {
-		return GetInstance()->wndHandle;
+		return GetInstance()->mWndHandle;
 	}
 
 	static MSG GetMessageStructure() {
-		return GetInstance()->msg;
+		return GetInstance()->mMsg;
 	}
 
 	//メッセージ処理

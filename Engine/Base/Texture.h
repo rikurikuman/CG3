@@ -13,19 +13,19 @@ typedef std::string TextureHandle;
 class Texture
 {
 public:
-	Microsoft::WRL::ComPtr<ID3D12Resource> resource; //テクスチャのリソース
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = D3D12_CPU_DESCRIPTOR_HANDLE(); //SRVのハンドル(CPU側)
-	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = D3D12_GPU_DESCRIPTOR_HANDLE(); //SRVのハンドル(GPU側)
-	uint32_t heapIndex = UINT32_MAX;
-	std::string filePath; //ファイルへのパス
+	Microsoft::WRL::ComPtr<ID3D12Resource> mResource; //テクスチャのリソース
+	D3D12_CPU_DESCRIPTOR_HANDLE mCpuHandle = D3D12_CPU_DESCRIPTOR_HANDLE(); //SRVのハンドル(CPU側)
+	D3D12_GPU_DESCRIPTOR_HANDLE mGpuHandle = D3D12_GPU_DESCRIPTOR_HANDLE(); //SRVのハンドル(GPU側)
+	uint32_t mHeapIndex = UINT32_MAX;
+	std::string mFilePath; //ファイルへのパス
 
 	Texture() {};
 	Texture(
-		Microsoft::WRL::ComPtr<ID3D12Resource> resource,
+		Microsoft::WRL::ComPtr<ID3D12Resource> mResource,
 		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle,
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle,
 		std::string filePath
-	) : resource(resource), cpuHandle(cpuHandle), gpuHandle(gpuHandle), filePath(filePath) {};
+	) : mResource(mResource), mCpuHandle(cpuHandle), mGpuHandle(gpuHandle), mFilePath(filePath) {};
 };
 
 class TextureManager
@@ -114,7 +114,7 @@ public:
 	static void UnRegisterAll();
 
 	ID3D12DescriptorHeap* GetSRVHeap() {
-		return this->srvHeap.Get();
+		return mSrvHeap.Get();
 	}
 
 private:
@@ -137,9 +137,9 @@ private:
 	void UnRegisterAtEndFrameInternal(const TextureHandle& handle);
 	void EndFrameProcessInternal();
 
-	std::recursive_mutex mutex;
-	static const uint32_t numSRVDescritors = 2048; //デスクリプタヒープの数
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> srvHeap; //テクスチャ用SRVデスクリプタヒープ
-	std::map<TextureHandle, Texture> textureMap;
-	std::list<TextureHandle> unregisterScheduledList; //UnRegisterAtEndFrame予定リスト
+	std::recursive_mutex mMutex;
+	static const uint32_t NUM_SRV_DESCRIPTORS = 2048; //デスクリプタヒープの数
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mSrvHeap; //テクスチャ用SRVデスクリプタヒープ
+	std::map<TextureHandle, Texture> mTextureMap;
+	std::list<TextureHandle> mUnregisterScheduledList; //UnRegisterAtEndFrame予定リスト
 };

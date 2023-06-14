@@ -63,40 +63,40 @@ private:
 	SimpleDrawer(const SimpleDrawer& a) = default;
 	SimpleDrawer& operator=(const SimpleDrawer&) { return *this; }
 
-	std::list<std::shared_ptr<SimpleDrawInfo>> infoList;
-	std::unordered_map<std::string, std::shared_ptr<SRBufferPtr>> recycleBuffs;
+	std::list<std::shared_ptr<SimpleDrawInfo>> mInfoList;
+	std::unordered_map<std::string, std::shared_ptr<SRBufferPtr>> mRecycleBuffs;
 
-	std::unordered_map<float, std::vector<DrawBoxInfo>> boxInfoMap;
-	std::unordered_map<float, DrawBuffers> boxBuffersMap;
-	RootSignature boxRS;
-	GraphicsPipeline boxPSO;
+	std::unordered_map<float, std::vector<DrawBoxInfo>> mBoxInfoMap;
+	std::unordered_map<float, DrawBuffers> mBoxBuffersMap;
+	RootSignature mBoxRS;
+	GraphicsPipeline mBoxPSO;
 
-	std::unordered_map<float, std::vector<DrawLineInfo>> lineInfoMap;
-	std::unordered_map<float, DrawBuffers> lineBuffersMap;
-	RootSignature lineRS;
-	GraphicsPipeline linePSO;
-	SRConstBuffer<ViewProjectionBuffer> lineVPBuff;
+	std::unordered_map<float, std::vector<DrawLineInfo>> mLineInfoMap;
+	std::unordered_map<float, DrawBuffers> mLineBuffersMap;
+	RootSignature mLineRS;
+	GraphicsPipeline mLinePSO;
+	SRConstBuffer<ViewProjectionBuffer> mLineVPBuff;
 
-	std::unordered_map<DrawCustomData, std::vector<DrawCircleInfo>> circleInfoMap;
-	std::unordered_map<DrawCustomData, DrawCircleVertIndex> circleVertIndexMap;
-	std::unordered_map<DrawCustomData, DrawBuffers> circleBuffersMap;
-	RootSignature circleRS;
-	GraphicsPipeline circlePSO;
-	SRConstBuffer<ViewProjectionBuffer> circleVPBuff;
+	std::unordered_map<DrawCustomData, std::vector<DrawCircleInfo>> mCircleInfoMap;
+	std::unordered_map<DrawCustomData, DrawCircleVertIndex> mCircleVertIndexMap;
+	std::unordered_map<DrawCustomData, DrawBuffers> mCircleBuffersMap;
+	RootSignature mCircleRS;
+	GraphicsPipeline mCirclePSO;
+	SRConstBuffer<ViewProjectionBuffer> mCircleVPBuff;
 	void CalcCircleVertAndIndex(DrawCustomData cData);
 
-	std::unordered_map<float, std::vector<DrawLine3DInfo>> line3DInfoMap;
-	std::unordered_map<float, DrawBuffers> line3DBuffersMap;
-	RootSignature line3DRS;
-	GraphicsPipeline line3DPSO;
+	std::unordered_map<float, std::vector<DrawLine3DInfo>> mLine3DInfoMap;
+	std::unordered_map<float, DrawBuffers> mLine3DBuffersMap;
+	RootSignature mLine3DRS;
+	GraphicsPipeline mLine3DPSO;
 
-	RootSignature rootSignature;
-	GraphicsPipeline pipelineState;
+	RootSignature mRootSignature;
+	GraphicsPipeline mPipelineState;
 
-	RootSignature rootSignatureForString;
-	GraphicsPipeline pipelineStateForString;
+	RootSignature mRootSignatureForString;
+	GraphicsPipeline mPipelineStateForString;
 
-	std::mutex mutex;
+	std::mutex mMutex;
 
 	void Init();
 };

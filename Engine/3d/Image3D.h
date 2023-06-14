@@ -11,19 +11,19 @@ class Image3D final : public Obj3D
 {
 private:
 	TextureHandle mTexture;
-	Vector2 scale = { 1, 1 };
+	Vector2 mScale = { 1, 1 };
 	Vector2 mSize = { 1, 1 };
 	bool mForceSize = false;
 
 public:
-	Material material;
+	Material mMaterial;
 	//Transform‚ÍObj3D‚É‚ ‚é
 
-	SRVertexBuffer vertBuff;
-	SRIndexBuffer indexBuff;
-	SRConstBuffer<MaterialBuffer> materialBuff;
-	SRConstBuffer<TransformBuffer> transformBuff;
-	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
+	SRVertexBuffer mVertBuff;
+	SRIndexBuffer mIndexBuff;
+	SRConstBuffer<MaterialBuffer> mMaterialBuff;
+	SRConstBuffer<TransformBuffer> mTransformBuff;
+	SRConstBuffer<ViewProjectionBuffer> mViewProjectionBuff;
 
 	Image3D() {};
 
@@ -33,7 +33,7 @@ public:
 		mTexture = texture;
 		if (!mForceSize) {
 			Texture tex = TextureManager::Get(texture);
-			mSize.x = tex.resource->GetDesc().Width / (float)tex.resource->GetDesc().Height * mSize.x;
+			mSize.x = tex.mResource->GetDesc().Width / (float)tex.mResource->GetDesc().Height * mSize.x;
 		}
 	}
 
@@ -47,10 +47,10 @@ public:
 			mSize = size;
 		}
 		else {
-			scale = size;
+			mScale = size;
 			Texture tex = TextureManager::Get(mTexture);
-			mSize.x = tex.resource->GetDesc().Width / (float)tex.resource->GetDesc().Height * scale.x;
-			mSize.y = scale.y;
+			mSize.x = tex.mResource->GetDesc().Width / (float)tex.mResource->GetDesc().Height * mScale.x;
+			mSize.y = mScale.y;
 		}
 	}
 

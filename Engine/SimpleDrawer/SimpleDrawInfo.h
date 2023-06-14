@@ -20,9 +20,9 @@ struct DrawCustomData {
 	float radius; //circle‚ÅŽg—p
 
 	bool operator==(const DrawCustomData& l) const {
-		return this->layer == l.layer
-			&& this->fillFlag == l.fillFlag
-			&& this->radius == l.radius;
+		return layer == l.layer
+			&& fillFlag == l.fillFlag
+			&& radius == l.radius;
 	}
 };
 

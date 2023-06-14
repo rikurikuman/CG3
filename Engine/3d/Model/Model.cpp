@@ -10,7 +10,7 @@ using namespace std;
 
 bool ModelData::operator==(const ModelData& o) const
 {
-    return name == o.name && vertexs == o.vertexs && indices == o.indices && material == o.material;
+    return mName == o.mName && mVertices == o.mVertices && mIndices == o.mIndices && mMaterial == o.mMaterial;
 }
 
 bool ModelData::operator!=(const ModelData& o) const
@@ -22,11 +22,11 @@ void ModelData::CalcSmoothedNormals()
 {
     map<Vector3, vector<Vector3>> smoothData;
 
-    for (VertexPNU v : vertexs) {
+    for (VertexPNU v : mVertices) {
         smoothData[v.pos].push_back(v.normal);
     }
 
-    for (VertexPNU& v : vertexs) {
+    for (VertexPNU& v : mVertices) {
         vector<Vector3> normals = smoothData[v.pos];
 
         Vector3 result;
@@ -88,7 +88,7 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
         filepath += "/";
     }
 
-    model.path = filepath + filename;
+    model.mPath = filepath + filename;
 
     ifstream file;
     file.open((filepath + filename).c_str());
@@ -97,12 +97,12 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
     }
 
     if (handle.empty()) {
-        handle = "NoNameHandle_" + model.path;
+        handle = "NoNameHandle_" + model.mPath;
     }
 
-    std::unique_lock<std::recursive_mutex> lock(instance->mutex);
-    if (instance->modelMap.find(handle) != instance->modelMap.end()
-        && instance->modelMap[handle].path == (filepath + filename)) {
+    std::unique_lock<std::recursive_mutex> lock(instance->mMutex);
+    if (instance->mModelMap.find(handle) != instance->mModelMap.end()
+        && instance->mModelMap[handle].mPath == (filepath + filename)) {
         return handle;
     }
     lock.unlock();
@@ -127,13 +127,13 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
         if (key == "o") { //おなまえ
             if (loading != ModelData()) {
                 if (smooth) loading.CalcSmoothedNormals();
-                loading.vertexBuff.Init(loading.vertexs);
-                loading.indexBuff.Init(loading.indices);
-                model.data.emplace_back(std::make_shared<ModelData>(loading));
+                loading.mVertBuff.Init(loading.mVertices);
+                loading.mIndexBuff.Init(loading.mIndices);
+                model.mData.emplace_back(std::make_shared<ModelData>(loading));
             }
 
             loading = ModelData();
-            line_stream >> loading.name;
+            line_stream >> loading.mName;
         }
 
         if (key == "v") { //頂点座標
@@ -210,16 +210,16 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
                     size_t b = SIZE_T_MAX;
                     size_t c = SIZE_T_MAX;
 
-                    loading.vertexs.emplace_back(_vertices[0]);
-                    a = loading.vertexs.size() - 1;
-                    loading.vertexs.emplace_back(_vertices[indexB]);
-                    b = loading.vertexs.size() - 1;
-                    loading.vertexs.emplace_back(_vertices[indexC]);
-                    c = loading.vertexs.size() - 1;
+                    loading.mVertices.emplace_back(_vertices[0]);
+                    a = loading.mVertices.size() - 1;
+                    loading.mVertices.emplace_back(_vertices[indexB]);
+                    b = loading.mVertices.size() - 1;
+                    loading.mVertices.emplace_back(_vertices[indexC]);
+                    c = loading.mVertices.size() - 1;
 
-                    loading.indices.emplace_back((uint32_t)a);
-                    loading.indices.emplace_back((uint32_t)b);
-                    loading.indices.emplace_back((uint32_t)c);
+                    loading.mIndices.emplace_back((uint32_t)a);
+                    loading.mIndices.emplace_back((uint32_t)b);
+                    loading.mIndices.emplace_back((uint32_t)c);
                 }
             }
         }
@@ -229,38 +229,38 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
             line_stream >> mfilename;
             Mtllib lib = Mtllib::Load(filepath, mfilename);
 
-            for (Material& mat : lib.materials) {
+            for (Material& mat : lib.mMaterials) {
                 materialList.push_back(mat);
             }
         }
 
         if (key == "usemtl") {
-            if (loading.material != Material()) {
-                string oldname = loading.name;
+            if (loading.mMaterial != Material()) {
+                string oldname = loading.mName;
                 if (smooth) loading.CalcSmoothedNormals();
-                loading.vertexBuff.Init(loading.vertexs);
-                loading.indexBuff.Init(loading.indices);
-                model.data.emplace_back(std::make_shared<ModelData>(loading));
+                loading.mVertBuff.Init(loading.mVertices);
+                loading.mIndexBuff.Init(loading.mIndices);
+                model.mData.emplace_back(std::make_shared<ModelData>(loading));
                 loading = ModelData();
-                loading.name = oldname + "_ChangeMaterial";
+                loading.mName = oldname + "_ChangeMaterial";
             }
             string mtlName;
             line_stream >> mtlName;
             for (Material& mtl : materialList) {
-                if (mtl.name == mtlName) {
-                    loading.material = mtl;
+                if (mtl.mName == mtlName) {
+                    loading.mMaterial = mtl;
                 }
             }
         }
     }
 
     if (smooth) loading.CalcSmoothedNormals();
-    loading.vertexBuff.Init(loading.vertexs);
-    loading.indexBuff.Init(loading.indices);
-    model.data.emplace_back(std::make_shared<ModelData>(loading));
+    loading.mVertBuff.Init(loading.mVertices);
+    loading.mIndexBuff.Init(loading.mIndices);
+    model.mData.emplace_back(std::make_shared<ModelData>(loading));
 
     lock.lock();
-    instance->modelMap[handle] = model;
+    instance->mModelMap[handle] = model;
     lock.unlock();
     return handle;
 }
@@ -268,9 +268,9 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
 ModelHandle Model::Register(ModelHandle handle, Model model)
 {
     ModelManager* instance = ModelManager::GetInstance();
-    std::lock_guard<std::recursive_mutex> lock(instance->mutex);
+    std::lock_guard<std::recursive_mutex> lock(instance->mMutex);
 
-    instance->modelMap[handle] = model;
+    instance->mModelMap[handle] = model;
     return handle;
 }
 
@@ -293,7 +293,7 @@ void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const 
 
         //おなまえドットコム
         aiString _name = mesh->mName;
-        data.name = _name.C_Str();
+        data.mName = _name.C_Str();
 
         //トランスフォーム
         aiMatrix4x4 transform = GetNodeAbsoluteTransform(node);
@@ -339,24 +339,24 @@ void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const 
         }
 
         for (VertexPNU& vert : vertices) {
-            data.vertexs.push_back(vert);
+            data.mVertices.push_back(vert);
         }
 
         //面(インデックス)
         for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; faceIndex++) {
             aiFace face = mesh->mFaces[faceIndex];
             for (uint32_t vertIndex = 0; vertIndex < face.mNumIndices; vertIndex++) {
-                data.indices.push_back(face.mIndices[vertIndex]);
+                data.mIndices.push_back(face.mIndices[vertIndex]);
             }
         }
 
         if (materials->size() > mesh->mMaterialIndex) {
-            data.material = materials->at(mesh->mMaterialIndex);
+            data.mMaterial = materials->at(mesh->mMaterialIndex);
         }
 
-        data.vertexBuff.Init(data.vertexs);
-        data.indexBuff.Init(data.indices);
-        model->data.push_back(make_shared<ModelData>(data));
+        data.mVertBuff.Init(data.mVertices);
+        data.mIndexBuff.Init(data.mIndices);
+        model->mData.push_back(make_shared<ModelData>(data));
     }
 
     for (uint32_t childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
@@ -373,22 +373,22 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
         directoryPath += "/";
     }
 
-    model.path = directoryPath + filename;
+    model.mPath = directoryPath + filename;
 
     if (handle.empty()) {
-        handle = "UnnamedModelHandle_" + model.path;
+        handle = "UnnamedModelHandle_" + model.mPath;
     }
 
-    std::unique_lock<std::recursive_mutex> lock(instance->mutex);
-    if (instance->modelMap.find(handle) != instance->modelMap.end()
-        && instance->modelMap[handle].path == (model.path)) {
+    std::unique_lock<std::recursive_mutex> lock(instance->mMutex);
+    if (instance->mModelMap.find(handle) != instance->mModelMap.end()
+        && instance->mModelMap[handle].mPath == (model.mPath)) {
         return handle;
     }
     lock.unlock();
 
     Assimp::Importer importer;
 
-    const aiScene* scene = importer.ReadFile(model.path,
+    const aiScene* scene = importer.ReadFile(model.mPath,
         aiProcess_ConvertToLeftHanded |
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
@@ -403,7 +403,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
         return "";
     }
 
-    model.name = scene->mName.C_Str();
+    model.mName = scene->mName.C_Str();
 
     //マテリアル
     vector<Material> materials;
@@ -414,25 +414,25 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
 
         aiString str;
         _material->Get(AI_MATKEY_NAME, str);
-        material.name = str.C_Str();
+        material.mName = str.C_Str();
 
         aiColor3D color;
 
         color = { 0, 0, 0 };
         _material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
-        material.diffuse = Vector3(color.r, color.g, color.b);
+        material.mDiffuse = Vector3(color.r, color.g, color.b);
         
         color = { 0, 0, 0 };
         _material->Get(AI_MATKEY_COLOR_AMBIENT, color);
-        material.ambient = Vector3(color.r, color.g, color.b);
+        material.mAmbient = Vector3(color.r, color.g, color.b);
 
         color = { 0, 0, 0 };
         _material->Get(AI_MATKEY_COLOR_SPECULAR, color);
-        material.specular = Vector3(color.r, color.g, color.b);
+        material.mSpecular = Vector3(color.r, color.g, color.b);
 
         float opacity = 0.0f;
         _material->Get(AI_MATKEY_OPACITY, opacity);
-        material.color.a = opacity;
+        material.mColor.a = opacity;
 
         if (_material->GetTextureCount(aiTextureType_DIFFUSE) >= 1) {
             //_material->GetTexture(aiTextureType_DIFFUSE, 0, &str);
@@ -441,22 +441,22 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
             string path = str.C_Str();
             string texHandle = "";
 
-            if (!material.name.empty()) {
-                texHandle = model.path + "_" + material.name + "_Tex";
+            if (!material.mName.empty()) {
+                texHandle = model.mPath + "_" + material.mName + "_Tex";
             }
             else {
                 texHandle = "UnnamedMaterial_Tex";
             }
 
-            material.texture = "";
+            material.mTexture = "";
             if (path.empty()) {
-                material.texture = "";
+                material.mTexture = "";
             }
             else {
                 const aiTexture* embedTex = scene->GetEmbeddedTexture(path.c_str());
                 if (embedTex != nullptr) {
                     if (embedTex->mHeight == 0) {
-                        material.texture = TextureManager::Load(embedTex->pcData, embedTex->mWidth, path, texHandle);
+                        material.mTexture = TextureManager::Load(embedTex->pcData, embedTex->mWidth, path, texHandle);
                     }
                     else {
                         vector<Color> data;
@@ -467,7 +467,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
                             //data[i] = Color(texel.r, texel.g, texel.b, texel.a);
                         }
 
-                        material.texture = TextureManager::Create(&data[0], embedTex->mWidth, embedTex->mHeight, path, texHandle);
+                        material.mTexture = TextureManager::Create(&data[0], embedTex->mWidth, embedTex->mHeight, path, texHandle);
                         
                     }
                 }
@@ -477,7 +477,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
                         aiTexture* tex = scene->mTextures[atoi(index.c_str())];
                         
                         if (tex->mHeight == 0) {
-                            material.texture = TextureManager::Load(tex->pcData, tex->mWidth, path, texHandle);
+                            material.mTexture = TextureManager::Load(tex->pcData, tex->mWidth, path, texHandle);
                         }
                         else {
                             vector<Color> data;
@@ -488,11 +488,11 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
                                 //data[i] = Color(texel.r, texel.g, texel.b, texel.a);
                             }
 
-                            material.texture = TextureManager::Create(&data[0], tex->mWidth, tex->mHeight, path, texHandle);
+                            material.mTexture = TextureManager::Create(&data[0], tex->mWidth, tex->mHeight, path, texHandle);
                         }
                     }
                     else {
-                        material.texture = TextureManager::Load(directoryPath + path, texHandle);
+                        material.mTexture = TextureManager::Load(directoryPath + path, texHandle);
                     }
                 }
             }
@@ -505,7 +505,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
     NodeTraverse(scene, scene->mRootNode, &model, &materials);
 
     lock.lock();
-    instance->modelMap[handle] = model;
+    instance->mModelMap[handle] = model;
     lock.unlock();
     return handle;
 }
@@ -513,13 +513,13 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
 Model* ModelManager::Get(ModelHandle handle)
 {
     ModelManager* instance = GetInstance();
-    std::lock_guard<std::recursive_mutex> lock(instance->mutex);
+    std::lock_guard<std::recursive_mutex> lock(instance->mMutex);
 
-    if (instance->modelMap.find(handle) == instance->modelMap.end()) {
-        return &instance->modelMap["PreRegisteredModel_Empty"];
+    if (instance->mModelMap.find(handle) == instance->mModelMap.end()) {
+        return &instance->mModelMap["PreRegisteredModel_Empty"];
     }
 
-    return &instance->modelMap[handle];
+    return &instance->mModelMap[handle];
 }
 
 void ModelManager::Init()
@@ -527,35 +527,35 @@ void ModelManager::Init()
     Model model;
     ModelData data;
 
-    data.vertexs.push_back(VertexPNU({ -1, -1,  1 }, { 0, 0, 0 }, { 0, 1 })); //0
-    data.vertexs.push_back(VertexPNU({  1, -1,  1 }, { 0, 0, 0 }, { 1, 1 })); //1
-    data.vertexs.push_back(VertexPNU({ -1, -1, -1 }, { 0, 0, 0 }, { 0, 1 })); //2
-    data.vertexs.push_back(VertexPNU({  1, -1, -1 }, { 0, 0, 0 }, { 1, 1 })); //3
-    data.vertexs.push_back(VertexPNU({  0,  1,  0 }, { 0, 0, 0 }, { 0.5f, 0.0f })); //4
+    data.mVertices.push_back(VertexPNU({ -1, -1,  1 }, { 0, 0, 0 }, { 0, 1 })); //0
+    data.mVertices.push_back(VertexPNU({  1, -1,  1 }, { 0, 0, 0 }, { 1, 1 })); //1
+    data.mVertices.push_back(VertexPNU({ -1, -1, -1 }, { 0, 0, 0 }, { 0, 1 })); //2
+    data.mVertices.push_back(VertexPNU({  1, -1, -1 }, { 0, 0, 0 }, { 1, 1 })); //3
+    data.mVertices.push_back(VertexPNU({  0,  1,  0 }, { 0, 0, 0 }, { 0.5f, 0.0f })); //4
 
-    data.indices.push_back(2);
-    data.indices.push_back(3);
-    data.indices.push_back(1);
-    data.indices.push_back(2);
-    data.indices.push_back(1);
-    data.indices.push_back(0);
-    data.indices.push_back(2);
-    data.indices.push_back(4);
-    data.indices.push_back(3);
-    data.indices.push_back(3);
-    data.indices.push_back(4);
-    data.indices.push_back(1);
-    data.indices.push_back(1);
-    data.indices.push_back(4);
-    data.indices.push_back(0);
-    data.indices.push_back(0);
-    data.indices.push_back(4);
-    data.indices.push_back(2);
+    data.mIndices.push_back(2);
+    data.mIndices.push_back(3);
+    data.mIndices.push_back(1);
+    data.mIndices.push_back(2);
+    data.mIndices.push_back(1);
+    data.mIndices.push_back(0);
+    data.mIndices.push_back(2);
+    data.mIndices.push_back(4);
+    data.mIndices.push_back(3);
+    data.mIndices.push_back(3);
+    data.mIndices.push_back(4);
+    data.mIndices.push_back(1);
+    data.mIndices.push_back(1);
+    data.mIndices.push_back(4);
+    data.mIndices.push_back(0);
+    data.mIndices.push_back(0);
+    data.mIndices.push_back(4);
+    data.mIndices.push_back(2);
 
-    VertexPNU::CalcNormalVec(data.vertexs, data.indices);
+    VertexPNU::CalcNormalVec(data.mVertices, data.mIndices);
 
-    data.vertexBuff.Init(data.vertexs);
-    data.indexBuff.Init(data.indices);
-    model.data.emplace_back(std::make_shared<ModelData>(data));
-    modelMap["PreRegisteredModel_Empty"] = model;
+    data.mVertBuff.Init(data.mVertices);
+    data.mIndexBuff.Init(data.mIndices);
+    model.mData.emplace_back(std::make_shared<ModelData>(data));
+    mModelMap["PreRegisteredModel_Empty"] = model;
 }

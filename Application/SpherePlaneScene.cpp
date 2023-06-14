@@ -8,20 +8,20 @@ SpherePlaneScene::SpherePlaneScene()
 	sphere = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere", true));
 	plane = ModelObj(Model::Load("./Resources/Model/Ground", "ground.obj", "ground", false));
 
-	sphere.transform.position = { 0, 5, 0 };
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.position = { 0, 5, 0 };
+	sphere.mTransform.UpdateMatrix();
 
 	colPlane = { {0, 1, 0}, 0 };
 
-	camera.viewProjection.eye = { 0, 3, -10 };
-	camera.viewProjection.target = { 0, 3, 0 };
-	camera.viewProjection.UpdateMatrix();
+	camera.mViewProjection.mEye = { 0, 3, -10 };
+	camera.mViewProjection.mTarget = { 0, 3, 0 };
+	camera.mViewProjection.UpdateMatrix();
 }
 
 void SpherePlaneScene::Init()
 {
-	Camera::nowCamera = &camera;
-	LightGroup::nowLight = &light;
+	Camera::sNowCamera = &camera;
+	LightGroup::sNowLight = &light;
 }
 
 void SpherePlaneScene::Update()
@@ -36,8 +36,8 @@ void SpherePlaneScene::Update()
 		ImGui::Begin("Control", NULL, window_flags);
 
 		if (ImGui::Button("Reset")) {
-			sphere.transform.position = { 0, 5, 0 };
-			sphere.transform.scale = { 1, 1, 1 };
+			sphere.mTransform.position = { 0, 5, 0 };
+			sphere.mTransform.scale = { 1, 1, 1 };
 			radius = 1;
 			colPlane.distance = 0;
 			rotPlane = 0;
@@ -46,7 +46,7 @@ void SpherePlaneScene::Update()
 		ImGui::Text("Sphere");
 		
 		ImGui::Checkbox("AutoMove", &autoMove);
-		ImGui::DragFloat3("Position", &sphere.transform.position.x, 0.01f);
+		ImGui::DragFloat3("Position", &sphere.mTransform.position.x, 0.01f);
 		ImGui::DragFloat("Scale", &radius, 0.01f);
 
 		ImGui::Text("Plane");
@@ -57,36 +57,36 @@ void SpherePlaneScene::Update()
 	}
 
 	if (autoMove) {
-		sphere.transform.position.y += 5.0f * TimeManager::deltaTime * moveDir;
-		if (sphere.transform.position.y > 5
-			|| sphere.transform.position.y < 0) {
-			sphere.transform.position.y = Util::Clamp(sphere.transform.position.y, 0.0f, 5.0f);
+		sphere.mTransform.position.y += 5.0f * TimeManager::deltaTime * moveDir;
+		if (sphere.mTransform.position.y > 5
+			|| sphere.mTransform.position.y < 0) {
+			sphere.mTransform.position.y = Util::Clamp(sphere.mTransform.position.y, 0.0f, 5.0f);
 			moveDir *= -1;
 		}
 	}
 
-	colSphere.pos = sphere.transform.position;
+	colSphere.pos = sphere.mTransform.position;
 	colSphere.r = radius;
-	sphere.transform.scale = { radius, radius, radius };
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.scale = { radius, radius, radius };
+	sphere.mTransform.UpdateMatrix();
 
 	Vector3 planeN = colPlane.normal.GetNormalize();
-	plane.transform.position = planeN * colPlane.distance;
-	plane.transform.rotation = Quaternion::AngleAxis({ 0, 0, 1 }, Util::AngleToRadian(rotPlane)).ToEuler();
-	plane.transform.UpdateMatrix();
+	plane.mTransform.position = planeN * colPlane.distance;
+	plane.mTransform.rotation = Quaternion::AngleAxis({ 0, 0, 1 }, Util::AngleToRadian(rotPlane)).ToEuler();
+	plane.mTransform.UpdateMatrix();
 
 	colPlane.normal = Vector3(0, 1, 0) * Quaternion::AngleAxis({ 0, 0, 1 }, Util::AngleToRadian(rotPlane));
 
 	if (ColPrimitive3D::CheckSphereToPlane(colSphere, colPlane)) {
-		sphere.tuneMaterial.color = { 1, 0, 0, 1 };
+		sphere.mTuneMaterial.mColor = { 1, 0, 0, 1 };
 	}
 	else {
-		sphere.tuneMaterial.color = { 1, 1, 1, 1 };
+		sphere.mTuneMaterial.mColor = { 1, 1, 1, 1 };
 	}
 
 	light.Update();
-	sphere.TransferBuffer(Camera::nowCamera->viewProjection);
-	plane.TransferBuffer(Camera::nowCamera->viewProjection);
+	sphere.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	plane.TransferBuffer(Camera::sNowCamera->mViewProjection);
 }
 
 void SpherePlaneScene::Draw()

@@ -45,25 +45,25 @@ void VertexBuffer::Init(VertexP* list, uint32_t size)
 		&resDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&buff)
+		IID_PPV_ARGS(&mBuff)
 	);
 	assert(SUCCEEDED(result));
 
 	//GPU上のバッファに対応した仮想メモリを取得
 	//これは頂点バッファのマッピング
 	VertexP* vertMap = nullptr;
-	result = buff->Map(0, nullptr, (void**)&vertMap);
+	result = mBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
 	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
-	buff->Unmap(0, nullptr);
+	mBuff->Unmap(0, nullptr);
 
 	//頂点バッファビューの作成
-	view.BufferLocation = buff->GetGPUVirtualAddress(); //GPU仮想アドレス
-	view.SizeInBytes = dataSize; //頂点バッファのサイズ
-	view.StrideInBytes = sizeof(VertexP); //頂点一個のサイズ
+	mView.BufferLocation = mBuff->GetGPUVirtualAddress(); //GPU仮想アドレス
+	mView.SizeInBytes = dataSize; //頂点バッファのサイズ
+	mView.StrideInBytes = sizeof(VertexP); //頂点一個のサイズ
 }
 
 void VertexBuffer::Init(std::vector<VertexP> list)
@@ -90,25 +90,25 @@ void VertexBuffer::Init(std::vector<VertexP> list)
 		&resDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&buff)
+		IID_PPV_ARGS(&mBuff)
 	);
 	assert(SUCCEEDED(result));
 
 	//GPU上のバッファに対応した仮想メモリを取得
 	//これは頂点バッファのマッピング
 	VertexP* vertMap = nullptr;
-	result = buff->Map(0, nullptr, (void**)&vertMap);
+	result = mBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
 	for (uint32_t i = 0; i < list.size(); i++) {
 		vertMap[i] = list[i];
 	}
-	buff->Unmap(0, nullptr);
+	mBuff->Unmap(0, nullptr);
 
 	//頂点バッファビューの作成
-	view.BufferLocation = buff->GetGPUVirtualAddress(); //GPU仮想アドレス
-	view.SizeInBytes = dataSize; //頂点バッファのサイズ
-	view.StrideInBytes = sizeof(VertexP); //頂点一個のサイズ
+	mView.BufferLocation = mBuff->GetGPUVirtualAddress(); //GPU仮想アドレス
+	mView.SizeInBytes = dataSize; //頂点バッファのサイズ
+	mView.StrideInBytes = sizeof(VertexP); //頂点一個のサイズ
 }
 
 void VertexBuffer::Init(VertexPNU* list, uint32_t size)
@@ -135,25 +135,25 @@ void VertexBuffer::Init(VertexPNU* list, uint32_t size)
 		&resDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&buff)
+		IID_PPV_ARGS(&mBuff)
 	);
 	assert(SUCCEEDED(result));
 
 	//GPU上のバッファに対応した仮想メモリを取得
 	//これは頂点バッファのマッピング
 	VertexPNU* vertMap = nullptr;
-	result = buff->Map(0, nullptr, (void**)&vertMap);
+	result = mBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
 	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
-	buff->Unmap(0, nullptr);
+	mBuff->Unmap(0, nullptr);
 
 	//頂点バッファビューの作成
-	view.BufferLocation = buff->GetGPUVirtualAddress(); //GPU仮想アドレス
-	view.SizeInBytes = dataSize; //頂点バッファのサイズ
-	view.StrideInBytes = sizeof(VertexPNU); //頂点一個のサイズ
+	mView.BufferLocation = mBuff->GetGPUVirtualAddress(); //GPU仮想アドレス
+	mView.SizeInBytes = dataSize; //頂点バッファのサイズ
+	mView.StrideInBytes = sizeof(VertexPNU); //頂点一個のサイズ
 }
 
 void VertexBuffer::Init(std::vector<VertexPNU> list)
@@ -180,25 +180,25 @@ void VertexBuffer::Init(std::vector<VertexPNU> list)
 		&resDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&buff)
+		IID_PPV_ARGS(&mBuff)
 	);
 	assert(SUCCEEDED(result));
 
 	//GPU上のバッファに対応した仮想メモリを取得
 	//これは頂点バッファのマッピング
 	VertexPNU* vertMap = nullptr;
-	result = buff->Map(0, nullptr, (void**)&vertMap);
+	result = mBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
 	for (uint32_t i = 0; i < list.size(); i++) {
 		vertMap[i] = list[i];
 	}
-	buff->Unmap(0, nullptr);
+	mBuff->Unmap(0, nullptr);
 
 	//頂点バッファビューの作成
-	view.BufferLocation = buff->GetGPUVirtualAddress(); //GPU仮想アドレス
-	view.SizeInBytes = dataSize; //頂点バッファのサイズ
-	view.StrideInBytes = sizeof(VertexPNU); //頂点一個のサイズ
+	mView.BufferLocation = mBuff->GetGPUVirtualAddress(); //GPU仮想アドレス
+	mView.SizeInBytes = dataSize; //頂点バッファのサイズ
+	mView.StrideInBytes = sizeof(VertexPNU); //頂点一個のサイズ
 }
 
 void VertexBuffer::Update(VertexPNU* list, uint32_t size)
@@ -207,20 +207,20 @@ void VertexBuffer::Update(VertexPNU* list, uint32_t size)
 
 	uint32_t dataSize = static_cast<uint32_t>(sizeof(VertexPNU) * size);
 
-	assert(buff->GetDesc().Width >= dataSize);
-	if (buff->GetDesc().Width < dataSize) {
+	assert(mBuff->GetDesc().Width >= dataSize);
+	if (mBuff->GetDesc().Width < dataSize) {
 		return;
 	}
 
 	VertexPNU* vertMap = nullptr;
-	result = buff->Map(0, nullptr, (void**)&vertMap);
+	result = mBuff->Map(0, nullptr, (void**)&vertMap);
 	assert(SUCCEEDED(result));
 	//全頂点に対して
 	for (uint32_t i = 0; i < size; i++) {
 		vertMap[i] = list[i];
 	}
-	buff->Unmap(0, nullptr);
+	mBuff->Unmap(0, nullptr);
 
-	view.SizeInBytes = dataSize;
-	view.StrideInBytes = sizeof(VertexPNU);
+	mView.SizeInBytes = dataSize;
+	mView.StrideInBytes = sizeof(VertexPNU);
 }

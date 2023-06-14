@@ -26,7 +26,7 @@ namespace ColPrimitive2D {
 		Segment(Vector2 a, Vector2 b) : p(a), v(b - a) {}
 
 		bool operator==(const Segment& a) {
-			return this->p == a.p && this->v == a.v;
+			return p == a.p && v == a.v;
 		}
 	};
 

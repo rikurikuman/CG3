@@ -18,8 +18,8 @@ Sprite::Sprite(TextureHandle texture, Vector2 anchor)
 
 	//サイズをセットする
 	
-	this->size.x = (float)TextureManager::Get(mTexture).resource->GetDesc().Width;
-	this->size.y = (float)TextureManager::Get(mTexture).resource->GetDesc().Height;
+	mSize.x = (float)TextureManager::Get(mTexture).mResource->GetDesc().Width;
+	mSize.y = (float)TextureManager::Get(mTexture).mResource->GetDesc().Height;
 
 	//アンカーポイントをセットする
 	mAnchor = anchor;
@@ -30,56 +30,56 @@ Sprite::Sprite(TextureHandle texture, Vector2 anchor)
 void Sprite::UpdateVertex()
 {
 	Vector2 texSize = {
-		static_cast<float>(TextureManager::Get(mTexture).resource->GetDesc().Width),
-		static_cast<float>(TextureManager::Get(mTexture).resource->GetDesc().Height)
+		static_cast<float>(TextureManager::Get(mTexture).mResource->GetDesc().Width),
+		static_cast<float>(TextureManager::Get(mTexture).mResource->GetDesc().Height)
 	};
 
-	float uvLeft = srcPos.x / texSize.x;
-	float uvRight = (srcPos.x + size.x) / texSize.x;
-	float uvTop = srcPos.y / texSize.y;
-	float uvBottom = (srcPos.y + size.y) / texSize.y;
+	float uvLeft = mSrcPos.x / texSize.x;
+	float uvRight = (mSrcPos.x + mSize.x) / texSize.x;
+	float uvTop = mSrcPos.y / texSize.y;
+	float uvBottom = (mSrcPos.y + mSize.y) / texSize.y;
 
 	//頂点データ
 	VertexPNU vertices[] = {
-		{{ -mAnchor.x * size.x, (1 - mAnchor.y) * size.y, 0.0f}, {}, {uvLeft, uvBottom}}, //左下
-		{{ -mAnchor.x * size.x, -mAnchor.y * size.y, 0.0f }, {}, {uvLeft, uvTop}}, //左上
-		{{ (1 - mAnchor.x) * size.x, (1 - mAnchor.y) * size.y, 0.0f }, {}, {uvRight, uvBottom}}, //右下
-		{{ (1 - mAnchor.x) * size.x, -mAnchor.y * size.y, 0.0f }, {}, {uvRight, uvTop}}, //右上
+		{{ -mAnchor.x * mSize.x, (1 - mAnchor.y) * mSize.y, 0.0f}, {}, {uvLeft, uvBottom}}, //左下
+		{{ -mAnchor.x * mSize.x, -mAnchor.y * mSize.y, 0.0f }, {}, {uvLeft, uvTop}}, //左上
+		{{ (1 - mAnchor.x) * mSize.x, (1 - mAnchor.y) * mSize.y, 0.0f }, {}, {uvRight, uvBottom}}, //右下
+		{{ (1 - mAnchor.x) * mSize.x, -mAnchor.y * mSize.y, 0.0f }, {}, {uvRight, uvTop}}, //右上
 	};
 
-	vertBuff.Update(vertices, _countof(vertices));
+	mVertBuff.Update(vertices, _countof(vertices));
 }
 
 void Sprite::SetTexture(TextureHandle texture)
 {
 	mTexture = texture;
-	srcPos = { 0, 0 };
-	this->size.x = (float)TextureManager::Get(mTexture).resource->GetDesc().Width;
-	this->size.y = (float)TextureManager::Get(mTexture).resource->GetDesc().Height;
-	change = true;
+	mSrcPos = { 0, 0 };
+	mSize.x = (float)TextureManager::Get(mTexture).mResource->GetDesc().Width;
+	mSize.y = (float)TextureManager::Get(mTexture).mResource->GetDesc().Height;
+	mChangeFlag = true;
 }
 
 void Sprite::SetAnchor(Vector2 anchor)
 {
 	mAnchor = anchor;
-	change = true;
+	mChangeFlag = true;
 }
 
 void Sprite::SetTexRect(int32_t srcX, int32_t srcY, int32_t width, int32_t height)
 {
-	srcPos = { static_cast<float>(srcX), static_cast<float>(srcY) };
-	size = { static_cast<float>(width), static_cast<float>(height) };
-	change = true;
+	mSrcPos = { static_cast<float>(srcX), static_cast<float>(srcY) };
+	mSize = { static_cast<float>(width), static_cast<float>(height) };
+	mChangeFlag = true;
 }
 
 void Sprite::Init()
 {
 	//頂点データ
 	VertexPNU vertices[] = {
-		{{ -mAnchor.x * size.x, (1 - mAnchor.y) * size.y, 0.0f}, {}, {0.0f, 1.0f}}, //左下
-		{{ -mAnchor.x * size.x, -mAnchor.y * size.y, 0.0f }, {}, {0.0f, 0.0f}}, //左上
-		{{ (1 - mAnchor.x) * size.x, (1 - mAnchor.y) * size.y, 0.0f }, {}, {1.0f, 1.0f}}, //右下
-		{{ (1 - mAnchor.x) * size.x, -mAnchor.y * size.y, 0.0f }, {}, {1.0f, 0.0f}}, //右上
+		{{ -mAnchor.x * mSize.x, (1 - mAnchor.y) * mSize.y, 0.0f}, {}, {0.0f, 1.0f}}, //左下
+		{{ -mAnchor.x * mSize.x, -mAnchor.y * mSize.y, 0.0f }, {}, {0.0f, 0.0f}}, //左上
+		{{ (1 - mAnchor.x) * mSize.x, (1 - mAnchor.y) * mSize.y, 0.0f }, {}, {1.0f, 1.0f}}, //右下
+		{{ (1 - mAnchor.x) * mSize.x, -mAnchor.y * mSize.y, 0.0f }, {}, {1.0f, 0.0f}}, //右上
 	};
 
 	//頂点インデックスデータ
@@ -90,18 +90,18 @@ void Sprite::Init()
 
 	VertexPNU::CalcNormalVec(vertices, indices, _countof(indices));
 
-	vertBuff.Init(vertices, _countof(vertices));
-	indexBuff.Init(indices, _countof(indices));
+	mVertBuff.Init(vertices, _countof(vertices));
+	mIndexBuff.Init(indices, _countof(indices));
 }
 
 void Sprite::TransferBuffer()
 {
-	if (change) {
+	if (mChangeFlag) {
 		UpdateVertex();
 	}
 
-	material.Transfer(materialBuff.Get());
-	transform.Transfer(transformBuff.Get());
+	mMaterial.Transfer(mMaterialBuff.Get());
+	mTransform.Transfer(mTransformBuff.Get());
 
 	Matrix4 matProjection = Matrix4::OrthoGraphicProjection(
 		0.0f, (float)RWindow::GetWidth(),
@@ -109,30 +109,30 @@ void Sprite::TransferBuffer()
 		0.0f, 1.0f
 	);
 	
-	viewProjectionBuff.Get()->matrix = matProjection;
+	mViewProjectionBuff.Get()->matrix = matProjection;
 }
 
 void Sprite::Draw()
 {
 	std::vector<RootData> rootData{
-		{TextureManager::Get(mTexture).gpuHandle},
-		{RootDataType::SRBUFFER_CBV, materialBuff.buff},
-		{RootDataType::SRBUFFER_CBV, transformBuff.buff},
-		{RootDataType::SRBUFFER_CBV, viewProjectionBuff.buff},
+		{TextureManager::Get(mTexture).mGpuHandle},
+		{RootDataType::SRBUFFER_CBV, mMaterialBuff.mBuff},
+		{RootDataType::SRBUFFER_CBV, mTransformBuff.mBuff},
+		{RootDataType::SRBUFFER_CBV, mViewProjectionBuff.mBuff},
 	};
 	
-	if (transform.position.z >= 0) {
-		Renderer::DrawCall("Sprite", vertBuff, indexBuff, 6, rootData, transform.position);
+	if (mTransform.position.z >= 0) {
+		Renderer::DrawCall("Sprite", mVertBuff, mIndexBuff, 6, rootData, mTransform.position);
 	}
 	else {
-		transform.position.z *= -1;
-		Renderer::DrawCall("BackSprite", vertBuff, indexBuff, 6, rootData, transform.position);
+		mTransform.position.z *= -1;
+		Renderer::DrawCall("BackSprite", mVertBuff, mIndexBuff, 6, rootData, mTransform.position);
 	}
 }
 
 void SpriteManager::Init()
 {
-	rootSignature = RDirectX::GetDefRootSignature();
+	mRootSignature = RDirectX::GetDefRootSignature();
 
 	StaticSamplerDesc samplerDesc{};
 	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
@@ -144,22 +144,22 @@ void SpriteManager::Init()
 	samplerDesc.MinLOD = 0.0f; //ミップマップ最小値
 	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 	samplerDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //ピクセルシェーダーからだけ見える
-	rootSignature.desc.StaticSamplers = StaticSamplerDescs{ samplerDesc };
-	rootSignature.Create();
+	mRootSignature.mDesc.StaticSamplers = StaticSamplerDescs{ samplerDesc };
+	mRootSignature.Create();
 
-	pipelineState = RDirectX::GetDefPipeline();
+	mPipelineState = RDirectX::GetDefPipeline();
 
-	pipelineState.desc.VS = Shader("./Shader/SpriteVS.hlsl", "main", "vs_5_0");
-	pipelineState.desc.PS = Shader("./Shader/SpritePS.hlsl", "main", "ps_5_0");
+	mPipelineState.mDesc.VS = Shader("./Shader/SpriteVS.hlsl", "main", "vs_5_0");
+	mPipelineState.mDesc.PS = Shader("./Shader/SpritePS.hlsl", "main", "ps_5_0");
 
 	// ラスタライザの設定
-	pipelineState.desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-	pipelineState.desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-	pipelineState.desc.RasterizerState.DepthClipEnable = false;
-	pipelineState.desc.BlendState.AlphaToCoverageEnable = false;
+	mPipelineState.mDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	mPipelineState.mDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+	mPipelineState.mDesc.RasterizerState.DepthClipEnable = false;
+	mPipelineState.mDesc.BlendState.AlphaToCoverageEnable = false;
 
-	pipelineState.desc.DepthStencilState.DepthEnable = false;
-	pipelineState.desc.pRootSignature = rootSignature.ptr.Get();
+	mPipelineState.mDesc.DepthStencilState.DepthEnable = false;
+	mPipelineState.mDesc.pRootSignature = mRootSignature.mPtr.Get();
 
-	pipelineState.Create();
+	mPipelineState.Create();
 }

@@ -24,7 +24,7 @@ void RImGui::Render()
 {
     RImGui* instance = GetInstance();
     ImGui::Render();
-    RDirectX::GetCommandList()->SetDescriptorHeaps(1, &instance->srvHeap);
+    RDirectX::GetCommandList()->SetDescriptorHeaps(1, &instance->mSrvHeapPtr);
     ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), RDirectX::GetCommandList());
 }
 
@@ -46,8 +46,8 @@ void RImGui::InitInternal()
 
     ImGui_ImplWin32_Init(RWindow::GetWindowHandle());
 
-    this->device = RDirectX::GetDevice();
-    this->srvHeap = RDirectX::GetSRVHeap();
+    mDevicePtr = RDirectX::GetDevice();
+    mSrvHeapPtr = RDirectX::GetSRVHeap();
     ImGui_ImplDX12_Init(
         RDirectX::GetDevice(),
         static_cast<int32_t>(RDirectX::GetBackBufferSize()),

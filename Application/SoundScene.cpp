@@ -10,8 +10,8 @@ SoundScene::SoundScene()
 
 void SoundScene::Init()
 {
-	Camera::nowCamera = nullptr;
-	LightGroup::nowLight = nullptr;
+	Camera::sNowCamera = nullptr;
+	LightGroup::sNowLight = nullptr;
 }
 
 void SoundScene::Update()

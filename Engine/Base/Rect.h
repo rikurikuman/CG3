@@ -1,6 +1,5 @@
 #pragma once
-class Rect {
-public:
+struct Rect {
 	long left;
 	long right;
 	long top;

@@ -26,7 +26,7 @@ public:
 
 	//static void DrawString(int32_t x, int32_t y, std::string text, std::string fontTypeFace, uint32_t fontSize);
 
-	GraphicsPipeline pipeline;
+	GraphicsPipeline mPipeline;
 
 private:
 	struct Glyph {
@@ -64,7 +64,7 @@ private:
 
 	void Init();
 
-	std::recursive_mutex mutex;
-	std::map<Glyph, FontTexture> glyphMap; //グリフテクスチャのマップ
+	std::recursive_mutex mMutex;
+	std::map<Glyph, FontTexture> mGlyphMap; //グリフテクスチャのマップ
 };
 

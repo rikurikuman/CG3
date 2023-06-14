@@ -10,16 +10,16 @@ CollidersScene::CollidersScene()
 	sphere2 = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere2", true));
 	ray = ModelObj(Model::Load("./Resources/Model/", "Cube.obj", "Cube", false));
 
-	sphere.transform.position = { 0, 5, 0 };
-	sphere.transform.UpdateMatrix();
-	sphere2.transform.position = { 2, 3, 0 };
-	sphere2.transform.UpdateMatrix();
+	sphere.mTransform.position = { 0, 5, 0 };
+	sphere.mTransform.UpdateMatrix();
+	sphere2.mTransform.position = { 2, 3, 0 };
+	sphere2.mTransform.UpdateMatrix();
 
 	colSphere = Colliders::Create<SphereCollider>(Vector3(0, 5, 0), 1.0f);
 	colSphere2 = Colliders::Create<SphereCollider>(Vector3(2, 3, 0), 1.0f);
 	colPolygon = Colliders::Create<PolygonCollider>(posA, posC, posB);
 	colRay = Colliders::Create<RayCollider>(Vector3(0, 7, 0), Vector3(0, -1, 0));
-	colRay->onCollision = [&](CollisionInfo info) {
+	colRay->mFuncOnCollision = [&](CollisionInfo info) {
 		//念のためチェック
 		if (info.hasDistance && info.hasInter) {
 			if (info.distance < memDis) {
@@ -29,7 +29,7 @@ CollidersScene::CollidersScene()
 	};
 
 	polygonPipeline = RDirectX::GetDefPipeline();
-	polygonPipeline.desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	polygonPipeline.mDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	polygonPipeline.Create();
 
 	VertexPNU verts[3] = {
@@ -39,15 +39,15 @@ CollidersScene::CollidersScene()
 	};
 	vertBuff.Init(verts, 3);
 
-	camera.viewProjection.eye = { 0, 3, -10 };
-	camera.viewProjection.target = { 0, 3, 0 };
-	camera.viewProjection.UpdateMatrix();
+	camera.mViewProjection.mEye = { 0, 3, -10 };
+	camera.mViewProjection.mTarget = { 0, 3, 0 };
+	camera.mViewProjection.UpdateMatrix();
 }
 
 void CollidersScene::Init()
 {
-	Camera::nowCamera = &camera;
-	LightGroup::nowLight = &light;
+	Camera::sNowCamera = &camera;
+	LightGroup::sNowLight = &light;
 	Colliders::AllActivate();
 }
 
@@ -63,11 +63,11 @@ void CollidersScene::Update()
 		ImGui::Begin("Control", NULL, window_flags);
 
 		if (ImGui::Button("Reset")) {
-			sphere.transform.position = { 0, 5, 0 };
-			sphere.transform.scale = { 1, 1, 1 };
-			sphere2.transform.position = { 2, 3, 0 };
-			sphere2.transform.scale = { 1, 1, 1 };
-			colRay->ray.start = { 0, 7, 0 };
+			sphere.mTransform.position = { 0, 5, 0 };
+			sphere.mTransform.scale = { 1, 1, 1 };
+			sphere2.mTransform.position = { 2, 3, 0 };
+			sphere2.mTransform.scale = { 1, 1, 1 };
+			colRay->mRay.start = { 0, 7, 0 };
 			radiusA = 1;
 			radiusB = 1;
 			pierce = false;
@@ -79,18 +79,18 @@ void CollidersScene::Update()
 
 		ImGui::Text("SphereA");
 		ImGui::Checkbox("AutoMove##SphereA", &autoMoveA);
-		ImGui::DragFloat3("Position##SphereA", &sphere.transform.position.x, 0.01f);
+		ImGui::DragFloat3("Position##SphereA", &sphere.mTransform.position.x, 0.01f);
 		ImGui::DragFloat("Scale##SphereA", &radiusA, 0.01f);
 
 		ImGui::Text("SphereB");
 		ImGui::Checkbox("AutoMove##SphereB", &autoMoveB);
-		ImGui::DragFloat3("Position##SphereB", &sphere2.transform.position.x, 0.01f);
+		ImGui::DragFloat3("Position##SphereB", &sphere2.mTransform.position.x, 0.01f);
 		ImGui::DragFloat("Scale##SphereB", &radiusB, 0.01f);
 
 		ImGui::Text("Ray");
 		ImGui::Checkbox("AutoMove##Ray", &autoMoveC);
 		ImGui::Checkbox("Pierce", &pierce);
-		ImGui::DragFloat3("Position##Ray", &colRay->ray.start.x, 0.01f);
+		ImGui::DragFloat3("Position##Ray", &colRay->mRay.start.x, 0.01f);
 
 		ImGui::Text("Polygon");
 		ImGui::DragFloat3("Position1", &posA.x, 0.01f);
@@ -101,103 +101,103 @@ void CollidersScene::Update()
 	}
 
 	if (autoMoveA) {
-		sphere.transform.position.x += 5.0f * TimeManager::deltaTime * moveDirA;
-		if (sphere.transform.position.x > 5
-			|| sphere.transform.position.x < -5) {
-			sphere.transform.position.x = Util::Clamp(sphere.transform.position.x, -5.0f, 5.0f);
+		sphere.mTransform.position.x += 5.0f * TimeManager::deltaTime * moveDirA;
+		if (sphere.mTransform.position.x > 5
+			|| sphere.mTransform.position.x < -5) {
+			sphere.mTransform.position.x = Util::Clamp(sphere.mTransform.position.x, -5.0f, 5.0f);
 			moveDirA *= -1;
 		}
 	}
 
 	if (autoMoveB) {
-		sphere2.transform.position.x += 5.0f * TimeManager::deltaTime * moveDirB;
-		if (sphere2.transform.position.x > 5
-			|| sphere2.transform.position.x < -5) {
-			sphere2.transform.position.x = Util::Clamp(sphere2.transform.position.x, -5.0f, 5.0f);
+		sphere2.mTransform.position.x += 5.0f * TimeManager::deltaTime * moveDirB;
+		if (sphere2.mTransform.position.x > 5
+			|| sphere2.mTransform.position.x < -5) {
+			sphere2.mTransform.position.x = Util::Clamp(sphere2.mTransform.position.x, -5.0f, 5.0f);
 			moveDirB *= -1;
 		}
 	}
 
 	if (autoMoveC) {
-		colRay->ray.start.x += 5.0f * TimeManager::deltaTime * moveDirC;
-		if (colRay->ray.start.x > 5
-			|| colRay->ray.start.x < -5) {
-			colRay->ray.start.x = Util::Clamp(colRay->ray.start.x, -5.0f, 5.0f);
+		colRay->mRay.start.x += 5.0f * TimeManager::deltaTime * moveDirC;
+		if (colRay->mRay.start.x > 5
+			|| colRay->mRay.start.x < -5) {
+			colRay->mRay.start.x = Util::Clamp(colRay->mRay.start.x, -5.0f, 5.0f);
 			moveDirC *= -1;
 		}
 	}
 
-	colSphere->sphere.pos = sphere.transform.position;
-	colSphere->sphere.r = radiusA;
-	colSphere2->sphere.pos = sphere2.transform.position;
-	colSphere2->sphere.r = radiusB;
+	colSphere->mSphere.pos = sphere.mTransform.position;
+	colSphere->mSphere.r = radiusA;
+	colSphere2->mSphere.pos = sphere2.mTransform.position;
+	colSphere2->mSphere.r = radiusB;
 
-	sphere.transform.scale = { radiusA, radiusA, radiusA };
-	sphere.transform.UpdateMatrix();
-	sphere2.transform.scale = { radiusB, radiusB, radiusB };
-	sphere2.transform.UpdateMatrix();
+	sphere.mTransform.scale = { radiusA, radiusA, radiusA };
+	sphere.mTransform.UpdateMatrix();
+	sphere2.mTransform.scale = { radiusB, radiusB, radiusB };
+	sphere2.mTransform.UpdateMatrix();
 
-	colPolygon->polygon.p0 = posA;
-	colPolygon->polygon.p1 = posC;
-	colPolygon->polygon.p2 = posB;
+	colPolygon->mPolygon.p0 = posA;
+	colPolygon->mPolygon.p1 = posC;
+	colPolygon->mPolygon.p2 = posB;
 
-	colRay->pierce = pierce;
+	colRay->mOptPierce = pierce;
 
 	memDis = FLT_MAX;
 	Colliders::Update();
 
 	if (colSphere->HasCollision()) {
-		sphere.tuneMaterial.color = { 1, 0, 0, 1 };
+		sphere.mTuneMaterial.mColor = { 1, 0, 0, 1 };
 	}
 	else {
-		sphere.tuneMaterial.color = { 1, 1, 1, 1 };
+		sphere.mTuneMaterial.mColor = { 1, 1, 1, 1 };
 	}
 
 	if (colSphere2->HasCollision()) {
-		sphere2.tuneMaterial.color = { 1, 0, 0, 1 };
+		sphere2.mTuneMaterial.mColor = { 1, 0, 0, 1 };
 	}
 	else {
-		sphere2.tuneMaterial.color = { 1, 1, 1, 1 };
+		sphere2.mTuneMaterial.mColor = { 1, 1, 1, 1 };
 	}
 
 	if (pierce) {
 		if (colRay->HasCollision()) {
-			ray.tuneMaterial.color = { 0, 0, 1, 1 };
+			ray.mTuneMaterial.mColor = { 0, 0, 1, 1 };
 		}
 		else {
-			ray.tuneMaterial.color = { 1, 1, 1, 1 };
+			ray.mTuneMaterial.mColor = { 1, 1, 1, 1 };
 		}
-		ray.transform.position = colRay->ray.start;
-		ray.transform.position += colRay->ray.dir * 50;
-		ray.transform.scale = { 0.1f, 100, 0.1f };
+		ray.mTransform.position = colRay->mRay.start;
+		ray.mTransform.position += colRay->mRay.dir * 50;
+		ray.mTransform.scale = { 0.1f, 100, 0.1f };
 	}
 	else {
 		if (colRay->HasCollision()) {
-			ray.tuneMaterial.color = { 0, 0, 1, 1 };
-			ray.transform.position = colRay->ray.start;
-			ray.transform.position += colRay->ray.dir * memDis / 2.0f;
-			ray.transform.scale = { 0.1f, memDis, 0.1f };
+			ray.mTuneMaterial.mColor = { 0, 0, 1, 1 };
+			ray.mTransform.position = colRay->mRay.start;
+			ray.mTransform.position += colRay->mRay.dir * memDis / 2.0f;
+			ray.mTransform.scale = { 0.1f, memDis, 0.1f };
 		}
 		else {
-			ray.tuneMaterial.color = { 1, 1, 1, 1 };
-			ray.transform.position = colRay->ray.start;
-			ray.transform.position += colRay->ray.dir * 50;
-			ray.transform.scale = { 0.1f, 100, 0.1f };
+			ray.mTuneMaterial.mColor = { 1, 1, 1, 1 };
+			ray.mTransform.position = colRay->mRay.start;
+			ray.mTransform.position += colRay->mRay.dir * 50;
+			ray.mTransform.scale = { 0.1f, 100, 0.1f };
 		}
 	}
-	ray.transform.UpdateMatrix();
+	ray.mTransform.UpdateMatrix();
 
 	if (colPolygon->HasCollision()) {
-		materialBuff.constMap->color = { 1, 0, 0, 1 };
+		materialBuff.mConstMap->color = { 1, 0, 0, 1 };
 	}
 	else {
-		materialBuff.constMap->color = { 1, 1, 1, 1 };
+		materialBuff.mConstMap->color = { 1, 1, 1, 1 };
 	}
 
 	light.Update();
-	sphere.TransferBuffer(Camera::nowCamera->viewProjection);
-	sphere2.TransferBuffer(Camera::nowCamera->viewProjection);
-	ray.TransferBuffer(Camera::nowCamera->viewProjection);
+	sphere.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	sphere2.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	ray.TransferBuffer(Camera::sNowCamera->mViewProjection);
 
 	VertexPNU verts[3] = {
 		{posA, {0, 0, 0}, {0, 0}},
@@ -205,9 +205,9 @@ void CollidersScene::Update()
 		{posB, {0, 0, 0}, {0, 0}}
 	};
 	vertBuff.Update(verts, 3);
-	transformBuff.constMap->matrix = Matrix4();
-	materialBuff.constMap->ambient = { 1, 1, 1 };
-	Camera::nowCamera->viewProjection.Transfer(viewProjectionBuff.constMap);
+	transformBuff.mConstMap->matrix = Matrix4();
+	materialBuff.mConstMap->ambient = { 1, 1, 1 };
+	Camera::sNowCamera->mViewProjection.Transfer(viewProjectionBuff.mConstMap);
 }
 
 void CollidersScene::Draw()
@@ -217,15 +217,15 @@ void CollidersScene::Draw()
 	ray.Draw();
 
 	RenderOrder polygon;
-	polygon.pipelineState = polygonPipeline.ptr.Get();
+	polygon.pipelineState = polygonPipeline.mPtr.Get();
 	polygon.rootData = {
-		{TextureManager::Get("").gpuHandle},
-		{RootDataType::CBV, materialBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, transformBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, viewProjectionBuff.constBuff->GetGPUVirtualAddress()},
-		{RootDataType::CBV, LightGroup::nowLight->buffer.constBuff->GetGPUVirtualAddress()},
+		{TextureManager::Get("").mGpuHandle},
+		{RootDataType::CBV, materialBuff.mConstBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, transformBuff.mConstBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, viewProjectionBuff.mConstBuff->GetGPUVirtualAddress()},
+		{RootDataType::CBV, LightGroup::sNowLight->mBuffer.mConstBuff->GetGPUVirtualAddress()},
 	};
-	polygon.vertView = &vertBuff.view;
+	polygon.vertView = &vertBuff.mView;
 	polygon.indexCount = 3;
 
 	Renderer::DrawCall("Opaque", polygon);

@@ -8,8 +8,8 @@ SpriteScene::SpriteScene()
 
 void SpriteScene::Init()
 {
-	Camera::nowCamera = nullptr;
-	LightGroup::nowLight = nullptr;
+	Camera::sNowCamera = nullptr;
+	LightGroup::sNowLight = nullptr;
 }
 
 void SpriteScene::Update()
@@ -76,10 +76,10 @@ void SpriteScene::Update()
 		ImGui::End();
 	}
 
-	sprite.transform.position = { pos[0], pos[1], 0.0f};
-	sprite.transform.rotation = { Util::AngleToRadian(rot[0]), Util::AngleToRadian(rot[1]), Util::AngleToRadian(rot[2]) };
-	sprite.transform.scale = { scale[0], scale[1], 1.0f };
-	sprite.transform.UpdateMatrix();
+	sprite.mTransform.position = { pos[0], pos[1], 0.0f};
+	sprite.mTransform.rotation = { Util::AngleToRadian(rot[0]), Util::AngleToRadian(rot[1]), Util::AngleToRadian(rot[2]) };
+	sprite.mTransform.scale = { scale[0], scale[1], 1.0f };
+	sprite.mTransform.UpdateMatrix();
 	sprite.TransferBuffer();
 }
 

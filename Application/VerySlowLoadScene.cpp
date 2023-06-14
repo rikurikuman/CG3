@@ -11,8 +11,8 @@ VerySlowLoadScene::VerySlowLoadScene()
 
 void VerySlowLoadScene::Init()
 {
-	Camera::nowCamera = nullptr;
-	LightGroup::nowLight = nullptr;
+	Camera::sNowCamera = nullptr;
+	LightGroup::sNowLight = nullptr;
 }
 
 void VerySlowLoadScene::Draw()

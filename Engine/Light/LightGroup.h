@@ -8,20 +8,20 @@
 class LightGroup
 {
 public:
-	static LightGroup* nowLight;
-	static constexpr int32_t directionalLightNum = 8;
-	static constexpr int32_t pointLightNum = 8;
-	static constexpr int32_t spotLightNum = 8;
+	static LightGroup* sNowLight;
+	static constexpr int32_t DIRECTIONAL_LIGHT_NUM = 8;
+	static constexpr int32_t POINT_LIGHT_NUM = 8;
+	static constexpr int32_t SPOT_LIGHT_NUM = 8;
 
 	struct LightGroupBuffer {
 		Vector3 ambientColor;
 		float pad;
-		DirectionalLight::LightBuffer directionalLights[directionalLightNum];
-		PointLight::LightBuffer pointLights[pointLightNum];
-		SpotLight::LightBuffer spotLights[spotLightNum];
+		DirectionalLight::LightBuffer directionalLights[DIRECTIONAL_LIGHT_NUM];
+		PointLight::LightBuffer pointLights[POINT_LIGHT_NUM];
+		SpotLight::LightBuffer spotLights[SPOT_LIGHT_NUM];
 	};
 
-	RConstBuffer<LightGroupBuffer> buffer;
+	RConstBuffer<LightGroupBuffer> mBuffer;
 
 	LightGroup() {
 		SetDefault();
@@ -119,17 +119,17 @@ public:
 
 private:
 	//環境光の色
-	Vector3 ambientColor = { 1, 1, 1 };
+	Vector3 mAmbientColor = { 1, 1, 1 };
 
 	//平行光源配列
-	DirectionalLight directionalLights[directionalLightNum];
+	DirectionalLight mDirectionalLights[DIRECTIONAL_LIGHT_NUM];
 
 	//点光源配列
-	PointLight pointLights[pointLightNum];
+	PointLight mPointLights[POINT_LIGHT_NUM];
 
 	//スポットライト配列
-	SpotLight spotLights[spotLightNum];
+	SpotLight mSpotLights[SPOT_LIGHT_NUM];
 
 	//更新フラグ
-	bool change = false;
+	bool mChangeFlag = false;
 };

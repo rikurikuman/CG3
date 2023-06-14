@@ -7,10 +7,10 @@
 class Bloom
 {
 public:
-	TextureHandle texture;
+	TextureHandle mTexture;
 
-	SRVertexBuffer vertBuff;
-	SRIndexBuffer indexBuff;
+	SRVertexBuffer mVertBuff;
+	SRIndexBuffer mIndexBuff;
 
 	Bloom();
 

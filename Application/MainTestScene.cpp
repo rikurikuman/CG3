@@ -10,37 +10,37 @@ MainTestScene::MainTestScene()
 {
 	sphere = ModelObj(Model::LoadWithAIL("./Resources/Model/", "Sphere.obj", "Sphere"));
 
-	sphere.transform.position = { 0, 0, 0 };
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.position = { 0, 0, 0 };
+	sphere.mTransform.UpdateMatrix();
 
 	sphere2 = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere2", true));
 
-	sphere2.transform.position = { 0.5f, 0, -1 };
-	sphere2.transform.UpdateMatrix();
+	sphere2.mTransform.position = { 0.5f, 0, -1 };
+	sphere2.mTransform.UpdateMatrix();
 
-	sphere2.tuneMaterial.color.a = 0.6f;
+	sphere2.mTuneMaterial.mColor.a = 0.6f;
 
 	sprite.SetTexture("");
 	sprite.SetAnchor({ 0, 0 });
-	sprite.transform.position = { 100, 100, 0 };
-	sprite.transform.UpdateMatrix();
-	sprite.material.color = { 1, 1, 1, 1 };
+	sprite.mTransform.position = { 100, 100, 0 };
+	sprite.mTransform.UpdateMatrix();
+	sprite.mMaterial.mColor = { 1, 1, 1, 1 };
 
 	sprite2.SetTexture("");
 	sprite2.SetAnchor({ 0, 0 });
-	sprite2.transform.position = { 120, 120, 0 };
-	sprite2.transform.UpdateMatrix();
-	sprite2.material.color = { 1, 0, 0, 0.5f };
+	sprite2.mTransform.position = { 120, 120, 0 };
+	sprite2.mTransform.UpdateMatrix();
+	sprite2.mMaterial.mColor = { 1, 0, 0, 0.5f };
 
-	camera.viewProjection.eye = { 0, 0, -10 };
-	camera.viewProjection.target = { 0, 0, 0 };
-	camera.viewProjection.UpdateMatrix();
+	camera.mViewProjection.mEye = { 0, 0, -10 };
+	camera.mViewProjection.mTarget = { 0, 0, 0 };
+	camera.mViewProjection.UpdateMatrix();
 }
 
 void MainTestScene::Init()
 {
-	Camera::nowCamera = &camera;
-	LightGroup::nowLight = &light;
+	Camera::sNowCamera = &camera;
+	LightGroup::sNowLight = &light;
 }
 
 void MainTestScene::Update()
@@ -67,14 +67,14 @@ void MainTestScene::Update()
 			itr = testObjList.erase(itr);
 			continue;
 		}
-		obj.obj.transform.position += obj.speed;
-		obj.obj.transform.UpdateMatrix();
-		obj.obj.TransferBuffer(camera.viewProjection);
+		obj.obj.mTransform.position += obj.speed;
+		obj.obj.mTransform.UpdateMatrix();
+		obj.obj.TransferBuffer(camera.mViewProjection);
 		itr++;
 	}
 
-	sphere.TransferBuffer(camera.viewProjection);
-	sphere2.TransferBuffer(camera.viewProjection);
+	sphere.TransferBuffer(camera.mViewProjection);
+	sphere2.TransferBuffer(camera.mViewProjection);
 	sprite.TransferBuffer();
 	sprite2.TransferBuffer();
 }

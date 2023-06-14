@@ -12,53 +12,53 @@ private:
 		SRBufferPtr buff;
 	};
 
-	static std::recursive_mutex mutex;
+	static std::recursive_mutex sMutex;
 
 public:
 	SRVertexBuffer() {};
 
 	~SRVertexBuffer() {
-		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
-		std::lock_guard<std::recursive_mutex> lock2(mutex);
-		if (data != nullptr) {
-			data->count--;
-			if (data->count == 0) {
-				SRBufferAllocator::Free(data->buff);
+		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->sMutex);
+		std::lock_guard<std::recursive_mutex> lock2(sMutex);
+		if (mData != nullptr) {
+			mData->count--;
+			if (mData->count == 0) {
+				SRBufferAllocator::Free(mData->buff);
 			}
 		}
 	}
 
 	//コピー対策
 	SRVertexBuffer(const SRVertexBuffer& o) {
-		std::lock_guard<std::recursive_mutex> lock(mutex);
-		if (data != nullptr) {
-			data->count--;
-			if (data->count == 0) {
-				SRBufferAllocator::Free(data->buff);
+		std::lock_guard<std::recursive_mutex> lock(sMutex);
+		if (mData != nullptr) {
+			mData->count--;
+			if (mData->count == 0) {
+				SRBufferAllocator::Free(mData->buff);
 			}
 		}
-		data = o.data;
-		if(data != nullptr) data->count++;
+		mData = o.mData;
+		if(mData != nullptr) mData->count++;
 	}
 
 	SRVertexBuffer& operator=(const SRVertexBuffer& o) {
-		std::lock_guard<std::recursive_mutex> lock(mutex);
+		std::lock_guard<std::recursive_mutex> lock(sMutex);
 		if (this != &o) {
-			if (data != nullptr) {
-				data->count--;
-				if (data->count == 0) {
-					SRBufferAllocator::Free(data->buff);
+			if (mData != nullptr) {
+				mData->count--;
+				if (mData->count == 0) {
+					SRBufferAllocator::Free(mData->buff);
 				}
 			}
-			data = o.data;
-			if (data != nullptr) data->count++;
+			mData = o.mData;
+			if (mData != nullptr) mData->count++;
 		}
 		return *this;
 	}
 
 	bool IsValid() {
-		std::lock_guard<std::recursive_mutex> lock(mutex);
-		return this->data != nullptr && this->data->buff.GetRegionPtr() != nullptr && this->data->buff.GetRegionPtr()->region != nullptr;
+		std::lock_guard<std::recursive_mutex> lock(sMutex);
+		return mData != nullptr && mData->buff.GetRegionPtr() != nullptr && mData->buff.GetRegionPtr()->region != nullptr;
 	}
 
 	operator bool() {
@@ -91,110 +91,110 @@ public:
 	//任意の頂点データの配列とその大きさで作る
 	template<class T>
 	void Init(T* list, uint32_t size) {
-		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
-		std::lock_guard<std::recursive_mutex> lock2(mutex);
+		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->sMutex);
+		std::lock_guard<std::recursive_mutex> lock2(sMutex);
 
-		if (data != nullptr && data->buff.GetRegionPtr() != nullptr) {
-			SRBufferAllocator::Free(data->buff);
+		if (mData != nullptr && mData->buff.GetRegionPtr() != nullptr) {
+			SRBufferAllocator::Free(mData->buff);
 		}
 		else {
-			data = std::make_shared<VertexBufferData>();
-			data->count++;
+			mData = std::make_shared<VertexBufferData>();
+			mData->count++;
 		}
 
 		uint32_t dataSize = static_cast<uint32_t>(sizeof(T) * size);
 
-		data->buff = SRBufferAllocator::Alloc(dataSize, 1);
+		mData->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
-		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
+		T* vertMap = reinterpret_cast<T*>(mData->buff.Get());
 		for (uint32_t i = 0; i < size; i++) {
 			vertMap[i] = list[i];
 		}
 
-		data->dataSize = dataSize;
-		data->strideInBytes = sizeof(T);
+		mData->dataSize = dataSize;
+		mData->strideInBytes = sizeof(T);
 	}
 
 	//任意の頂点データのvectorで作る
 	template<class T>
 	void Init(std::vector<T> list) {
-		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
-		std::lock_guard<std::recursive_mutex> lock2(mutex);
+		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->sMutex);
+		std::lock_guard<std::recursive_mutex> lock2(sMutex);
 
-		if (data != nullptr && data->buff.GetRegionPtr() != nullptr) {
-			SRBufferAllocator::Free(data->buff);
+		if (mData != nullptr && mData->buff.GetRegionPtr() != nullptr) {
+			SRBufferAllocator::Free(mData->buff);
 		}
 		else {
-			data = std::make_shared<VertexBufferData>();
-			data->count++;
+			mData = std::make_shared<VertexBufferData>();
+			mData->count++;
 		}
 
 		uint32_t dataSize = static_cast<uint32_t>(sizeof(T) * list.size());
 
-		data->buff = SRBufferAllocator::Alloc(dataSize, 1);
+		mData->buff = SRBufferAllocator::Alloc(dataSize, 1);
 
-		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
+		T* vertMap = reinterpret_cast<T*>(mData->buff.Get());
 		for (uint32_t i = 0; i < list.size(); i++) {
 			vertMap[i] = list[i];
 		}
 
-		data->dataSize = dataSize;
-		data->strideInBytes = sizeof(T);
+		mData->dataSize = dataSize;
+		mData->strideInBytes = sizeof(T);
 	}
 
 	//任意の頂点データの配列とその大きさで更新
 	template<class T>
 	void Update(T* list, uint32_t size) {
-		std::lock_guard<std::recursive_mutex> lock(mutex);
-		if (data == nullptr || data->buff.GetRegionPtr() == nullptr) {
+		std::lock_guard<std::recursive_mutex> lock(sMutex);
+		if (mData == nullptr || mData->buff.GetRegionPtr() == nullptr) {
 			Init(list, size);
 			return;
 		}
 
 		uint32_t dataSize = static_cast<uint32_t>(sizeof(T) * size);
 
-		if (data->dataSize != dataSize || data->strideInBytes != sizeof(T)) {
+		if (mData->dataSize != dataSize || mData->strideInBytes != sizeof(T)) {
 			Init(list, size);
 			return;
 		}
 
-		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
+		T* vertMap = reinterpret_cast<T*>(mData->buff.Get());
 		for (uint32_t i = 0; i < size; i++) {
 			vertMap[i] = list[i];
 		}
 
-		data->dataSize = dataSize;
-		data->strideInBytes = sizeof(T);
+		mData->dataSize = dataSize;
+		mData->strideInBytes = sizeof(T);
 	}
 
 	//任意の頂点データのvectorで更新
 	template<class T>
 	void Update(std::vector<T> list) {
-		std::lock_guard<std::recursive_mutex> lock(mutex);
-		if (data == nullptr || data->buff.GetRegionPtr() == nullptr) {
+		std::lock_guard<std::recursive_mutex> lock(sMutex);
+		if (mData == nullptr || mData->buff.GetRegionPtr() == nullptr) {
 			Init(list);
 			return;
 		}
 
 		uint32_t dataSize = static_cast<uint32_t>(sizeof(T) * list.size());
 
-		if (data->dataSize != dataSize || data->strideInBytes != sizeof(T)) {
+		if (mData->dataSize != dataSize || mData->strideInBytes != sizeof(T)) {
 			Init(list);
 			return;
 		}
 
-		T* vertMap = reinterpret_cast<T*>(data->buff.Get());
+		T* vertMap = reinterpret_cast<T*>(mData->buff.Get());
 		for (uint32_t i = 0; i < list.size(); i++) {
 			vertMap[i] = list[i];
 		}
 
-		data->dataSize = dataSize;
-		data->strideInBytes = sizeof(T);
+		mData->dataSize = dataSize;
+		mData->strideInBytes = sizeof(T);
 	}
 
 	D3D12_VERTEX_BUFFER_VIEW GetVertView();
 
 private:
-	std::shared_ptr<VertexBufferData> data = nullptr;
+	std::shared_ptr<VertexBufferData> mData = nullptr;
 };
 

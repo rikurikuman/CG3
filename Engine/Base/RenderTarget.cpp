@@ -130,7 +130,7 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 		&textureResourceDesc,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		&textureClearValue,
-		IID_PPV_ARGS(&texture.resource)
+		IID_PPV_ARGS(&texture.mResource)
 	);
 	assert(SUCCEEDED(result));
 
@@ -201,9 +201,9 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 
 	size_t rtvincrementSize = RDirectX::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle = manager->rtvHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle = manager->mRtvHeap->GetCPUDescriptorHandleForHeapStart();
 	rtvHeapHandle.ptr += useIndex * rtvincrementSize;
-	RDirectX::GetDevice()->CreateRenderTargetView(texture.resource.Get(), &rtvDesc, rtvHeapHandle);
+	RDirectX::GetDevice()->CreateRenderTargetView(texture.mResource.Get(), &rtvDesc, rtvHeapHandle);
 
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -212,7 +212,7 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 	size_t dsvincrementSize = RDirectX::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHeapHandle = manager->dsvHeap->GetCPUDescriptorHandleForHeapStart();
 	dsvHeapHandle.ptr += useIndex * dsvincrementSize;
-	RDirectX::GetDevice()->CreateRenderTargetView(texture.resource.Get(), &rtvDesc, rtvHeapHandle);
+	RDirectX::GetDevice()->CreateRenderTargetView(texture.mResource.Get(), &rtvDesc, rtvHeapHandle);
 
 	RDirectX::GetDevice()->CreateDepthStencilView(renderTarget.depthBuff.Get(), &dsvDesc, dsvHeapHandle);
 
@@ -235,7 +235,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(uint32_t index)
 	RenderTarget* manager = RenderTarget::GetInstance();
 
 	size_t rtvincrementSize = RDirectX::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle = manager->rtvHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle = manager->mRtvHeap->GetCPUDescriptorHandleForHeapStart();
 	rtvHeapHandle.ptr += index * rtvincrementSize;
 	return rtvHeapHandle;
 }
@@ -258,7 +258,7 @@ void RenderTarget::CreateHeaps()
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rtvHeapDesc.NumDescriptors = numDescriptors;
 
-	result = RDirectX::GetDevice()->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&rtvHeap));
+	result = RDirectX::GetDevice()->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&mRtvHeap));
 	assert(SUCCEEDED(result));
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
@@ -290,7 +290,7 @@ void RenderTargetTexture::OpenResourceBarrier()
 	}
 
 	D3D12_RESOURCE_BARRIER barrierDesc{};
-	barrierDesc.Transition.pResource = TextureManager::Get(texHandle).resource.Get();
+	barrierDesc.Transition.pResource = TextureManager::Get(texHandle).mResource.Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
@@ -309,7 +309,7 @@ void RenderTargetTexture::CloseResourceBarrier()
 	}
 
 	D3D12_RESOURCE_BARRIER barrierDesc{};
-	barrierDesc.Transition.pResource = TextureManager::Get(texHandle).resource.Get();
+	barrierDesc.Transition.pResource = TextureManager::Get(texHandle).mResource.Get();
 	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 

@@ -19,8 +19,8 @@ Bloom::Bloom()
 		1, 3, 2
 	};
 
-	vertBuff.Init(vertices, _countof(vertices));
-	indexBuff.Init(indices, _countof(indices));
+	mVertBuff.Init(vertices, _countof(vertices));
+	mIndexBuff.Init(indices, _countof(indices));
 
 	RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "BloomA");
 	RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "BloomB");
@@ -49,36 +49,36 @@ void Bloom::Draw()
 
 	RenderOrder orderB;
 	orderB.primitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
-	orderB.vertBuff = vertBuff;
-	orderB.indexBuff = indexBuff;
-	orderB.indexCount = indexBuff.GetIndexCount();
+	orderB.vertBuff = mVertBuff;
+	orderB.indexBuff = mIndexBuff;
+	orderB.indexCount = mIndexBuff.GetIndexCount();
 	orderB.anchorPoint = Vector3(0, 0, 0);
-	orderB.rootSignature = GetRootSignature().ptr.Get();
-	orderB.pipelineState = GetGraphicsPipelineB().ptr.Get();
+	orderB.mRootSignature = GetRootSignature().mPtr.Get();
+	orderB.pipelineState = GetGraphicsPipelineB().mPtr.Get();
 	orderB.renderTargets = { "BloomB" };
 	orderB.rootData = {
-		{ TextureManager::Get(RenderTarget::GetRenderTargetTexture("RenderingImage")->texHandle).gpuHandle}
+		{ TextureManager::Get(RenderTarget::GetRenderTargetTexture("RenderingImage")->texHandle).mGpuHandle}
 	};
 	Renderer::DrawCall("PostEffect", orderB);
 
 	RenderOrder orderC;
 	orderC.primitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
-	orderC.vertBuff = vertBuff;
-	orderC.indexBuff = indexBuff;
-	orderC.indexCount = indexBuff.GetIndexCount();
+	orderC.vertBuff = mVertBuff;
+	orderC.indexBuff = mIndexBuff;
+	orderC.indexCount = mIndexBuff.GetIndexCount();
 	orderC.anchorPoint = Vector3(0, 0, 0);
-	orderC.rootSignature = GetRootSignature().ptr.Get();
-	orderC.pipelineState = GetGraphicsPipelineC().ptr.Get();
+	orderC.mRootSignature = GetRootSignature().mPtr.Get();
+	orderC.pipelineState = GetGraphicsPipelineC().mPtr.Get();
 	orderC.renderTargets = { "RenderingImage" };
 	orderC.rootData = {
-		{ TextureManager::Get(RenderTarget::GetRenderTargetTexture("BloomB")->texHandle).gpuHandle}
+		{ TextureManager::Get(RenderTarget::GetRenderTargetTexture("BloomB")->texHandle).mGpuHandle}
 	};
 	Renderer::DrawCall("PostEffect", orderC);
 }
 
 RootSignature& Bloom::GetRootSignature()
 {
-	RootSignatureDesc desc = RDirectX::GetDefRootSignature().desc;
+	RootSignatureDesc desc = RDirectX::GetDefRootSignature().mDesc;
 
 	DescriptorRange descriptorRange{};
 	descriptorRange.NumDescriptors = 1; //一度の描画に使うテクスチャが1枚なので1
@@ -109,7 +109,7 @@ RootSignature& Bloom::GetRootSignature()
 
 GraphicsPipeline& Bloom::GetGraphicsPipelineA()
 {
-	PipelineStateDesc desc = RDirectX::GetDefPipeline().desc;
+	PipelineStateDesc desc = RDirectX::GetDefPipeline().mDesc;
 
 	desc.InputLayout = {
 		{
@@ -139,13 +139,13 @@ GraphicsPipeline& Bloom::GetGraphicsPipelineA()
 
 	desc.VS = Shader::GetOrCreate("BloomA_VS", "Shader/BrightCutVS.hlsl", "main", "vs_5_0");
 	desc.PS = Shader::GetOrCreate("BloomA_PS", "Shader/BrightCutPS.hlsl", "main", "ps_5_0");
-	desc.pRootSignature = GetRootSignature().ptr.Get();
+	desc.pRootSignature = GetRootSignature().mPtr.Get();
 	return GraphicsPipeline::GetOrCreate("BloomA", desc);
 }
 
 GraphicsPipeline& Bloom::GetGraphicsPipelineB()
 {
-	PipelineStateDesc desc = RDirectX::GetDefPipeline().desc;
+	PipelineStateDesc desc = RDirectX::GetDefPipeline().mDesc;
 
 	desc.InputLayout = {
 		{
@@ -175,13 +175,13 @@ GraphicsPipeline& Bloom::GetGraphicsPipelineB()
 
 	desc.VS = Shader::GetOrCreate("BloomB_VS", "Shader/GaussianBlurVS.hlsl", "main", "vs_5_0");
 	desc.PS = Shader::GetOrCreate("BloomB_PS", "Shader/GaussianBlurPS.hlsl", "main", "ps_5_0");
-	desc.pRootSignature = GetRootSignature().ptr.Get();
+	desc.pRootSignature = GetRootSignature().mPtr.Get();
 	return GraphicsPipeline::GetOrCreate("BloomB", desc);
 }
 
 GraphicsPipeline& Bloom::GetGraphicsPipelineC()
 {
-	PipelineStateDesc desc = RDirectX::GetDefPipeline().desc;
+	PipelineStateDesc desc = RDirectX::GetDefPipeline().mDesc;
 
 	desc.InputLayout = {
 		{
@@ -210,6 +210,6 @@ GraphicsPipeline& Bloom::GetGraphicsPipelineC()
 	blenddesc.DestBlend = D3D12_BLEND_ONE;
 	desc.VS = Shader::GetOrCreate("BloomC_VS", "Shader/BloomVS.hlsl", "main", "vs_5_0");
 	desc.PS = Shader::GetOrCreate("BloomC_PS", "Shader/BloomPS.hlsl", "main", "ps_5_0");
-	desc.pRootSignature = GetRootSignature().ptr.Get();
+	desc.pRootSignature = GetRootSignature().mPtr.Get();
 	return GraphicsPipeline::GetOrCreate("BloomC", desc);
 }

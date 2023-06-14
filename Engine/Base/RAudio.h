@@ -68,17 +68,17 @@ public:
 	static void Stop(AudioHandle handle);
 
 private:
-	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
-	IXAudio2MasteringVoice* master = nullptr;
+	Microsoft::WRL::ComPtr<IXAudio2> mXAudio2;
+	IXAudio2MasteringVoice* mMasteringVoice = nullptr;
 
-	std::recursive_mutex mutex;
-	std::map<AudioHandle, std::shared_ptr<AudioData>> audioMap;
+	std::recursive_mutex mMutex;
+	std::map<AudioHandle, std::shared_ptr<AudioData>> mAudioMap;
 
 	struct PlayingInfo {
 		AudioHandle handle;
 		IXAudio2SourceVoice* pSource;
 	};
-	std::vector<PlayingInfo> playingList;
+	std::vector<PlayingInfo> mPlayingList;
 
 	RAudio() {};
 	~RAudio() = default;

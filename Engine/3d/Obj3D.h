@@ -10,11 +10,11 @@ protected:
 public:
 	virtual ~Obj3D() {}
 
-	Transform transform;
+	Transform mTransform;
 
 	void SetParent(Obj3D* parent) {
 		mParent = parent;
-		this->transform.parent = &parent->transform;
+		mTransform.parent = &parent->mTransform;
 	}
 
 	const Obj3D* GetParent() {

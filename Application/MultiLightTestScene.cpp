@@ -6,19 +6,19 @@
 MultiLightTestScene::MultiLightTestScene()
 {
 	obj = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "NonSmoothVic", false));
-	obj.transform.position = { -1, 0, 0 };
-	obj.transform.scale = { 0.2f, 0.2f, 0.2f };
-	obj.transform.UpdateMatrix();
+	obj.mTransform.position = { -1, 0, 0 };
+	obj.mTransform.scale = { 0.2f, 0.2f, 0.2f };
+	obj.mTransform.UpdateMatrix();
 
 	obj2 = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "SmoothVic", true));
-	obj2.transform.position = { 1, 0, 0 };
-	obj2.transform.scale = { 0.2f, 0.2f, 0.2f };
-	obj2.transform.UpdateMatrix();
+	obj2.mTransform.position = { 1, 0, 0 };
+	obj2.mTransform.scale = { 0.2f, 0.2f, 0.2f };
+	obj2.mTransform.UpdateMatrix();
 
 	ground = ModelObj(Model::Load("./Resources/Model/Ground", "ground.obj", "ground", true));
-	ground.transform.position = { 0, -1, 0 };
-	ground.transform.scale = { 10, 1, 10 };
-	ground.transform.UpdateMatrix();
+	ground.mTransform.position = { 0, -1, 0 };
+	ground.mTransform.scale = { 10, 1, 10 };
+	ground.mTransform.UpdateMatrix();
 
 	light.SetAmbientColor({ 0.1f, 0.1f, 0.1f });
 	light.SetDirectionalLightActive(0, true);
@@ -34,8 +34,8 @@ MultiLightTestScene::MultiLightTestScene()
 
 void MultiLightTestScene::Init()
 {
-	Camera::nowCamera = &camera;
-	LightGroup::nowLight = &light;
+	Camera::sNowCamera = &camera;
+	LightGroup::sNowLight = &light;
 }
 
 void MultiLightTestScene::Update()
@@ -108,18 +108,18 @@ void MultiLightTestScene::Update()
 		ImGui::End();
 	}
 
-	obj.transform.rotation.z += Util::AngleToRadian(1);
-	obj2.transform.rotation.z += Util::AngleToRadian(1);
+	obj.mTransform.rotation.z += Util::AngleToRadian(1);
+	obj2.mTransform.rotation.z += Util::AngleToRadian(1);
 
-	obj.transform.UpdateMatrix();
-	obj2.transform.UpdateMatrix();
+	obj.mTransform.UpdateMatrix();
+	obj2.mTransform.UpdateMatrix();
 
 	light.Update();
 	camera.Update();
 
-	obj.TransferBuffer(Camera::nowCamera->viewProjection);
-	obj2.TransferBuffer(Camera::nowCamera->viewProjection);
-	ground.TransferBuffer(Camera::nowCamera->viewProjection);
+	obj.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	obj2.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	ground.TransferBuffer(Camera::sNowCamera->mViewProjection);
 }
 
 void MultiLightTestScene::Draw()

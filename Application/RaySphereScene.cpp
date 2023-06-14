@@ -9,24 +9,24 @@ RaySphereScene::RaySphereScene()
 	ray = ModelObj(Model::Load("./Resources/Model/", "Cube.obj", "Cube", false));
 	sphere2 = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere2", true));
 
-	sphere.transform.position = { 0, 5, 0 };
-	sphere.transform.scale = { 0.1f, 0.1f, 0.1f };
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.position = { 0, 5, 0 };
+	sphere.mTransform.scale = { 0.1f, 0.1f, 0.1f };
+	sphere.mTransform.UpdateMatrix();
 
-	sphere2.transform.position = { 0, 0, 0 };
-	sphere2.transform.UpdateMatrix();
+	sphere2.mTransform.position = { 0, 0, 0 };
+	sphere2.mTransform.UpdateMatrix();
 
 	colRay = { {0, 5, 0}, {0, -1, 0} };
 
-	camera.viewProjection.eye = { 0, 3, -10 };
-	camera.viewProjection.target = { 0, 3, 0 };
-	camera.viewProjection.UpdateMatrix();
+	camera.mViewProjection.mEye = { 0, 3, -10 };
+	camera.mViewProjection.mTarget = { 0, 3, 0 };
+	camera.mViewProjection.UpdateMatrix();
 }
 
 void RaySphereScene::Init()
 {
-	Camera::nowCamera = &camera;
-	LightGroup::nowLight = &light;
+	Camera::sNowCamera = &camera;
+	LightGroup::sNowLight = &light;
 }
 
 void RaySphereScene::Update()
@@ -42,7 +42,7 @@ void RaySphereScene::Update()
 
 		if (ImGui::Button("Reset")) {
 			colRay.start = { 0, 5, 0 };
-			sphere2.transform.position = { 0, 0, 0 };
+			sphere2.mTransform.position = { 0, 0, 0 };
 			radius = 1;
 		}
 
@@ -52,7 +52,7 @@ void RaySphereScene::Update()
 		ImGui::DragFloat3("Position##RayPos", &colRay.start.x, 0.01f);
 
 		ImGui::Text("Sphere");
-		ImGui::DragFloat3("Position##SpherePos", &sphere2.transform.position.x, 0.01f);
+		ImGui::DragFloat3("Position##SpherePos", &sphere2.mTransform.position.x, 0.01f);
 		ImGui::DragFloat("Radius", &radius, 0.01f);
 
 		ImGui::End();
@@ -67,44 +67,44 @@ void RaySphereScene::Update()
 		}
 	}
 
-	sphere.transform.position = colRay.start;
-	sphere.transform.UpdateMatrix();
+	sphere.mTransform.position = colRay.start;
+	sphere.mTransform.UpdateMatrix();
 
-	colSphere.pos = sphere2.transform.position;
+	colSphere.pos = sphere2.mTransform.position;
 	colSphere.r = radius;
-	sphere2.transform.scale = { radius, radius, radius };
-	sphere2.transform.UpdateMatrix();
+	sphere2.mTransform.scale = { radius, radius, radius };
+	sphere2.mTransform.UpdateMatrix();
 
 	float dis = 0;
 	Vector3 inter;
 	if (ColPrimitive3D::CheckRayToSphere(colRay, colSphere, &dis, &inter)) {
-		sphere.tuneMaterial.color = { 1, 0, 0, 1 };
-		sphere2.tuneMaterial.color = { 1, 0, 0, 1 };
-		ray.tuneMaterial.color = { 0, 0, 1, 1 };
-		ray.transform.position = colRay.start;
-		ray.transform.position += colRay.dir * dis / 2.0f;
-		ray.transform.scale = { 0.1f, dis, 0.1f };
+		sphere.mTuneMaterial.mColor = { 1, 0, 0, 1 };
+		sphere2.mTuneMaterial.mColor = { 1, 0, 0, 1 };
+		ray.mTuneMaterial.mColor = { 0, 0, 1, 1 };
+		ray.mTransform.position = colRay.start;
+		ray.mTransform.position += colRay.dir * dis / 2.0f;
+		ray.mTransform.scale = { 0.1f, dis, 0.1f };
 	}
 	else {
-		sphere.tuneMaterial.color = { 1, 1, 1, 1 };
-		sphere2.tuneMaterial.color = { 1, 1, 1, 1 };
-		ray.tuneMaterial.color = { 1, 1, 1, 1 };
-		ray.transform.position = colRay.start;
-		ray.transform.position += colRay.dir * 50;
-		ray.transform.scale = { 0.1f, 100, 0.1f };
+		sphere.mTuneMaterial.mColor = { 1, 1, 1, 1 };
+		sphere2.mTuneMaterial.mColor = { 1, 1, 1, 1 };
+		ray.mTuneMaterial.mColor = { 1, 1, 1, 1 };
+		ray.mTransform.position = colRay.start;
+		ray.mTransform.position += colRay.dir * 50;
+		ray.mTransform.scale = { 0.1f, 100, 0.1f };
 	}
-	ray.transform.UpdateMatrix();
+	ray.mTransform.UpdateMatrix();
 
 	light.Update();
-	sphere.TransferBuffer(Camera::nowCamera->viewProjection);
-	ray.TransferBuffer(Camera::nowCamera->viewProjection);
-	sphere2.TransferBuffer(Camera::nowCamera->viewProjection);
+	sphere.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	ray.TransferBuffer(Camera::sNowCamera->mViewProjection);
+	sphere2.TransferBuffer(Camera::sNowCamera->mViewProjection);
 }
 
 void RaySphereScene::Draw()
 {
-	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().ptr.Get());
-	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().ptr.Get());
+	RDirectX::GetCommandList()->SetPipelineState(RDirectX::GetDefPipeline().mPtr.Get());
+	RDirectX::GetCommandList()->SetGraphicsRootSignature(RDirectX::GetDefRootSignature().mPtr.Get());
 
 	sphere.Draw();
 	ray.Draw();

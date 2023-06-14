@@ -12,21 +12,21 @@
 class Sprite
 {
 public:
-	Material material;
-	Transform transform;
+	Material mMaterial;
+	Transform mTransform;
 
 private:
-	bool change = false;
+	bool mChangeFlag = false;
 	TextureHandle mTexture;
-	Vector2 srcPos = { 0, 0 };
-	Vector2 size = { 0, 0 };
+	Vector2 mSrcPos = { 0, 0 };
+	Vector2 mSize = { 0, 0 };
 	Vector2 mAnchor = { 0.5f, 0.5f };
 
-	SRVertexBuffer vertBuff;
-	SRIndexBuffer indexBuff;
-	SRConstBuffer<MaterialBuffer> materialBuff;
-	SRConstBuffer<TransformBuffer> transformBuff;
-	SRConstBuffer<ViewProjectionBuffer> viewProjectionBuff;
+	SRVertexBuffer mVertBuff;
+	SRIndexBuffer mIndexBuff;
+	SRConstBuffer<MaterialBuffer> mMaterialBuff;
+	SRConstBuffer<TransformBuffer> mTransformBuff;
+	SRConstBuffer<ViewProjectionBuffer> mViewProjectionBuff;
 
 	//’¸“_‚ð˜M‚é
 	void UpdateVertex();
@@ -68,11 +68,11 @@ public:
 	}
 
 	RootSignature GetRootSignature() {
-		return rootSignature;
+		return mRootSignature;
 	}
 
 	GraphicsPipeline GetGraphicsPipeline() {
-		return pipelineState;
+		return mPipelineState;
 	}
 
 private:
@@ -85,7 +85,7 @@ private:
 
 	void Init();
 
-	RootSignature rootSignature;
-	GraphicsPipeline pipelineState;
+	RootSignature mRootSignature;
+	GraphicsPipeline mPipelineState;
 };
 

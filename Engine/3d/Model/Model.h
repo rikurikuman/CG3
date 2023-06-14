@@ -21,13 +21,13 @@ typedef std::string ModelHandle;
 class ModelData
 {
 public:
-	std::string name;
-	VertexBuffer vertexBuff;
-	IndexBuffer indexBuff;
+	std::string mName;
+	VertexBuffer mVertBuff;
+	IndexBuffer mIndexBuff;
 
-	std::vector<VertexPNU> vertexs;
-	std::vector<uint32_t> indices;
-	Material material;
+	std::vector<VertexPNU> mVertices;
+	std::vector<uint32_t> mIndices;
+	Material mMaterial;
 
 	void CalcSmoothedNormals();
 
@@ -38,9 +38,9 @@ public:
 class Model
 {
 public:
-	std::string name;
-	std::string path;
-	std::vector<std::shared_ptr<ModelData>> data;
+	std::string mName;
+	std::string mPath;
+	std::vector<std::shared_ptr<ModelData>> mData;
 
 	static ModelHandle Load(std::string filepath, std::string filename, ModelHandle handle = "", bool smooth = false);
 	static ModelHandle Register(ModelHandle handle, Model model);
@@ -62,8 +62,8 @@ public:
 
 	static Model* Get(ModelHandle handle);
 
-	std::map<ModelHandle, Model> modelMap;
-	std::recursive_mutex mutex;
+	std::map<ModelHandle, Model> mModelMap;
+	std::recursive_mutex mMutex;
 
 private:
 	void Init();

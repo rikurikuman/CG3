@@ -18,10 +18,10 @@ void Renderer::Execute()
 	RenderTarget::SetToTexture("RenderingImage");
 	RenderTarget::GetRenderTargetTexture("RenderingImage")->ClearRenderTarget();
 	RenderTarget::GetRenderTargetTexture("RenderingImage")->ClearDepthStencil();
-	for (auto itr = instance->stages.begin(); itr != instance->stages.end(); itr++) {
+	for (auto itr = instance->mStages.begin(); itr != instance->mStages.end(); itr++) {
 		IRenderStage* stage = itr->get();
-		if (stage->enabled) stage->Render();
-		stage->orders.clear();
+		if (stage->mFlagEnabled) stage->Render();
+		stage->mOrders.clear();
 	}
 }
 
@@ -58,19 +58,19 @@ void Renderer::DrawCall(std::string stageID, RenderOrder order)
 		return;
 	}
 
-	for (auto itr = instance->stages.begin(); itr != instance->stages.end(); itr++) {
+	for (auto itr = instance->mStages.begin(); itr != instance->mStages.end(); itr++) {
 		IRenderStage* stage = itr->get();
 		if (stage->GetTypeIndentifier() == stageID) {
 			//未設定の項目をレンダラーの設定で自動で補完する
 			//ここでも未設定のままになった場合はレンダーステージに任せる
-			if(order.renderTargets.empty()) order.renderTargets = instance->renderTargets;
-			if(order.primitiveTopology == D3D_PRIMITIVE_TOPOLOGY_UNDEFINED) order.primitiveTopology = instance->primitiveTopology;
-			if(order.viewports.empty()) order.viewports = instance->viewports;
-			if(order.scissorRects.empty()) order.scissorRects = instance->scissorRects;
-			if(order.rootSignature == nullptr) order.rootSignature = instance->rootSignature;
-			if(order.pipelineState == nullptr) order.pipelineState = instance->pipelineState;
+			if(order.renderTargets.empty()) order.renderTargets = instance->mRenderTargets;
+			if(order.primitiveTopology == D3D_PRIMITIVE_TOPOLOGY_UNDEFINED) order.primitiveTopology = instance->mPrimitiveTopology;
+			if(order.viewports.empty()) order.viewports = instance->mViewports;
+			if(order.scissorRects.empty()) order.scissorRects = instance->mScissorRects;
+			if(order.mRootSignature == nullptr) order.mRootSignature = instance->mRootSignature;
+			if(order.pipelineState == nullptr) order.pipelineState = instance->mPipelineState;
 
-			stage->orders.emplace_back(std::move(order));
+			stage->mOrders.emplace_back(std::move(order));
 			return;
 		}
 	}
@@ -91,10 +91,10 @@ void Renderer::RemoveRenderStage(std::string id)
 		return;
 	}
 
-	for (auto itr = instance->stages.begin(); itr != instance->stages.end(); itr++) {
+	for (auto itr = instance->mStages.begin(); itr != instance->mStages.end(); itr++) {
 		IRenderStage* stage = itr->get();
 		if (stage->GetTypeIndentifier() == id) {
-			instance->stages.erase(itr);
+			instance->mStages.erase(itr);
 			return;
 		}
 	}
@@ -115,7 +115,7 @@ IRenderStage* Renderer::GetRenderStage(std::string id)
 		return nullptr;
 	}
 
-	for (auto itr = instance->stages.begin(); itr != instance->stages.end(); itr++) {
+	for (auto itr = instance->mStages.begin(); itr != instance->mStages.end(); itr++) {
 		IRenderStage* stage = itr->get();
 		if (stage->GetTypeIndentifier() == id) {
 			return stage;
@@ -144,10 +144,10 @@ void Renderer::SetAllParamaterToAuto()
 	scissorRect.top = 0;
 	scissorRect.bottom = scissorRect.top + RWindow::GetHeight();
 
-	GetInstance()->viewports.clear();
-	GetInstance()->viewports.push_back(viewport);
-	GetInstance()->scissorRects.clear();
-	GetInstance()->scissorRects.push_back(scissorRect);
+	GetInstance()->mViewports.clear();
+	GetInstance()->mViewports.push_back(viewport);
+	GetInstance()->mScissorRects.clear();
+	GetInstance()->mScissorRects.push_back(scissorRect);
 }
 
 void Renderer::Init()

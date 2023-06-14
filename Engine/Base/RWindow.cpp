@@ -14,23 +14,23 @@ RWindow* RWindow::GetInstance() {
 
 void RWindow::InitInternal()
 {
-	wndClassEx.cbSize = sizeof(WNDCLASSEX);
-	wndClassEx.lpfnWndProc = (WNDPROC)WindowProc;
-	wndClassEx.lpszClassName = windowName.c_str();
-	wndClassEx.hInstance = GetModuleHandle(nullptr);
-	wndClassEx.hCursor = LoadCursor(NULL, IDC_ARROW);
+	mWndClassEx.cbSize = sizeof(WNDCLASSEX);
+	mWndClassEx.lpfnWndProc = (WNDPROC)WindowProc;
+	mWndClassEx.lpszClassName = mWindowName.c_str();
+	mWndClassEx.hInstance = GetModuleHandle(nullptr);
+	mWndClassEx.hCursor = LoadCursor(NULL, IDC_ARROW);
 	
-	if (iconID != 0) {
-		wndClassEx.hIcon = LoadIcon(wndClassEx.hInstance, MAKEINTRESOURCE(iconID));
-		wndClassEx.hIconSm = LoadIcon(wndClassEx.hInstance, MAKEINTRESOURCE(iconID));
+	if (mIconID != 0) {
+		mWndClassEx.hIcon = LoadIcon(mWndClassEx.hInstance, MAKEINTRESOURCE(mIconID));
+		mWndClassEx.hIconSm = LoadIcon(mWndClassEx.hInstance, MAKEINTRESOURCE(mIconID));
 	}
 
-	RegisterClassEx(&wndClassEx);
-	RECT wrc = { 0, 0, windowWidth, windowHeight };
+	RegisterClassEx(&mWndClassEx);
+	RECT wrc = { 0, 0, mWindowWidth, mWindowHeight };
 	AdjustWindowRect(&wrc, WS_OVERLAPPEDWINDOW, false);
 
-	wndHandle = CreateWindow(wndClassEx.lpszClassName,
-		wndClassEx.lpszClassName,
+	mWndHandle = CreateWindow(mWndClassEx.lpszClassName,
+		mWndClassEx.lpszClassName,
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -38,18 +38,18 @@ void RWindow::InitInternal()
 		wrc.bottom - wrc.top,
 		nullptr, //親ウィンドウハンドル
 		nullptr, //メニューハンドル
-		wndClassEx.hInstance, //呼び出しアプリケーションハンドル
+		mWndClassEx.hInstance, //呼び出しアプリケーションハンドル
 		nullptr); //オプション
 
-	ShowWindow(wndHandle, SW_SHOW);
+	ShowWindow(mWndHandle, SW_SHOW);
 }
 
 void RWindow::ProcessMessage()
 {
 	RWindow* instance = GetInstance();
-	if (PeekMessage(&instance->msg, nullptr, 0, 0, PM_REMOVE)) {
-		TranslateMessage(&instance->msg); //キー入力メッセージ処理
-		DispatchMessage(&instance->msg);
+	if (PeekMessage(&instance->mMsg, nullptr, 0, 0, PM_REMOVE)) {
+		TranslateMessage(&instance->mMsg); //キー入力メッセージ処理
+		DispatchMessage(&instance->mMsg);
 	}
 }
 

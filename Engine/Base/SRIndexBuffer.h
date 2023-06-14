@@ -11,46 +11,46 @@ private:
 		SRBufferPtr buff;
 	};
 
-	static std::recursive_mutex mutex;
+	static std::recursive_mutex mMutex;
 
 public:
 	SRIndexBuffer() {};
 
 	~SRIndexBuffer() {
-		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
-		std::lock_guard<std::recursive_mutex> lock2(mutex);
-		if (data != nullptr) {
-			data->count--;
-			if (data->count == 0) {
-				SRBufferAllocator::Free(data->buff);
+		std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->sMutex);
+		std::lock_guard<std::recursive_mutex> lock2(mMutex);
+		if (mData != nullptr) {
+			mData->count--;
+			if (mData->count == 0) {
+				SRBufferAllocator::Free(mData->buff);
 			}
 		}
 	}
 
 	//ÉRÉsÅ[ëŒçÙ
 	SRIndexBuffer(const SRIndexBuffer& o) {
-		std::lock_guard<std::recursive_mutex> lock(mutex);
-		if (data != nullptr) {
-			data->count--;
-			if (data->count == 0) {
-				SRBufferAllocator::Free(data->buff);
+		std::lock_guard<std::recursive_mutex> lock(mMutex);
+		if (mData != nullptr) {
+			mData->count--;
+			if (mData->count == 0) {
+				SRBufferAllocator::Free(mData->buff);
 			}
 		}
-		data = o.data;
-		if (data != nullptr) data->count++;
+		mData = o.mData;
+		if (mData != nullptr) mData->count++;
 	}
 
 	SRIndexBuffer& operator=(const SRIndexBuffer& o) {
-		std::lock_guard<std::recursive_mutex> lock(mutex);
+		std::lock_guard<std::recursive_mutex> lock(mMutex);
 		if (this != &o) {
-			if (data != nullptr) {
-				data->count--;
-				if (data->count == 0) {
-					SRBufferAllocator::Free(data->buff);
+			if (mData != nullptr) {
+				mData->count--;
+				if (mData->count == 0) {
+					SRBufferAllocator::Free(mData->buff);
 				}
 			}
-			data = o.data;
-			if (data != nullptr) data->count++;
+			mData = o.mData;
+			if (mData != nullptr) mData->count++;
 		}
 		return *this;
 	}
@@ -62,8 +62,8 @@ public:
 	void Init(std::vector<uint32_t> list);
 
 	bool IsValid() {
-		std::lock_guard<std::recursive_mutex> lock(mutex);
-		return this->data != nullptr && this->data->buff.GetRegionPtr() != nullptr && this->data->buff.GetRegionPtr()->region != nullptr;
+		std::lock_guard<std::recursive_mutex> lock(mMutex);
+		return mData != nullptr && mData->buff.GetRegionPtr() != nullptr && mData->buff.GetRegionPtr()->region != nullptr;
 	}
 
 	operator bool() {
@@ -74,5 +74,5 @@ public:
 	uint32_t GetIndexCount();
 
 private:
-	std::shared_ptr<IndexBufferData> data = nullptr;
+	std::shared_ptr<IndexBufferData> mData = nullptr;
 };

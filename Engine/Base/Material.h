@@ -16,18 +16,18 @@ struct MaterialBuffer {
 class Material
 {
 public:
-	std::string name; //おなまえドットコム
-	TextureHandle texture; //テクスチャ
-	Color color = {1, 1, 1, 1}; //色(RGBA)
-	Vector3 ambient = {1, 1, 1}; //環境光
-	Vector3 diffuse = {0, 0, 0}; //拡散反射光
-	Vector3 specular = {0, 0, 0}; //鏡面反射光
+	std::string mName; //おなまえドットコム
+	TextureHandle mTexture; //テクスチャ
+	Color mColor = {1, 1, 1, 1}; //色(RGBA)
+	Vector3 mAmbient = {1, 1, 1}; //環境光
+	Vector3 mDiffuse = {0, 0, 0}; //拡散反射光
+	Vector3 mSpecular = {0, 0, 0}; //鏡面反射光
 
 	Material() {}
 	Material(bool allOne) {
 		if (allOne) {
-			diffuse = { 1, 1, 1 };
-			specular = { 1, 1, 1 };
+			mDiffuse = { 1, 1, 1 };
+			mSpecular = { 1, 1, 1 };
 		}
 	}
 	bool operator==(const Material& o) const;

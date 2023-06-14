@@ -8,8 +8,8 @@ ModelScene::ModelScene()
 
 void ModelScene::Init()
 {
-	Camera::nowCamera = &camera;
-	LightGroup::nowLight = &light;
+	Camera::sNowCamera = &camera;
+	LightGroup::sNowLight = &light;
 }
 
 void ModelScene::Update()
@@ -39,14 +39,14 @@ void ModelScene::Update()
 		ImGui::End();
 	}
 
-	model.transform.rotation = { Util::AngleToRadian(rot[0]), Util::AngleToRadian(rot[1]), Util::AngleToRadian(rot[2]) };
-	model.transform.scale = { scale[0], scale[1], scale[2]};
-	model.transform.UpdateMatrix();
+	model.mTransform.rotation = { Util::AngleToRadian(rot[0]), Util::AngleToRadian(rot[1]), Util::AngleToRadian(rot[2]) };
+	model.mTransform.scale = { scale[0], scale[1], scale[2]};
+	model.mTransform.UpdateMatrix();
 
 	light.Update();
 	camera.Update();
 
-	model.TransferBuffer(camera.viewProjection);
+	model.TransferBuffer(camera.mViewProjection);
 }
 
 void ModelScene::Draw()

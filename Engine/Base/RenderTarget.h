@@ -50,7 +50,7 @@ private:
 	void CreateHeaps();
 
 	static const uint32_t numDescriptors = 256;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap;
 
 	std::vector<std::string> currentRenderTargets;

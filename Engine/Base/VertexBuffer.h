@@ -32,7 +32,7 @@ public:
 	//Vertex(PosNormalUv)の配列とその大きさで頂点バッファを更新する
 	void Update(VertexPNU* list, uint32_t size);
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> buff = nullptr;
-	D3D12_VERTEX_BUFFER_VIEW view{};
+	Microsoft::WRL::ComPtr<ID3D12Resource> mBuff = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW mView{};
 };
 

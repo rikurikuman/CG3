@@ -18,5 +18,5 @@ void Transform::UpdateMatrix()
 
 void Transform::Transfer(TransformBuffer* target)
 {
-	target->matrix = this->matrix;
+	target->matrix = matrix;
 }
