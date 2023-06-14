@@ -50,8 +50,8 @@
 using namespace std;
 using namespace DirectX;
 
-const int WIN_WIDTH = 1280;
-const int WIN_HEIGHT = 720;
+const int32_t WIN_WIDTH = 1280;
+const int32_t WIN_HEIGHT = 720;
 
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -195,7 +195,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::Text("(Raw : %lld / %lld)", buffUsingSize, buffTotalSize);
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
-			static int sceneNum = 0;
+			static int32_t sceneNum = 0;
 			const char* scenes[] = { "MainTest", "Sprite", "Model", "Sound", "Colliders" };
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();

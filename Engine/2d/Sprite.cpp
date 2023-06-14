@@ -65,7 +65,7 @@ void Sprite::SetAnchor(Vector2 anchor)
 	change = true;
 }
 
-void Sprite::SetTexRect(int srcX, int srcY, int width, int height)
+void Sprite::SetTexRect(int32_t srcX, int32_t srcY, int32_t width, int32_t height)
 {
 	srcPos = { static_cast<float>(srcX), static_cast<float>(srcY) };
 	size = { static_cast<float>(width), static_cast<float>(height) };

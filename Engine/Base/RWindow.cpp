@@ -70,9 +70,9 @@ Vector2 RWindow::GetMousePos()
 	return Vector2((float)point.x, (float)point.y);
 }
 
-void RWindow::SetMousePos(int posX, int posY)
+void RWindow::SetMousePos(int32_t posX, int32_t posY)
 {
-	int xPos_absolute, yPos_absolute;
+	int32_t xPos_absolute, yPos_absolute;
 
 	WINDOWINFO windowInfo{};
 
@@ -87,7 +87,7 @@ void RWindow::SetMousePos(int posX, int posY)
 	SetCursorPos(xPos_absolute, yPos_absolute);
 }
 
-void RWindow::SetAbsMousePos(int posX, int posY)
+void RWindow::SetAbsMousePos(int32_t posX, int32_t posY)
 {
 	SetCursorPos(posX, posY);
 }

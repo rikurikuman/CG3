@@ -208,8 +208,8 @@ Quaternion Quaternion::FromRotationMatrix(const Matrix4& mat)
 	elem[2] = -mat[0][0] - mat[1][1] + mat[2][2] + 1;
 	elem[3] =  mat[0][0] + mat[1][1] + mat[2][2] + 1;
 
-	int biggestIndex = 0;
-	for (int i = 1; i < 4; i++) {
+	int32_t biggestIndex = 0;
+	for (int32_t i = 1; i < 4; i++) {
 		if (elem[i] > elem[biggestIndex]) {
 			biggestIndex = i;
 		}

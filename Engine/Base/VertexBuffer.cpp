@@ -1,7 +1,7 @@
 #include "VertexBuffer.h"
 #include "RDirectX.h"
 
-VertexBuffer::VertexBuffer(VertexP* list, unsigned int size)
+VertexBuffer::VertexBuffer(VertexP* list, uint32_t size)
 {
 	Init(list, size);
 }
@@ -11,7 +11,7 @@ VertexBuffer::VertexBuffer(std::vector<VertexP> list)
 	Init(list);
 }
 
-VertexBuffer::VertexBuffer(VertexPNU* list, unsigned int size)
+VertexBuffer::VertexBuffer(VertexPNU* list, uint32_t size)
 {
 	Init(list, size);
 }
@@ -21,7 +21,7 @@ VertexBuffer::VertexBuffer(std::vector<VertexPNU> list)
 	Init(list);
 }
 
-void VertexBuffer::Init(VertexP* list, unsigned int size)
+void VertexBuffer::Init(VertexP* list, uint32_t size)
 {
 	HRESULT result;
 	D3D12_HEAP_PROPERTIES heapProp{};
@@ -111,7 +111,7 @@ void VertexBuffer::Init(std::vector<VertexP> list)
 	view.StrideInBytes = sizeof(VertexP); //頂点一個のサイズ
 }
 
-void VertexBuffer::Init(VertexPNU* list, unsigned int size)
+void VertexBuffer::Init(VertexPNU* list, uint32_t size)
 {
 	HRESULT result;
 	D3D12_HEAP_PROPERTIES heapProp{};
@@ -201,7 +201,7 @@ void VertexBuffer::Init(std::vector<VertexPNU> list)
 	view.StrideInBytes = sizeof(VertexPNU); //頂点一個のサイズ
 }
 
-void VertexBuffer::Update(VertexPNU* list, unsigned int size)
+void VertexBuffer::Update(VertexPNU* list, uint32_t size)
 {
 	HRESULT result;
 

@@ -36,11 +36,11 @@ public:
 	}
 
 	//マウスクリックされているか
-	static bool GetMouseClick(int buttonNum);
+	static bool GetMouseClick(int32_t buttonNum);
 	//マウスクリックが離れた瞬間か
-	static bool GetMouseClickUp(int buttonNum);
+	static bool GetMouseClickUp(int32_t buttonNum);
 	//マウスクリックがされた瞬間か
-	static bool GetMouseClickDown(int buttonNum);
+	static bool GetMouseClickDown(int32_t buttonNum);
 
 	//マウスの位置を取得する
 	static Vector2 GetMousePos();

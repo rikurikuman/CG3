@@ -71,7 +71,7 @@ void RInput::Update()
 	instance->mouse->Acquire();
 
 	//‘SƒL[‚Ì“ü—Íó‘Ô‚ğæ“¾‚·‚é
-	for (int i = 0; i < 256; i++) {
+	for (int32_t i = 0; i < 256; i++) {
 		instance->oldKeyState[i] = instance->keyState[i];
 	}
 	instance->oldMouseState = instance->mouseState;
@@ -124,17 +124,17 @@ bool RInput::GetKeyDown(unsigned char key)
 	return GetInstance()->keyState[key] && !GetInstance()->oldKeyState[key];
 }
 
-bool RInput::GetMouseClick(int buttonNum)
+bool RInput::GetMouseClick(int32_t buttonNum)
 {
 	return (GetInstance()->mouseState.rgbButtons[buttonNum] & 0x80) != 0;
 }
 
-bool RInput::GetMouseClickUp(int buttonNum)
+bool RInput::GetMouseClickUp(int32_t buttonNum)
 {
 	return (GetInstance()->mouseState.rgbButtons[buttonNum] & 0x80) == 0 && (GetInstance()->oldMouseState.rgbButtons[buttonNum] & 0x80) != 0;
 }
 
-bool RInput::GetMouseClickDown(int buttonNum)
+bool RInput::GetMouseClickDown(int32_t buttonNum)
 {
 	return (GetInstance()->mouseState.rgbButtons[buttonNum] & 0x80) != 0 && (GetInstance()->oldMouseState.rgbButtons[buttonNum] & 0x80) == 0;
 }

@@ -2,7 +2,7 @@
 
 std::recursive_mutex SRVertexBuffer::mutex;
 
-SRVertexBuffer::SRVertexBuffer(VertexP* list, unsigned int size)
+SRVertexBuffer::SRVertexBuffer(VertexP* list, uint32_t size)
 {
 	Init(list, size);
 }
@@ -12,7 +12,7 @@ SRVertexBuffer::SRVertexBuffer(std::vector<VertexP> list)
 	Init(list);
 }
 
-SRVertexBuffer::SRVertexBuffer(VertexPNU* list, unsigned int size)
+SRVertexBuffer::SRVertexBuffer(VertexPNU* list, uint32_t size)
 {
 	Init(list, size);
 }
@@ -22,7 +22,7 @@ SRVertexBuffer::SRVertexBuffer(std::vector<VertexPNU> list)
 	Init(list);
 }
 
-void SRVertexBuffer::Init(VertexP* list, unsigned int size)
+void SRVertexBuffer::Init(VertexP* list, uint32_t size)
 {
 	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
 	std::lock_guard<std::recursive_mutex> lock2(mutex);
@@ -74,7 +74,7 @@ void SRVertexBuffer::Init(std::vector<VertexP> list)
 	data->strideInBytes = sizeof(VertexP);
 }
 
-void SRVertexBuffer::Init(VertexPNU* list, unsigned int size)
+void SRVertexBuffer::Init(VertexPNU* list, uint32_t size)
 {
 	std::lock_guard<std::recursive_mutex> lock(SRBufferAllocator::GetInstance()->mutex);
 	std::lock_guard<std::recursive_mutex> lock2(mutex);
@@ -126,7 +126,7 @@ void SRVertexBuffer::Init(std::vector<VertexPNU> list)
 	data->strideInBytes = sizeof(VertexPNU);
 }
 
-void SRVertexBuffer::Update(VertexPNU* list, unsigned int size)
+void SRVertexBuffer::Update(VertexPNU* list, uint32_t size)
 {
 	std::lock_guard<std::recursive_mutex> lock(mutex);
 	if (data == nullptr || data->buff.GetRegionPtr() == nullptr) {

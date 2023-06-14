@@ -51,7 +51,7 @@ void MainTestScene::Update()
 	timer += TimeManager::deltaTime;
 	if (timer >= 0.01f) {
 		timer = 0;
-		for (int i = 0; i < 10; i++) {
+		for (int32_t i = 0; i < 10; i++) {
 			TestObj obj{};
 			obj.obj = ModelObj("Sphere");
 			obj.speed = Vector3(Util::GetRand(-1.0f, 1.0f), Util::GetRand(-1.0f, 1.0f), Util::GetRand(-1.0f, 1.0f));
@@ -94,7 +94,7 @@ void MainTestScene::Draw()
 
 	SimpleDrawer::DrawString(0, 0, 0, Util::StringFormat("Count:%d", testObjList.size()), { 1, 1, 1, 1 }, "", 20);
 
-	for (int i = 0; i < 10; i++) {
+	for (int32_t i = 0; i < 10; i++) {
 		//SimpleDrawer::DrawCircle(Util::GetRand(0, RWindow::GetWidth()), Util::GetRand(0, RWindow::GetHeight()), 5, Color(1, 0, 1, 1));
 	}
 }

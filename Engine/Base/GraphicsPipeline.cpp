@@ -70,7 +70,7 @@ void GraphicsPipeline::Create()
     _desc.PrimitiveTopologyType = desc.PrimitiveTopologyType;
     _desc.NumRenderTargets = desc.NumRenderTargets;
 
-    for (int i = 0; i < 8; i++) {
+    for (int32_t i = 0; i < 8; i++) {
         _desc.RTVFormats[i] = desc.RTVFormats[i];
     }
     

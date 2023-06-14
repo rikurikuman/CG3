@@ -52,18 +52,18 @@ FontTexture TextDrawer::GetFontTexture(std::wstring glyph, std::wstring fontType
 	DeleteObject(_font);
 	ReleaseDC(NULL, hdc);
 
-	int fontWidth = (gm.gmBlackBoxX + 3) / 4 * 4;
-	int fontHeight = size / fontWidth;
+	int32_t fontWidth = (gm.gmBlackBoxX + 3) / 4 * 4;
+	int32_t fontHeight = size / fontWidth;
 
-	int baseLineY = tm.tmAscent;
-	int glyphOriginY = 0;
+	int32_t baseLineY = tm.tmAscent;
+	int32_t glyphOriginY = 0;
 
 	if (useAlign) {
 		glyphOriginY = baseLineY - gm.gmptGlyphOrigin.y;
 		fontHeight = glyphOriginY + fontHeight;
 	}
 
-	int fontDataCount = fontWidth * fontHeight;
+	int32_t fontDataCount = fontWidth * fontHeight;
 
 #ifdef _DEBUG
 	OutputDebugString((wstring(L"fontWidth: ") + to_wstring(fontWidth) + L"(" + to_wstring(gm.gmBlackBoxX) + L")\n").c_str());

@@ -16,11 +16,11 @@ private:
 
 	LRESULT(*WindowProc)(HWND, UINT, WPARAM, LPARAM) = _DefWindowProc; //ウィンドウプロシージャへのポインタ
 
-	int windowWidth = 1280; //ウィンドウの幅
-	int windowHeight = 720; //ウィンドウの高さ
+	int32_t windowWidth = 1280; //ウィンドウの幅
+	int32_t windowHeight = 720; //ウィンドウの高さ
 	std::wstring windowName = L"DirectXGame";
 
-	unsigned int iconID = 0;
+	uint32_t iconID = 0;
 
 	WNDCLASSEX wndClassEx{};
 	HWND wndHandle;
@@ -33,7 +33,7 @@ public:
 	static void Init();
 	static RWindow* GetInstance();
 
-	static void SetWindowSize(const int width, const int height) {
+	static void SetWindowSize(const int32_t width, const int32_t height) {
 		GetInstance()->windowWidth = width;
 		GetInstance()->windowHeight = height;
 	}
@@ -42,15 +42,15 @@ public:
 		GetInstance()->windowName = name;
 	}
 
-	static void SetIcon(const int id) {
+	static void SetIcon(const int32_t id) {
 		GetInstance()->iconID = id;
 	}
 
-	static int GetWidth() {
+	static int32_t GetWidth() {
 		return GetInstance()->windowWidth;
 	}
 
-	static int GetHeight() {
+	static int32_t GetHeight() {
 		return GetInstance()->windowHeight;
 	}
 
@@ -77,7 +77,7 @@ public:
 	/// </summary>
 	/// <param name="posX">移動先X座標</param>
 	/// <param name="posY">移動先Y座標</param>
-	static void SetMousePos(int posX, int posY);
+	static void SetMousePos(int32_t posX, int32_t posY);
 
 	/// <summary>
 	/// マウスカーソル移動
@@ -85,7 +85,7 @@ public:
 	/// </summary>
 	/// <param name="posX">移動先X座標</param>
 	/// <param name="posY">移動先Y座標</param>
-	static void SetAbsMousePos(int posX, int posY);
+	static void SetAbsMousePos(int32_t posX, int32_t posY);
 
 	static void SetMouseHideFlag(bool hide);
 };

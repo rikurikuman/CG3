@@ -21,9 +21,9 @@ private:
 	float rot[3] = { 0, 0, 0 };
 	float scale[2] = { 1, 1 };
 	Vector2 anchor = { 0.5f, 0.5f };
-	int srcX = 0;
-	int srcY = 0;
-	int width = 1000;
-	int height = 1000;
+	int32_t srcX = 0;
+	int32_t srcY = 0;
+	int32_t width = 1000;
+	int32_t height = 1000;
 };
 

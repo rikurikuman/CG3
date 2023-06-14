@@ -4,7 +4,7 @@
 
 void ModelObj::TransferBuffer(ViewProjection viewprojection)
 {
-	int count = 0;
+	int32_t count = 0;
 	for (std::shared_ptr<ModelData> data : model->data) {
 		std::string name = data->material.name;
 		if (name.empty()) {

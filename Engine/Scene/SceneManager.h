@@ -25,7 +25,7 @@ private:
 		std::shared_ptr<std::future<bool>> future2 = nullptr;
 		std::shared_ptr<ISceneTransition> transition = nullptr;
 		std::shared_ptr<IScene> scene = nullptr;
-		int increment = 0;
+		int32_t increment = 0;
 	};
 
 	std::mutex mutex;

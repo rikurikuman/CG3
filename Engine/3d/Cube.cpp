@@ -4,22 +4,22 @@
 Cube::Cube(TextureHandle texture, Vector2 size, bool forceSize)
 {
 	this->size = size;
-	for (int i = 0; i < 6; i++) {
+	for (int32_t i = 0; i < 6; i++) {
 		faces[i].SetParent(this);
 		faces[i].SetTexture(texture);
 	}
 
-	for (int i = 0; i < 4; i++) {
+	for (int32_t i = 0; i < 4; i++) {
 		faces[i].SetSize(size, forceSize);
 	}
 
 	Vector2 fSize = faces[Direction::Front].GetSize();
 
-	for (int i = 4; i < 6; i++) {
+	for (int32_t i = 4; i < 6; i++) {
 		faces[i].SetSize({ fSize.x, fSize.x }, true);
 	}
 
-	for (int i = 0; i < 6; i++) {
+	for (int32_t i = 0; i < 6; i++) {
 		faces[i].SetParent(this);
 		faces[i].Init();
 	}
@@ -46,7 +46,7 @@ void Cube::SetTexture(TextureHandle texture, Direction direction)
 
 void Cube::SetAllTexture(TextureHandle texture)
 {
-	for (int i = 0; i < 6; i++) {
+	for (int32_t i = 0; i < 6; i++) {
 		faces[i].SetTexture(texture);
 		faces[i].Init();
 	}
@@ -54,14 +54,14 @@ void Cube::SetAllTexture(TextureHandle texture)
 
 void Cube::SetAllAlpha(float alpha)
 {
-	for (int i = 0; i < 6; i++) {
+	for (int32_t i = 0; i < 6; i++) {
 		faces[i].material.color.a = alpha;
 	}
 }
 
 void Cube::UpdateFaces()
 {
-	for (int i = 0; i < 6; i++) {
+	for (int32_t i = 0; i < 6; i++) {
 		faces[i].SetParent(this);
 		faces[i].transform.UpdateMatrix();
 	}
@@ -69,21 +69,21 @@ void Cube::UpdateFaces()
 
 void Cube::TransferBuffer(ViewProjection viewprojection)
 {
-	for (int i = 0; i < 6; i++) {
+	for (int32_t i = 0; i < 6; i++) {
 		faces[i].TransferBuffer(viewprojection);
 	}
 }
 
 void Cube::Draw()
 {
-	for (int i = 0; i < 6; i++) {
+	for (int32_t i = 0; i < 6; i++) {
 		faces[i].Draw();
 	}
 }
 
 void Cube::DrawCommands()
 {
-	for (int i = 0; i < 6; i++) {
+	for (int32_t i = 0; i < 6; i++) {
 		faces[i].DrawCommands();
 	}
 }

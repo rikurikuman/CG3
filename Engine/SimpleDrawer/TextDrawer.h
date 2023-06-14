@@ -24,7 +24,7 @@ public:
 
 	static bool LoadFontFromFile(std::string path);
 
-	//static void DrawString(int x, int y, std::string text, std::string fontTypeFace, UINT fontSize);
+	//static void DrawString(int32_t x, int32_t y, std::string text, std::string fontTypeFace, UINT fontSize);
 
 	GraphicsPipeline pipeline;
 

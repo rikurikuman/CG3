@@ -48,7 +48,7 @@ public:
 	/// <param name="srcY">切り出し位置の左上Y</param>
 	/// <param name="width">切り出し範囲サイズX</param>
 	/// <param name="height">切り出し範囲サイズY</param>
-	void SetTexRect(int srcX, int srcY, int width, int height);
+	void SetTexRect(int32_t srcX, int32_t srcY, int32_t width, int32_t height);
 
 	void Init();
 

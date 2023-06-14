@@ -40,10 +40,10 @@ void ModelData::CalcSmoothedNormals()
     }
 
     /*assert(indices.size() % 3 == 0);
-    for (unsigned int i = 0; i < indices.size() / 3; i++) {
-        unsigned int index0 = indices[i * 3 + 0];
-        unsigned int index1 = indices[i * 3 + 1];
-        unsigned int index2 = indices[i * 3 + 2];
+    for (uint32_t i = 0; i < indices.size() / 3; i++) {
+        uint32_t index0 = indices[i * 3 + 0];
+        uint32_t index1 = indices[i * 3 + 1];
+        uint32_t index2 = indices[i * 3 + 2];
 
         Vector3 p0 = vertexs[index0].pos;
         Vector3 p1 = vertexs[index1].pos;
@@ -166,26 +166,26 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
             vector<string> indexs = Util::StringSplit(line_stream.str(), " ");
 
             vector<VertexPNU> _vertices;
-            for (int i = 1; i < indexs.size(); i++) {
+            for (int32_t i = 1; i < indexs.size(); i++) {
                 vector<string> indexText = Util::StringSplit(indexs[i], "/");
 
                 bool ok = false;
                 VertexPNU vertex;
                 if (indexText.size() >= 1) {
-                    int index = atoi(indexText[0].c_str()) - 1;
+                    int32_t index = atoi(indexText[0].c_str()) - 1;
                     if (index >= 0 && vertPosList.size() > index) {
                         vertex.pos = vertPosList[index];
                         ok = true;
                     }
                 }
                 if (indexText.size() >= 2) {
-                    int index = atoi(indexText[1].c_str()) - 1;
+                    int32_t index = atoi(indexText[1].c_str()) - 1;
                     if (index >= 0 && vertTexcoordList.size() > index) {
                         vertex.uv = vertTexcoordList[index];
                     }
                 }
                 if (indexText.size() >= 3) {
-                    int index = atoi(indexText[2].c_str()) - 1;
+                    int32_t index = atoi(indexText[2].c_str()) - 1;
                     if (index >= 0 && vertNormalList.size() > index) {
                         vertex.normal = vertNormalList[index];
                     }
@@ -197,9 +197,9 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
             }
 
             if (_vertices.size() >= 3) {
-                for (int i = 0; i < _vertices.size() - 2; i++) {
-                    int indexB = 1 + i;
-                    int indexC = 2 + i;
+                for (int32_t i = 0; i < _vertices.size() - 2; i++) {
+                    int32_t indexB = 1 + i;
+                    int32_t indexC = 2 + i;
 
                     //‚ß‚¿‚á‚­‚¿‚ád‚¢‚©‚çˆê‰ñ”pŽ~
                     /*size_t a = Util::IndexOf(model.vertexs, _vertices[0]);

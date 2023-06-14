@@ -16,7 +16,7 @@ typedef std::string AudioHandle;
 struct ChunkHeader
 {
 	char id[4]; //ƒ`ƒƒƒ“ƒNID
-	int size;
+	int32_t size;
 };
 
 struct RiffHeader
@@ -44,7 +44,7 @@ struct WaveAudio : public AudioData
 {
 	WAVEFORMATEX wfex{};
 	std::vector<BYTE> buffer;
-	unsigned int bufferSize = 0;
+	uint32_t bufferSize = 0;
 };
 
 class RAudio

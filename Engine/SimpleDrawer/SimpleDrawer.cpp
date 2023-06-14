@@ -26,7 +26,7 @@ void SimpleDrawer::ClearData()
 }
 
 
-void SimpleDrawer::DrawLine(int x1, int y1, int x2, int y2, float layer, Color color, float thickness)
+void SimpleDrawer::DrawLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, float layer, Color color, float thickness)
 {
 	SimpleDrawer* instance = GetInstance();
 
@@ -42,7 +42,7 @@ void SimpleDrawer::DrawLine(int x1, int y1, int x2, int y2, float layer, Color c
 	instance->lineInfoMap[layer].push_back({ Vector2(static_cast<float>(x1), static_cast<float>(y1)), Vector2(static_cast<float>(x2), static_cast<float>(y2)), thickness, color });
 }
 
-void SimpleDrawer::DrawBox(int x1, int y1, int x2, int y2, float layer, Color color, bool fillFlag, float thickness)
+void SimpleDrawer::DrawBox(int32_t x1, int32_t y1, int32_t x2, int32_t y2, float layer, Color color, bool fillFlag, float thickness)
 {
 	SimpleDrawer* instance = GetInstance();
 
@@ -62,10 +62,10 @@ void SimpleDrawer::DrawBox(int x1, int y1, int x2, int y2, float layer, Color co
 	}
 	else {
 		//DrawLineによる描画
-		int adjX1 = static_cast<int>(x1 + thickness / 2.0f);
-		int adjX2 = static_cast<int>(x2 - thickness / 2.0f);
-		int adjY1 = static_cast<int>(y1 + thickness / 2.0f);
-		int adjY2 = static_cast<int>(y2 - thickness / 2.0f);
+		int32_t adjX1 = static_cast<int32_t>(x1 + thickness / 2.0f);
+		int32_t adjX2 = static_cast<int32_t>(x2 - thickness / 2.0f);
+		int32_t adjY1 = static_cast<int32_t>(y1 + thickness / 2.0f);
+		int32_t adjY2 = static_cast<int32_t>(y2 - thickness / 2.0f);
 
 		SimpleDrawer::DrawLine(x1, adjY1, x2, adjY1, layer, color, thickness); //左上から右上
 		SimpleDrawer::DrawLine(x1, adjY2, x2, adjY2, layer, color, thickness); //左下から右下
@@ -74,7 +74,7 @@ void SimpleDrawer::DrawBox(int x1, int y1, int x2, int y2, float layer, Color co
 	}
 }
 
-void SimpleDrawer::DrawCircle(int x, int y, int r, float layer, Color color, bool fillFlag, float thickness)
+void SimpleDrawer::DrawCircle(int32_t x, int32_t y, int32_t r, float layer, Color color, bool fillFlag, float thickness)
 {
 	SimpleDrawer* instance = GetInstance();
 
@@ -108,15 +108,15 @@ void SimpleDrawer::DrawCircle(int x, int y, int r, float layer, Color color, boo
 
 			std::vector<VertexP>& vertMin = instance->circleVertIndexMap[cDataMin].vert;
 			std::vector<VertexP>& vertMax = instance->circleVertIndexMap[cDataMax].vert;
-			for (int i = 0; i < vertMin.size() - 1; i++) {
+			for (int32_t i = 0; i < vertMin.size() - 1; i++) {
 				vertices.push_back(vertMin[i]);
 			}
-			for (int i = 0; i < vertMax.size() - 1; i++) {
+			for (int32_t i = 0; i < vertMax.size() - 1; i++) {
 				vertices.push_back(vertMax[i]);
 			}
 
-			int minI = 0;
-			int maxI = static_cast<int>(vertMin.size());
+			int32_t minI = 0;
+			int32_t maxI = static_cast<int32_t>(vertMin.size());
 			while (minI < vertMin.size() - 1 || maxI < vertMax.size()) {
 				if (minI < vertMin.size() - 1) {
 					indices.push_back(minI);
@@ -175,7 +175,7 @@ void SimpleDrawer::DrawAll() {
 		};
 		std::vector<vert> vertices;
 		std::vector<UINT> indices;
-		int index = 0;
+		int32_t index = 0;
 		for (DrawBoxInfo& info : itr->second) {
 			Matrix4 mat = Matrix4::OrthoGraphicProjection(
 				0, (float)RWindow::GetWidth(),
@@ -545,7 +545,7 @@ void SimpleDrawer::CalcCircleVertAndIndex(DrawCustomData cData) {
 	std::vector<UINT> indices;
 
 	float ang = 0;
-	for (int i = 0; i < 360; i++) {
+	for (int32_t i = 0; i < 360; i++) {
 		float plus = 360.0f / 360;
 		vertices.push_back(VertexP({ cData.radius * cosf(Util::AngleToRadian(ang)), cData.radius * sinf(Util::AngleToRadian(ang)), 0 }));
 		vertices.push_back(VertexP({ cData.radius * cosf(Util::AngleToRadian(ang + plus)), cData.radius * sinf(Util::AngleToRadian(ang + plus)), 0 }));
@@ -553,7 +553,7 @@ void SimpleDrawer::CalcCircleVertAndIndex(DrawCustomData cData) {
 	}
 	vertices.push_back(VertexP({ 0, 0, 0 }));
 
-	for (int i = 0; i < vertices.size() - 2; i++) {
+	for (int32_t i = 0; i < vertices.size() - 2; i++) {
 		indices.push_back(i);
 		indices.push_back(i + 1);
 		indices.push_back(static_cast<UINT>(vertices.size() - 1));
@@ -561,11 +561,11 @@ void SimpleDrawer::CalcCircleVertAndIndex(DrawCustomData cData) {
 
 	//sin, cosを使わない手法
 	//(intの計算ループの方が早いだろうから速度意識するならこっちか？)
-	/*int cx = 0;
-	int cy = r;
-	int d = 1 - r;
-	int dH = 3;
-	int dD = 5 - 2 * r;
+	/*int32_t cx = 0;
+	int32_t cy = r;
+	int32_t d = 1 - r;
+	int32_t dH = 3;
+	int32_t dD = 5 - 2 * r;
 
 	for (cx = 0; cx <= cy; cx++) {
 		if (d < 0) {
@@ -591,7 +591,7 @@ void SimpleDrawer::CalcCircleVertAndIndex(DrawCustomData cData) {
 	}
 	vertices.push_back(VertexP({ 0, 0, 0 }));
 
-	for (int i = 0; i < 8; i++) {
+	for (int32_t i = 0; i < 8; i++) {
 		UINT index = i;
 		UINT count = 0;
 

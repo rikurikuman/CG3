@@ -130,7 +130,7 @@ void IRenderStage::AllCall()
 			RDirectX::GetCommandList()->IASetIndexBuffer(&useIndexView);
 		}
 
-		int rootIndex = 0;
+		int32_t rootIndex = 0;
 		for (RootData& data : order.rootData) {
 			if (data.type == RootDataType::DESCRIPTOR_TABLE) {
 				RDirectX::GetCommandList()->SetGraphicsRootDescriptorTable(rootIndex, data.descriptor);

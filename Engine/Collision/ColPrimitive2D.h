@@ -51,7 +51,7 @@ namespace ColPrimitive2D {
 		bool hit = false;
 		bool hasHitPos = false;
 		Vector2 hitPos; //衝突点
-		int hitSide = -1; //当たった面(0から順に左右上下)
+		int32_t hitSide = -1; //当たった面(0から順に左右上下)
 		std::bitset<4> hitSideBit = 0; //当たった面(4ビット列、下位から左右上下)
 	};
 

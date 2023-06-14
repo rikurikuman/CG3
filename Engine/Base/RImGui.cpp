@@ -50,7 +50,7 @@ void RImGui::InitInternal()
     this->srvHeap = RDirectX::GetSRVHeap();
     ImGui_ImplDX12_Init(
         RDirectX::GetDevice(),
-        static_cast<int>(RDirectX::GetBackBufferSize()),
+        static_cast<int32_t>(RDirectX::GetBackBufferSize()),
         DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
         RDirectX::GetSRVHeap(),
         RDirectX::GetSRVHeap()->GetCPUDescriptorHandleForHeapStart(),

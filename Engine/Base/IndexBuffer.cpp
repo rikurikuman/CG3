@@ -1,17 +1,17 @@
 #include "IndexBuffer.h"
 #include "RDirectX.h"
 
-IndexBuffer::IndexBuffer(unsigned int* list, unsigned int size)
+IndexBuffer::IndexBuffer(uint32_t* list, uint32_t size)
 {
 	Init(list, size);
 }
 
-IndexBuffer::IndexBuffer(std::vector<unsigned int> list)
+IndexBuffer::IndexBuffer(std::vector<uint32_t> list)
 {
 	Init(list);
 }
 
-void IndexBuffer::Init(unsigned int* list, unsigned int size)
+void IndexBuffer::Init(uint32_t* list, uint32_t size)
 {
 	HRESULT result;
 	D3D12_HEAP_PROPERTIES heapProp{};
@@ -55,7 +55,7 @@ void IndexBuffer::Init(unsigned int* list, unsigned int size)
 	view.SizeInBytes = dataSize;
 }
 
-void IndexBuffer::Init(std::vector<unsigned int> list)
+void IndexBuffer::Init(std::vector<uint32_t> list)
 {
 	HRESULT result;
 	D3D12_HEAP_PROPERTIES heapProp{};

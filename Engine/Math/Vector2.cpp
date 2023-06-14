@@ -7,7 +7,7 @@ const float EPSILON = 0.000001f;
 
 Vector2::Vector2() : x(0), y(0) {}
 
-Vector2::Vector2(int x, int y) :
+Vector2::Vector2(int32_t x, int32_t y) :
 	x(static_cast<float>(x)),
 	y(static_cast<float>(y)) {}
 
