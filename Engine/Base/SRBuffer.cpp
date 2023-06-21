@@ -42,7 +42,7 @@ void SRBufferAllocator::Free(SRBufferPtr& ptr)
 
 	if (ptr.mPtr == nullptr || ptr.mPtr->region == nullptr) {
 #ifdef _DEBUG
-		OutputDebugStringA(Util::StringFormat("RKEngine WARNING: SRBufferAllocator::Free() : Attempted to free an invalid pointer(%p).\n", ptr.ptr).c_str());
+		OutputDebugStringA(Util::StringFormat("RKEngine WARNING: SRBufferAllocator::Free() : Attempted to free an invalid pointer(%p).\n", ptr.mPtr).c_str());
 #endif
 		return;
 	}

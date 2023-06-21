@@ -8,17 +8,17 @@
 
 using namespace std;
 
-bool ModelData::operator==(const ModelData& o) const
+bool ModelMesh::operator==(const ModelMesh& o) const
 {
     return mName == o.mName && mVertices == o.mVertices && mIndices == o.mIndices && mMaterial == o.mMaterial;
 }
 
-bool ModelData::operator!=(const ModelData& o) const
+bool ModelMesh::operator!=(const ModelMesh& o) const
 {
     return !(*this == o);
 }
 
-void ModelData::CalcSmoothedNormals()
+void ModelMesh::CalcSmoothedNormals()
 {
     map<Vector3, vector<Vector3>> smoothData;
 
@@ -106,7 +106,7 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
         return handle;
     }
     lock.unlock();
-    ModelData loading;
+    ModelMesh loading;
 
     vector<Material> materialList;
     vector<Vector3> vertPosList;
@@ -125,14 +125,14 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
         }
 
         if (key == "o") { //Ç®Ç»Ç‹Ç¶
-            if (loading != ModelData()) {
+            if (loading != ModelMesh()) {
                 if (smooth) loading.CalcSmoothedNormals();
                 loading.mVertBuff.Init(loading.mVertices);
                 loading.mIndexBuff.Init(loading.mIndices);
-                model.mData.emplace_back(std::make_shared<ModelData>(loading));
+                model.mData.emplace_back(std::make_shared<ModelMesh>(loading));
             }
 
-            loading = ModelData();
+            loading = ModelMesh();
             line_stream >> loading.mName;
         }
 
@@ -240,8 +240,8 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
                 if (smooth) loading.CalcSmoothedNormals();
                 loading.mVertBuff.Init(loading.mVertices);
                 loading.mIndexBuff.Init(loading.mIndices);
-                model.mData.emplace_back(std::make_shared<ModelData>(loading));
-                loading = ModelData();
+                model.mData.emplace_back(std::make_shared<ModelMesh>(loading));
+                loading = ModelMesh();
                 loading.mName = oldname + "_ChangeMaterial";
             }
             string mtlName;
@@ -257,7 +257,7 @@ ModelHandle Model::Load(string filepath, string filename, ModelHandle handle, bo
     if (smooth) loading.CalcSmoothedNormals();
     loading.mVertBuff.Init(loading.mVertices);
     loading.mIndexBuff.Init(loading.mIndices);
-    model.mData.emplace_back(std::make_shared<ModelData>(loading));
+    model.mData.emplace_back(std::make_shared<ModelMesh>(loading));
 
     lock.lock();
     instance->mModelMap[handle] = model;
@@ -287,7 +287,7 @@ aiMatrix4x4 GetNodeAbsoluteTransform(const aiNode* node) {
 
 void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const vector<Material>* materials) {
     for (uint32_t meshIndex = 0; meshIndex < node->mNumMeshes; meshIndex++) {
-        ModelData data;
+        ModelMesh data;
 
         aiMesh* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
@@ -354,9 +354,40 @@ void NodeTraverse(const aiScene* scene, const aiNode* node, Model* model, const 
             data.mMaterial = materials->at(mesh->mMaterialIndex);
         }
 
+        //É{Å[Éì
+        for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; boneIndex++) {
+            data.mBones.emplace_back();
+            aiBone* bone = mesh->mBones[boneIndex];
+
+            data.mBones.back().mName = bone->mName.C_Str();
+
+            for (uint32_t weightIndex = 0; weightIndex < bone->mNumWeights; weightIndex++) {
+                aiVertexWeight weight = bone->mWeights[weightIndex];
+                data.mBones.back().mVertexWeights.push_back({ weight.mVertexId, weight.mWeight });
+            }
+
+            Matrix4& offsetMatrix = data.mBones.back().mOffsetMatrix;
+            offsetMatrix[0][0] = bone->mOffsetMatrix.a1;
+            offsetMatrix[0][1] = bone->mOffsetMatrix.a2;
+            offsetMatrix[0][2] = bone->mOffsetMatrix.a3;
+            offsetMatrix[0][3] = bone->mOffsetMatrix.a4;
+            offsetMatrix[1][0] = bone->mOffsetMatrix.b1;
+            offsetMatrix[1][1] = bone->mOffsetMatrix.b2;
+            offsetMatrix[1][2] = bone->mOffsetMatrix.b3;
+            offsetMatrix[1][3] = bone->mOffsetMatrix.b4;
+            offsetMatrix[2][0] = bone->mOffsetMatrix.c1;
+            offsetMatrix[2][1] = bone->mOffsetMatrix.c2;
+            offsetMatrix[2][2] = bone->mOffsetMatrix.c3;
+            offsetMatrix[2][3] = bone->mOffsetMatrix.c4;
+            offsetMatrix[3][0] = bone->mOffsetMatrix.d1;
+            offsetMatrix[3][1] = bone->mOffsetMatrix.d2;
+            offsetMatrix[3][2] = bone->mOffsetMatrix.d3;
+            offsetMatrix[3][3] = bone->mOffsetMatrix.d4;
+        }
+
         data.mVertBuff.Init(data.mVertices);
         data.mIndexBuff.Init(data.mIndices);
-        model->mData.push_back(make_shared<ModelData>(data));
+        model->mData.push_back(make_shared<ModelMesh>(data));
     }
 
     for (uint32_t childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
@@ -525,7 +556,7 @@ Model* ModelManager::Get(ModelHandle handle)
 void ModelManager::Init()
 {
     Model model;
-    ModelData data;
+    ModelMesh data;
 
     data.mVertices.push_back(VertexPNU({ -1, -1,  1 }, { 0, 0, 0 }, { 0, 1 })); //0
     data.mVertices.push_back(VertexPNU({  1, -1,  1 }, { 0, 0, 0 }, { 1, 1 })); //1
@@ -556,6 +587,6 @@ void ModelManager::Init()
 
     data.mVertBuff.Init(data.mVertices);
     data.mIndexBuff.Init(data.mIndices);
-    model.mData.emplace_back(std::make_shared<ModelData>(data));
+    model.mData.emplace_back(std::make_shared<ModelMesh>(data));
     mModelMap["PreRegisteredModel_Empty"] = model;
 }

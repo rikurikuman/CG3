@@ -5,7 +5,7 @@
 void ModelObj::TransferBuffer(ViewProjection viewprojection)
 {
 	int32_t count = 0;
-	for (std::shared_ptr<ModelData> data : mModel->mData) {
+	for (std::shared_ptr<ModelMesh> data : mModel->mData) {
 		std::string name = data->mMaterial.mName;
 		if (name.empty()) {
 			name = "NoNameMaterial_" + count;
@@ -30,7 +30,7 @@ void ModelObj::TransferBuffer(ViewProjection viewprojection)
 
 void ModelObj::Draw()
 {
-	for (std::shared_ptr<ModelData> data : mModel->mData) {
+	for (std::shared_ptr<ModelMesh> data : mModel->mData) {
 		std::vector<RootData> rootData = {
 			{ TextureManager::Get(data->mMaterial.mTexture).mGpuHandle },
 			{ RootDataType::SRBUFFER_CBV, mMaterialBuffMap[data->mMaterial.mName].mBuff },

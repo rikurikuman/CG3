@@ -7,6 +7,7 @@
 #include "IndexBuffer.h"
 #include "RConstBuffer.h"
 #include "Material.h"
+#include "Matrix4.h"
 
 //assimp
 #pragma warning(push)
@@ -18,21 +19,34 @@
 
 typedef std::string ModelHandle;
 
-class ModelData
+struct VertexWeight
 {
-public:
+	uint32_t vertID;
+	float weight;
+};
+
+struct ModelBone
+{
+	std::string mName;
+	std::vector<VertexWeight> mVertexWeights;
+	Matrix4 mOffsetMatrix;
+};
+
+struct ModelMesh
+{
 	std::string mName;
 	VertexBuffer mVertBuff;
 	IndexBuffer mIndexBuff;
 
 	std::vector<VertexPNU> mVertices;
 	std::vector<uint32_t> mIndices;
+	std::vector<ModelBone> mBones;
 	Material mMaterial;
 
 	void CalcSmoothedNormals();
 
-	bool operator==(const ModelData& o) const;
-	bool operator!=(const ModelData& o) const;
+	bool operator==(const ModelMesh& o) const;
+	bool operator!=(const ModelMesh& o) const;
 };
 
 class Model
@@ -40,7 +54,7 @@ class Model
 public:
 	std::string mName;
 	std::string mPath;
-	std::vector<std::shared_ptr<ModelData>> mData;
+	std::vector<std::shared_ptr<ModelMesh>> mData;
 
 	static ModelHandle Load(std::string filepath, std::string filename, ModelHandle handle = "", bool smooth = false);
 	static ModelHandle Register(ModelHandle handle, Model model);

@@ -34,7 +34,7 @@ namespace std {
 		size_t operator() (const DrawCustomData& o) const {
 			return static_cast<size_t>((
 				o.layer * 2.0f +
-				o.fillFlag * 3.0f +
+				static_cast<float>(o.fillFlag) * 3.0f +
 				o.radius * 5.0f
 			));
 		}

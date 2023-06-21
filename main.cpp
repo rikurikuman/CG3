@@ -111,6 +111,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//モデルデータの読み込み
 	Model::Load("Resources/Model/", "Cube.obj", "Cube");
 
+	Model::LoadWithAIL("Resources/Model/", "boneTest.fbx", "bonetest");
+
 	TextureManager::Load("Resources/loadingMark.png", "LoadingMark");
 
 	SceneManager::Set<MainTestScene>();
