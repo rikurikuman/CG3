@@ -98,14 +98,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application\RayPlaneScene.cpp" />
-    <ClCompile Include="Application\RayPolygonScene.cpp" />
-    <ClCompile Include="Application\RaySphereScene.cpp" />
-    <ClCompile Include="Application\SpherePolygonScene.cpp" />
     <ClCompile Include="Engine\Base\RenderTarget.cpp" />
     <ClCompile Include="Engine\Base\SRIndexBuffer.cpp" />
     <ClCompile Include="Engine\Collision\Colliders.cpp" />
-    <ClCompile Include="Application\CollidersScene.cpp" />
     <ClCompile Include="Engine\3d\BillboardImage.cpp" />
     <ClCompile Include="Engine\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Base\Color.cpp" />
@@ -137,11 +132,8 @@
     <ClCompile Include="Engine\Math\Matrix4.cpp" />
     <ClCompile Include="Engine\3d\Model\Model.cpp" />
     <ClCompile Include="Engine\3d\Model\ModelObj.cpp" />
-    <ClCompile Include="Application\ModelScene.cpp" />
     <ClCompile Include="Engine\3d\Model\Mtllib.cpp" />
-    <ClCompile Include="Application\MultiLightTestScene.cpp" />
     <ClCompile Include="Engine\3d\Obj3D.cpp" />
-    <ClCompile Include="Application\PointLightTestScene.cpp" />
     <ClCompile Include="Engine\Math\Quaternion.cpp" />
     <ClCompile Include="Engine\Base\RAudio.cpp" />
     <ClCompile Include="Engine\Base\RDirectX.cpp" />
@@ -154,11 +146,8 @@
     <ClCompile Include="Engine\SimpleDrawer\SimpleDrawer.cpp" />
     <ClCompile Include="Engine\SimpleDrawer\SimpleDrawInfo.cpp" />
     <ClCompile Include="Application\SimpleSceneTransition.cpp" />
-    <ClCompile Include="Application\SoundScene.cpp" />
     <ClCompile Include="Engine\Light\SpotLight.cpp" />
-    <ClCompile Include="Application\SpotLightTestScene.cpp" />
     <ClCompile Include="Engine\2d\Sprite.cpp" />
-    <ClCompile Include="Application\SpriteScene.cpp" />
     <ClCompile Include="Engine\Base\SRBuffer.cpp" />
     <ClCompile Include="Engine\SimpleDrawer\TextDrawer.cpp" />
     <ClCompile Include="Engine\Base\Texture.cpp">
@@ -171,9 +160,7 @@
     <ClCompile Include="Engine\Math\Vector3.cpp" />
     <ClCompile Include="Engine\Base\Vertex.cpp" />
     <ClCompile Include="Engine\Base\VertexBuffer.cpp" />
-    <ClCompile Include="Application\VerySlowLoadScene.cpp" />
     <ClCompile Include="Engine\Base\ViewProjection.cpp" />
-    <ClCompile Include="Application\SpherePlaneScene.cpp" />
     <ClCompile Include="Engine\Collision\PolygonCollider.cpp" />
     <ClCompile Include="Engine\Collision\RayCollider.cpp" />
     <ClCompile Include="Engine\Collision\SphereCollider.cpp" />
@@ -354,17 +341,12 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application\RayPlaneScene.h" />
-    <ClInclude Include="Application\RayPolygonScene.h" />
-    <ClInclude Include="Application\RaySphereScene.h" />
-    <ClInclude Include="Application\SpherePolygonScene.h" />
     <ClInclude Include="Engine\Base\Rect.h" />
     <ClInclude Include="Engine\Base\RenderTarget.h" />
     <ClInclude Include="Engine\Base\SRConstBuffer.h" />
     <ClInclude Include="Engine\Base\SRIndexBuffer.h" />
     <ClInclude Include="Engine\Base\Viewport.h" />
     <ClInclude Include="Engine\Collision\Colliders.h" />
-    <ClInclude Include="Application\CollidersScene.h" />
     <ClInclude Include="Engine\3d\BillboardImage.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
     <ClInclude Include="Engine\Base\Color.h" />
@@ -395,12 +377,9 @@
     <ClInclude Include="Engine\Math\Matrix4.h" />
     <ClInclude Include="Engine\3d\Model\Model.h" />
     <ClInclude Include="Engine\3d\Model\ModelObj.h" />
-    <ClInclude Include="Application\ModelScene.h" />
     <ClInclude Include="Engine\3d\Model\Mtllib.h" />
-    <ClInclude Include="Application\MultiLightTestScene.h" />
     <ClInclude Include="Engine\3d\Obj3D.h" />
     <ClInclude Include="Engine\Light\PointLight.h" />
-    <ClInclude Include="Application\PointLightTestScene.h" />
     <ClInclude Include="Engine\Math\Quaternion.h" />
     <ClInclude Include="Engine\Base\RAudio.h" />
     <ClInclude Include="Engine\Base\RConstBuffer.h" />
@@ -416,11 +395,8 @@
     <ClInclude Include="Engine\SimpleDrawer\SimpleDrawer.h" />
     <ClInclude Include="Engine\SimpleDrawer\SimpleDrawInfo.h" />
     <ClInclude Include="Application\SimpleSceneTransition.h" />
-    <ClInclude Include="Application\SoundScene.h" />
     <ClInclude Include="Engine\Light\SpotLight.h" />
-    <ClInclude Include="Application\SpotLightTestScene.h" />
     <ClInclude Include="Engine\2d\Sprite.h" />
-    <ClInclude Include="Application\SpriteScene.h" />
     <ClInclude Include="Engine\Base\SRBuffer.h" />
     <ClInclude Include="Engine\SimpleDrawer\TextDrawer.h" />
     <ClInclude Include="Engine\Base\Texture.h" />
@@ -431,9 +407,7 @@
     <ClInclude Include="Engine\Math\Vector3.h" />
     <ClInclude Include="Engine\Base\Vertex.h" />
     <ClInclude Include="Engine\Base\VertexBuffer.h" />
-    <ClInclude Include="Application\VerySlowLoadScene.h" />
     <ClInclude Include="Engine\Base\ViewProjection.h" />
-    <ClInclude Include="Application\SpherePlaneScene.h" />
     <ClInclude Include="Engine\Collision\ICollider.h" />
     <ClInclude Include="Engine\Collision\PolygonCollider.h" />
     <ClInclude Include="Engine\Collision\RayCollider.h" />

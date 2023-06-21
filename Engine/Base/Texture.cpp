@@ -35,7 +35,7 @@ Texture TextureManager::GetEmptyTexture()
 {
 	HRESULT result;
 
-	Texture texture = Texture();
+	Texture texture = Texture(D3D12_RESOURCE_STATE_GENERIC_READ);
 
 	const size_t textureWidth = 100;
 	const size_t textureHeight = 100;
@@ -90,7 +90,7 @@ Texture TextureManager::GetHogeHogeTexture()
 {
 	HRESULT result;
 
-	Texture texture = Texture();
+	Texture texture = Texture(D3D12_RESOURCE_STATE_GENERIC_READ);
 
 	const size_t textureWidth = 256;
 	const size_t textureHeight = 256;
@@ -155,7 +155,7 @@ TextureHandle TextureManager::CreateInternal(const Color color, const size_t wid
 	std::lock_guard<std::recursive_mutex> lock(mMutex);
 	HRESULT result;
 
-	Texture texture = Texture();
+	Texture texture = Texture(D3D12_RESOURCE_STATE_GENERIC_READ);
 
 	const size_t imageDataCount = width * height;
 	vector<Color> imageData;
@@ -219,7 +219,7 @@ TextureHandle TextureManager::CreateInternal(const Color* pSource, const size_t 
 		}
 	}
 
-	Texture texture = Texture();
+	Texture texture = Texture(D3D12_RESOURCE_STATE_GENERIC_READ);
 	texture.mFilePath = filepath;
 
 	// テクスチャバッファ
@@ -281,7 +281,7 @@ TextureHandle TextureManager::LoadInternal(const std::string filepath, const std
 	}
 	lock.unlock();
 
-	Texture texture = Texture();
+	Texture texture = Texture(D3D12_RESOURCE_STATE_GENERIC_READ);
 	texture.mFilePath = filepath;
 	wstring wfilePath(filepath.begin(), filepath.end());
 
@@ -380,7 +380,7 @@ TextureHandle TextureManager::LoadInternal(const void* pSource, const size_t siz
 	}
 	lock.unlock();
 
-	Texture texture = Texture();
+	Texture texture = Texture(D3D12_RESOURCE_STATE_GENERIC_READ);
 	texture.mFilePath = filepath;
 
 	// 画像イメージデータ
@@ -535,6 +535,8 @@ TextureHandle TextureManager::RegisterInternal(Texture texture, TextureHandle ha
 		handle = "NoNameHandle_" + to_string(useIndex);
 	}
 
+	texture.mResource->SetName(Util::ConvertStringToWString(handle).c_str());
+
 	lock.lock();
 	mTextureMap[handle] = texture;
 	return handle;
@@ -619,4 +621,48 @@ void TextureManager::UnRegisterAll()
 {
 	TextureManager* manager = TextureManager::GetInstance();
 	manager->mTextureMap.clear();
+}
+
+void Texture::ChangeResourceState(D3D12_RESOURCE_STATES state)
+{
+	if (mState == state) return;
+	D3D12_RESOURCE_BARRIER barrierDesc{};
+	barrierDesc.Transition.pResource = mResource.Get();
+	barrierDesc.Transition.StateBefore = mState;
+	barrierDesc.Transition.StateAfter = state;
+
+	RDirectX::GetCommandList()->ResourceBarrier(1, &barrierDesc);
+	mState = state;
+}
+
+void Texture::Copy(Texture* dest, RRect srcRect, Vector2 destPos)
+{
+	D3D12_TEXTURE_COPY_LOCATION locA{};
+	locA.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	locA.pResource = mResource.Get();
+
+	locA.SubresourceIndex = 0;
+	D3D12_TEXTURE_COPY_LOCATION locB{};
+	locB.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+	locB.pResource = dest->mResource.Get();
+	locB.SubresourceIndex = 0;
+
+	D3D12_BOX box{};
+	box.left = srcRect.left;
+	box.right = srcRect.right;
+	box.top = srcRect.top;
+	box.bottom = srcRect.bottom;
+	box.front = 0;
+	box.back = 1;
+
+	D3D12_RESOURCE_STATES oldStateA = mState;
+	D3D12_RESOURCE_STATES oldStateB = dest->mState;
+
+	ChangeResourceState(D3D12_RESOURCE_STATE_COPY_SOURCE);
+	dest->ChangeResourceState(D3D12_RESOURCE_STATE_COPY_DEST);
+	
+	RDirectX::GetCommandList()->CopyTextureRegion(&locB, 0, 0, 0, &locA, &box);
+
+	ChangeResourceState(oldStateA);
+	dest->ChangeResourceState(oldStateB);
 }

@@ -16,11 +16,39 @@ public:
 	//Rendererによる描画処理を実行します
 	static void Execute();
 
-	//描画コマンドを積みます
+	/// <summary>
+	/// 描画コマンドをRendererに要求します
+	/// この関数を実行した瞬間に描画コマンドがコールされるわけではないことに注意してください
+	/// </summary>
+	/// <param name="stageID">描画ステージ名</param>
+	/// <param name="vertView">頂点バッファビュー</param>
+	/// <param name="indexView">インデックスバッファビュー</param>
+	/// <param name="indexCount">インデックスの数</param>
+	/// <param name="rootData">ルートパラメーター</param>
+	/// <param name="anchorPoint">描画優先度自動判定に使う座標</param>
 	static void DrawCall(std::string stageID, D3D12_VERTEX_BUFFER_VIEW* vertView, D3D12_INDEX_BUFFER_VIEW* indexView, uint32_t indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint = Vector3::ZERO);
-	//描画コマンドを積みます
+	
+	/// <summary>
+	/// 描画コマンドをRendererに要求します
+	/// この関数を実行した瞬間に描画コマンドがコールされるわけではないことに注意してください
+	/// </summary>
+	/// <param name="stageID">描画ステージ名</param>
+	/// <param name="vertView">頂点バッファビュー</param>
+	/// <param name="indexView">インデックスバッファビュー</param>
+	/// <param name="indexCount">インデックスの数</param>
+	/// <param name="rootData">ルートパラメーター</param>
+	/// <param name="anchorPoint">描画優先度自動判定に使う座標</param>
 	static void DrawCall(std::string stageID, SRVertexBuffer& vertBuff, SRIndexBuffer& indexBuff, uint32_t indexCount, const std::vector<RootData>& rootData, const Vector3& anchorPoint = Vector3::ZERO);
-	//描画コマンドを積みます
+	
+	/// <summary>
+	/// 描画コマンドをRendererに要求します
+	/// </summary>
+	/// <param name="stageID">描画ステージ名</param>
+	/// <param name="vertView">頂点バッファビュー</param>
+	/// <param name="indexView">インデックスバッファビュー</param>
+	/// <param name="indexCount">インデックスの数</param>
+	/// <param name="rootData">ルートパラメーター</param>
+	/// <param name="anchorPoint">描画優先度自動判定に使う座標</param>
 	static void DrawCall(std::string stageID, RenderOrder order);
 
 	//RenderStageを指定IDのRenderStageの前に追加します
@@ -139,7 +167,7 @@ public:
 	//今後の描画に使うViewportを指定します
 	//一度セットするとその後ずっと維持されます
 	//一時的に変える場合などに戻し忘れないよう注意
-	static void SetScissorRects(const std::vector<Rect> scissorRects) {
+	static void SetScissorRects(const std::vector<RRect> scissorRects) {
 		GetInstance()->mScissorRects = scissorRects;
 	}
 
@@ -170,6 +198,6 @@ private:
 	ID3D12RootSignature* mRootSignature = nullptr;
 	ID3D12PipelineState* mPipelineState = nullptr;
 	std::vector<Viewport> mViewports;
-	std::vector<Rect> mScissorRects;
+	std::vector<RRect> mScissorRects;
 };
 

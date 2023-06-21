@@ -138,7 +138,7 @@ void Renderer::SetAllParamaterToAuto()
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 
-	Rect scissorRect{};
+	RRect scissorRect{};
 	scissorRect.left = 0;
 	scissorRect.right = scissorRect.left + RWindow::GetWidth();
 	scissorRect.top = 0;

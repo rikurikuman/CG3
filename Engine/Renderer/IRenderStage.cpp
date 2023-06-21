@@ -9,6 +9,9 @@ void IRenderStage::AllCall()
 	RenderOrder memo;
 
 	for (RenderOrder& order : mOrders) {
+		//’¼‘OÀsˆ—
+		if(order.preCommand) order.preCommand();
+
 		//©“®İ’è€–Ú‚Ìİ’è
 		if (order.primitiveTopology == D3D_PRIMITIVE_TOPOLOGY_UNDEFINED) {
 			order.primitiveTopology = mDefParamater.primitiveTopology;
@@ -63,7 +66,7 @@ void IRenderStage::AllCall()
 		if (memo.scissorRects != order.scissorRects) {
 			memo.scissorRects = order.scissorRects;
 			std::vector<D3D12_RECT> vec;
-			for (Rect& r : order.scissorRects) {
+			for (RRect& r : order.scissorRects) {
 				D3D12_RECT rect{};
 				rect.left = r.left;
 				rect.right = r.right;
@@ -161,5 +164,8 @@ void IRenderStage::AllCall()
 		else {
 			RDirectX::GetCommandList()->DrawInstanced(static_cast<uint32_t>(order.indexCount), order.instanceCount, 0, 0);
 		}
+
+		//’¼ŒãÀsˆ—
+		if (order.postCommand) order.postCommand();
 	}
 }

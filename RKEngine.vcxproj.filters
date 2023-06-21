@@ -195,38 +195,17 @@
     <ClCompile Include="Engine\Light\LightGroup.cpp">
       <Filter>ソース ファイル\Engine\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Application\MultiLightTestScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Application\MainTestScene.cpp">
       <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Light\SpotLight.cpp">
       <Filter>ソース ファイル\Engine\Light</Filter>
     </ClCompile>
-    <ClCompile Include="Application\PointLightTestScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\SpotLightTestScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Base\RImGui.cpp">
       <Filter>ソース ファイル\Engine\Base</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Scene\ISceneFactory.cpp">
       <Filter>ソース ファイル\Engine\SceneManage</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\SpriteScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\ModelScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\SoundScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\VerySlowLoadScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Camera\Camera.cpp">
       <Filter>ソース ファイル\Engine</Filter>
@@ -255,23 +234,8 @@
     <ClCompile Include="Engine\Base\Vertex.cpp">
       <Filter>ソース ファイル\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Application\SpherePlaneScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\SpherePolygonScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\RayPlaneScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\RayPolygonScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\RaySphereScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Collision\Colliders.cpp">
       <Filter>ソース ファイル\Engine\Collision</Filter>
@@ -281,9 +245,6 @@
     </ClCompile>
     <ClCompile Include="Engine\Collision\SphereCollider.cpp">
       <Filter>ソース ファイル\Engine\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\CollidersScene.cpp">
-      <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Collision\RayCollider.cpp">
       <Filter>ソース ファイル\Engine\Collision</Filter>
@@ -541,35 +502,14 @@
     <ClInclude Include="Application\MainTestScene.h">
       <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
-    <ClInclude Include="Application\MultiLightTestScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Light\SpotLight.h">
       <Filter>ヘッダー ファイル\Engine\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\PointLightTestScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\SpotLightTestScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Base\RImGui.h">
       <Filter>ヘッダー ファイル\Engine\Base</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Scene\ISceneFactory.h">
       <Filter>ヘッダー ファイル\Engine\SceneManage</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\SpriteScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\ModelScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\VerySlowLoadScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\SoundScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Camera\Camera.h">
       <Filter>ヘッダー ファイル\Engine</Filter>
@@ -598,21 +538,6 @@
     <ClInclude Include="Engine\Base\Vertex.h">
       <Filter>ヘッダー ファイル\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Application\SpherePlaneScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\SpherePolygonScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\RayPlaneScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\RayPolygonScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\RaySphereScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Collision\Colliders.h">
       <Filter>ヘッダー ファイル\Engine\Collision</Filter>
     </ClInclude>
@@ -624,9 +549,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Collision\PolygonCollider.h">
       <Filter>ヘッダー ファイル\Engine\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\CollidersScene.h">
-      <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Collision\RayCollider.h">
       <Filter>ヘッダー ファイル\Engine\Collision</Filter>

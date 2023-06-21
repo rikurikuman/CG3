@@ -5,11 +5,11 @@
 class RenderTargetTexture
 {
 public:
-	std::string name;
-	TextureHandle texHandle;
-	Color clearColor;
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuff;
-	uint32_t heapIndex = UINT32_MAX;
+	std::string mName;
+	TextureHandle mTexHandle;
+	Color mClearColor;
+	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthBuff;
+	uint32_t mHeapIndex = UINT32_MAX;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle();
 	D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle();
@@ -19,8 +19,13 @@ public:
 	void ClearRenderTarget();
 	void ClearDepthStencil();
 
-private:
-	bool isBarrier = true;
+	bool IsBarrierClosed() {
+		return TextureManager::Get(mTexHandle).GetResourceState() == D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	}
+
+	Texture& GetTexture() {
+		return TextureManager::Get(mTexHandle);
+	}
 };
 
 class RenderTarget

@@ -1,4 +1,5 @@
 #pragma once
+#include <functional>
 #include <d3d12.h>
 #include "RootSignature.h"
 #include "GraphicsPipeline.h"
@@ -46,7 +47,7 @@ struct RenderOrder
 	Vector3 anchorPoint;
 	std::vector<std::string> renderTargets;
 	std::vector<Viewport> viewports;
-	std::vector<Rect> scissorRects;
+	std::vector<RRect> scissorRects;
 	D3D_PRIMITIVE_TOPOLOGY primitiveTopology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 	ID3D12RootSignature* mRootSignature = nullptr;
 	ID3D12PipelineState* pipelineState = nullptr;
@@ -59,5 +60,19 @@ struct RenderOrder
 	uint32_t indexCount = 0;
 	uint32_t instanceCount = 1;
 	std::vector<RootData> rootData;
+
+	/// <summary>
+	/// この描画の直前に実行してほしい処理を渡すと呼びます
+	/// ラムダ式がおすすめ
+	/// </summary>
+	std::function<void()> preCommand;
+
+	/// <summary>
+	/// この描画の直後に実行してほしい処理を渡すと呼びます
+	/// ラムダ式がおすすめ
+	/// </summary>
+	std::function<void()> postCommand;
+
+	
 };
 

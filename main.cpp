@@ -19,20 +19,7 @@
 #include "SceneManager.h"
 #include "SimpleSceneTransition.h"
 #include "RImGui.h"
-#include "SpherePlaneScene.h"
-#include "SpherePolygonScene.h"
-#include "SpriteScene.h"
-#include "ModelScene.h"
-#include "SoundScene.h"
 #include "MainTestScene.h"
-#include "MultiLightTestScene.h"
-#include "PointLightTestScene.h"
-#include "SpotLightTestScene.h"
-#include "VerySlowLoadScene.h"
-#include <RaySphereScene.h>
-#include <RayPolygonScene.h>
-#include <RayPlaneScene.h>
-#include "CollidersScene.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -198,7 +185,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int32_t sceneNum = 0;
-			const char* scenes[] = { "MainTest", "Sprite", "Model", "Sound", "Colliders" };
+			const char* scenes[] = { "MainTest" };
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
@@ -206,18 +193,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 					switch (sceneNum) {
 					case 0:
 						SceneManager::Change<MainTestScene, SimpleSceneTransition>();
-						break;
-					case 1:
-						SceneManager::Change<SpriteScene, SimpleSceneTransition>();
-						break;
-					case 2:
-						SceneManager::Change<ModelScene, SimpleSceneTransition>();
-						break;
-					case 3:
-						SceneManager::Change<SoundScene, SimpleSceneTransition>();
-						break;
-					case 4:
-						SceneManager::Change<CollidersScene, SimpleSceneTransition>();
 						break;
 					}
 				}

@@ -100,7 +100,7 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 	HRESULT result;
 
 	RenderTargetTexture renderTarget;
-	Texture texture = Texture();
+	Texture texture = Texture(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 	// テクスチャバッファ
 	// ヒープ設定
@@ -155,28 +155,28 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 		&depthResDesc,
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&depthClearValue,
-		IID_PPV_ARGS(&renderTarget.depthBuff)
+		IID_PPV_ARGS(&renderTarget.mDepthBuff)
 	);
 	assert(SUCCEEDED(result));
 
 	TextureHandle texHandle = "RenderTargetTex_" + name;
 	TextureManager::Register(texture, texHandle);
 
-	renderTarget.name = name;
-	renderTarget.texHandle = texHandle;
-	renderTarget.clearColor = clearColor;
+	renderTarget.mName = name;
+	renderTarget.mTexHandle = texHandle;
+	renderTarget.mClearColor = clearColor;
 
 	uint32_t useIndex = UINT32_MAX;
 
 	auto itr = manager->renderTargetMap.find(name);
 	if (itr != manager->renderTargetMap.end()) {
-		useIndex = itr->second.heapIndex;
+		useIndex = itr->second.mHeapIndex;
 	}
 	else {
 		for (uint32_t i = 0; i < numDescriptors; i++) {
 			bool ok = true;
 			for (std::pair<const std::string, RenderTargetTexture>& p : manager->renderTargetMap) {
-				if (p.second.heapIndex == i) {
+				if (p.second.mHeapIndex == i) {
 					ok = false;
 					break;
 				}
@@ -194,7 +194,7 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 		return;
 	}
 
-	renderTarget.heapIndex = useIndex;
+	renderTarget.mHeapIndex = useIndex;
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -214,7 +214,7 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 	dsvHeapHandle.ptr += useIndex * dsvincrementSize;
 	RDirectX::GetDevice()->CreateRenderTargetView(texture.mResource.Get(), &rtvDesc, rtvHeapHandle);
 
-	RDirectX::GetDevice()->CreateDepthStencilView(renderTarget.depthBuff.Get(), &dsvDesc, dsvHeapHandle);
+	RDirectX::GetDevice()->CreateDepthStencilView(renderTarget.mDepthBuff.Get(), &dsvDesc, dsvHeapHandle);
 
 	manager->renderTargetMap[name] = renderTarget;
 }
@@ -271,70 +271,38 @@ void RenderTarget::CreateHeaps()
 
 D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetTexture::GetRTVHandle()
 {
-	return RenderTarget::GetRTVHandle(heapIndex);
+	return RenderTarget::GetRTVHandle(mHeapIndex);
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetTexture::GetDSVHandle()
 {
-	return RenderTarget::GetDSVHandle(heapIndex);
+	return RenderTarget::GetDSVHandle(mHeapIndex);
 }
 
 void RenderTargetTexture::OpenResourceBarrier()
 {
-	if (!isBarrier) {
-		//もう開いてる！！！
-#ifdef _DEBUG
-		OutputDebugStringA(("RKEngine WARNING: Tried to open a ResourceBarrier of RenderTargetTexture(" + name + ") that is already open.\n").c_str());
-#endif
-		return;
-	}
-
-	D3D12_RESOURCE_BARRIER barrierDesc{};
-	barrierDesc.Transition.pResource = TextureManager::Get(texHandle).mResource.Get();
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-	RDirectX::GetCommandList()->ResourceBarrier(1, &barrierDesc);
-	isBarrier = false;
+	GetTexture().ChangeResourceState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 }
 
 void RenderTargetTexture::CloseResourceBarrier()
 {
-	if (isBarrier) {
-		//もう閉じてる！！！
-#ifdef _DEBUG
-		OutputDebugStringA(("RKEngine WARNING: Tried to close a ResourceBarrier of RenderTargetTexture(" + name + ") that is already close.\n").c_str());
-#endif
-		return;
-	}
-
-	D3D12_RESOURCE_BARRIER barrierDesc{};
-	barrierDesc.Transition.pResource = TextureManager::Get(texHandle).mResource.Get();
-	barrierDesc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barrierDesc.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-
-	RDirectX::GetCommandList()->ResourceBarrier(1, &barrierDesc);
-	isBarrier = true;
+	GetTexture().ChangeResourceState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
 void RenderTargetTexture::ClearRenderTarget()
 {
-	bool barrier = isBarrier;
-
-	if (barrier) OpenResourceBarrier();
-	FLOAT color[] = { clearColor.r, clearColor.g, clearColor.b, clearColor.a };
+	OpenResourceBarrier();
+	FLOAT color[] = { mClearColor.r, mClearColor.g, mClearColor.b, mClearColor.a };
 	RDirectX::GetCommandList()->ClearRenderTargetView(GetRTVHandle(), color, 0, nullptr);
-	if (barrier) CloseResourceBarrier();
+	CloseResourceBarrier();
 }
 
 void RenderTargetTexture::ClearDepthStencil()
 {
-	bool barrier = isBarrier;
-
-	if (barrier) OpenResourceBarrier();
+	OpenResourceBarrier();
 	RDirectX::GetCommandList()->ClearDepthStencilView(
 		GetDSVHandle(),
 		D3D12_CLEAR_FLAG_DEPTH,
 		1.0f, 0, 0, nullptr);
-	if (barrier) CloseResourceBarrier();
+	CloseResourceBarrier();
 }

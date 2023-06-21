@@ -7,6 +7,8 @@
 #include <map>
 #include <mutex>
 #include "Color.h"
+#include <Rect.h>
+#include <Vector2.h>
 
 typedef std::string TextureHandle;
 
@@ -19,13 +21,31 @@ public:
 	uint32_t mHeapIndex = UINT32_MAX;
 	std::string mFilePath; //ファイルへのパス
 
-	Texture() {};
-	Texture(
-		Microsoft::WRL::ComPtr<ID3D12Resource> mResource,
-		D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle,
-		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle,
-		std::string filePath
-	) : mResource(mResource), mCpuHandle(cpuHandle), mGpuHandle(gpuHandle), mFilePath(filePath) {};
+	Texture() : mState(D3D12_RESOURCE_STATE_COMMON) {};
+	Texture(D3D12_RESOURCE_STATES firstState) : mState(firstState) {};
+
+	/// <summary>
+	/// テクスチャのリソースステートを変更します
+	/// この関数以外からリソースステートを変更すると良くないことが起きます
+	/// </summary>
+	/// <param name="state">変更先リソースステート</param>
+	void ChangeResourceState(D3D12_RESOURCE_STATES state);
+
+	// テクスチャの現在のリソースステートを取得します
+	D3D12_RESOURCE_STATES GetResourceState() const {
+		return mState;
+	}
+
+	/// <summary>
+	/// テクスチャをコピーします
+	/// </summary>
+	/// <param name="dest">コピー先テクスチャ</param>
+	/// <param name="srcRect">コピー元領域</param>
+	/// <param name="destPos">コピー先位置</param>
+	void Copy(Texture* dest, RRect srcRect, Vector2 destPos = {0, 0});
+
+private:
+	D3D12_RESOURCE_STATES mState;
 };
 
 class TextureManager

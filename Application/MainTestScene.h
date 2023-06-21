@@ -5,6 +5,7 @@
 #include "ModelObj.h"
 #include "Sprite.h"
 #include "SRConstBuffer.h"
+#include <Bloom.h>
 
 class MainTestScene : public IScene
 {
@@ -16,13 +17,6 @@ public:
 	void Draw() override;
 
 private:
-	struct TestObj {
-	public:
-		ModelObj obj;
-		Vector3 speed;
-		float timer;
-	};
-
 	DebugCamera camera = DebugCamera({0, 0, -5});
 	LightGroup light;
 
@@ -31,7 +25,8 @@ private:
 	Sprite sprite;
 	Sprite sprite2;
 
-	std::list<TestObj> testObjList;
+	Bloom bloom;
+	bool useBloom = true;
 
 	float timer = 0;
 };

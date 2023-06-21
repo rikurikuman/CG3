@@ -5,20 +5,19 @@
 #include "SimpleDrawer.h"
 #include <RenderTarget.h>
 #include <Renderer.h>
+#include <RImGui.h>
 
 MainTestScene::MainTestScene()
 {
-	sphere = ModelObj(Model::LoadWithAIL("./Resources/Model/", "Sphere.obj", "Sphere"));
+	sphere = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere", true));
 
 	sphere.mTransform.position = { 0, 0, 0 };
 	sphere.mTransform.UpdateMatrix();
 
-	sphere2 = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere2", true));
+	sphere2 = ModelObj(Model::Load("./Resources/Model/", "Cube.obj", "Cube", false));
 
-	sphere2.mTransform.position = { 0.5f, 0, -1 };
+	sphere2.mTransform.position = { 1.5f, 0, -1 };
 	sphere2.mTransform.UpdateMatrix();
-
-	sphere2.mTuneMaterial.mColor.a = 0.6f;
 
 	sprite.SetTexture("");
 	sprite.SetAnchor({ 0, 0 });
@@ -45,33 +44,44 @@ void MainTestScene::Init()
 
 void MainTestScene::Update()
 {
+	{
+		ImGui::SetNextWindowSize({ 400, 450 });
+		ImGui::SetNextWindowPos({ 800, 100 });
+
+		ImGuiWindowFlags window_flags = 0;
+		window_flags |= ImGuiWindowFlags_NoResize;
+		ImGui::Begin("Scene", NULL, window_flags);
+
+		if(ImGui::Button("Reset")) {
+			useBloom = true;
+			bloom.mSetting.sigma = 0.002f;
+		}
+		ImGui::Separator();
+		ImGui::Text("Bloom");
+		ImGui::Checkbox("Enable", &useBloom);
+		static int32_t bloomstep = 3;
+		const char* steps[] = { "None", "HighLumiExtract", "Blur", "Bloom" };
+		ImGui::Combo("BloomStep##SceneNumCombo", &bloomstep, steps, IM_ARRAYSIZE(steps));
+		switch (bloomstep) {
+		case 0:
+			bloom.mLevel = 0;
+			break;
+		case 1:
+			bloom.mLevel = 1;
+			break;
+		case 2:
+			bloom.mLevel = 2;
+			break;
+		case 3:
+			bloom.mLevel = 3;
+			break;
+		}
+		ImGui::SliderFloat("Sigma", &bloom.mSetting.sigma, 0, 0.05f);
+		ImGui::End();
+	}
+
 	light.Update();
 	camera.Update();
-
-	timer += TimeManager::deltaTime;
-	if (timer >= 0.01f) {
-		timer = 0;
-		for (int32_t i = 0; i < 10; i++) {
-			TestObj obj{};
-			obj.obj = ModelObj("Sphere");
-			obj.speed = Vector3(Util::GetRand(-1.0f, 1.0f), Util::GetRand(-1.0f, 1.0f), Util::GetRand(-1.0f, 1.0f));
-			obj.timer = 0;
-			testObjList.push_back(obj);
-		}
-	}
-
-	for (auto itr = testObjList.begin(); itr != testObjList.end();) {
-		TestObj& obj = *itr;
-		obj.timer += TimeManager::deltaTime;
-		if (obj.timer >= 5) {
-			itr = testObjList.erase(itr);
-			continue;
-		}
-		obj.obj.mTransform.position += obj.speed;
-		obj.obj.mTransform.UpdateMatrix();
-		obj.obj.TransferBuffer(camera.mViewProjection);
-		itr++;
-	}
 
 	sphere.TransferBuffer(camera.mViewProjection);
 	sphere2.TransferBuffer(camera.mViewProjection);
@@ -87,14 +97,5 @@ void MainTestScene::Draw()
 	sprite.Draw();
 	sprite2.Draw();
 
-	for (auto itr = testObjList.begin(); itr != testObjList.end(); itr++) {
-		TestObj& obj = *itr;
-		obj.obj.Draw();
-	}
-
-	SimpleDrawer::DrawString(0, 0, 0, Util::StringFormat("Count:%d", testObjList.size()), { 1, 1, 1, 1 }, "", 20);
-
-	for (int32_t i = 0; i < 10; i++) {
-		//SimpleDrawer::DrawCircle(Util::GetRand(0, RWindow::GetWidth()), Util::GetRand(0, RWindow::GetHeight()), 5, Color(1, 0, 1, 1));
-	}
+	if(useBloom) bloom.Draw();
 }

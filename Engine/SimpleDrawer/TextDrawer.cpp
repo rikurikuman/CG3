@@ -204,7 +204,7 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 		currentPos += tex.gm.gmCellIncX;
 	}
 
-	Texture texture = Texture();
+	Texture texture = Texture(D3D12_RESOURCE_STATE_GENERIC_READ);
 
 	// テクスチャバッファ
 	// ヒープ設定
