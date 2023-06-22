@@ -35,7 +35,7 @@ public:
 	static void SetToTexture(std::string name);
 	static void SetToTexture(std::vector<std::string> names);
 
-	static void CreateRenderTargetTexture(const uint32_t width, const uint32_t height, const Color clearColor, TextureHandle name);
+	static RenderTargetTexture* CreateRenderTargetTexture(const uint32_t width, const uint32_t height, const Color clearColor, TextureHandle name);
 	static RenderTargetTexture* GetRenderTargetTexture(std::string name);
 	static D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle(uint32_t index);
 	static D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle(uint32_t index);
@@ -54,11 +54,12 @@ private:
 
 	void CreateHeaps();
 
-	static const uint32_t numDescriptors = 256;
+	static const uint32_t sNUM_DESCRIPTORS = 256;
+	std::recursive_mutex mMutex;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
 
-	std::vector<std::string> currentRenderTargets;
-	std::map<std::string, RenderTargetTexture> renderTargetMap;
+	std::vector<std::string> mCurrentRenderTargets;
+	std::map<std::string, RenderTargetTexture> mRenderTargetMap;
 };
 

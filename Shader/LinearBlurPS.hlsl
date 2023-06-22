@@ -1,12 +1,12 @@
-#include "GaussianBlur.hlsli"
+#include "LinearBlur.hlsli"
 
 Texture2D<float4> tex : register(t0); //0番スロットに設定されたテクスチャ
 SamplerState smp : register(s0); //0番スロットに設定されたサンプラー
 
 cbuffer ConstBufferData : register(b0)
 {
-    float sigma;
-    float stepwidth;
+    float angle;
+    float pickrange = 0.06;
 };
 
 float Gaussian(float2 drawUV, float2 pickUV, float sigma)
@@ -21,16 +21,15 @@ float4 main(OutputVS i) : SV_TARGET
     float4 col;
     
     [loop]
-    for (float py = -sigma * 2; py <= sigma * 2; py += stepwidth)
+    for (float j = -pickrange; j <= pickrange; j += 0.005)
     {
-        [loop]
-        for (float px = -sigma * 2; px <= sigma * 2; px += stepwidth)
-        {
-            float2 pickUV = i.uv + float2(px, py);
-            float weight = Gaussian(i.uv, pickUV, sigma);
-            col += tex.Sample(smp, pickUV) * weight;
-            totalWeight += weight;
-        }
+        float x = cos(angle) * j;
+        float y = sin(angle) * j;
+        float2 pickUV = i.uv + float2(x, y);
+        
+        float weight = Gaussian(i.uv, pickUV, pickrange);
+        col += tex.Sample(smp, pickUV) * weight;
+        totalWeight += weight;
     }
     col.rgb = col.rgb / totalWeight;
     col.a = 1;

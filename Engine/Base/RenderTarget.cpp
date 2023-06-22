@@ -1,11 +1,12 @@
 #include "RenderTarget.h"
 #include "RDirectX.h"
+#include <Util.h>
 
 void RenderTarget::SetToBackBuffer()
 {
 	RenderTarget* manager = GetInstance();
 
-	for (std::string name : manager->currentRenderTargets) {
+	for (std::string name : manager->mCurrentRenderTargets) {
 		if (name.empty()) {
 			RDirectX::CloseResourceBarrier(RDirectX::GetCurrentBackBufferResource());
 			continue;
@@ -14,20 +15,20 @@ void RenderTarget::SetToBackBuffer()
 		RenderTargetTexture* tex = manager->GetRenderTargetTexture(name);
 		if (tex != nullptr) tex->CloseResourceBarrier();
 	}
-	manager->currentRenderTargets.clear();
+	manager->mCurrentRenderTargets.clear();
 
 	RDirectX::OpenResorceBarrier(RDirectX::GetCurrentBackBufferResource());
 	D3D12_CPU_DESCRIPTOR_HANDLE backBuffHandle = RDirectX::GetCurrentBackBufferHandle();
 	D3D12_CPU_DESCRIPTOR_HANDLE backBuffDSVHandle = RDirectX::GetBackBufferDSVHandle();
 	RDirectX::GetCommandList()->OMSetRenderTargets(1, &backBuffHandle, false, &backBuffDSVHandle);
-	manager->currentRenderTargets.push_back("");
+	manager->mCurrentRenderTargets.push_back("");
 }
 
 void RenderTarget::SetToTexture(std::string name)
 {
 	RenderTarget* manager = GetInstance();
 
-	for (std::string current : manager->currentRenderTargets) {
+	for (std::string current : manager->mCurrentRenderTargets) {
 		if (current.empty()) {
 			RDirectX::CloseResourceBarrier(RDirectX::GetCurrentBackBufferResource());
 			continue;
@@ -36,7 +37,7 @@ void RenderTarget::SetToTexture(std::string name)
 		RenderTargetTexture* tex = manager->GetRenderTargetTexture(current);
 		if (tex != nullptr) tex->CloseResourceBarrier();
 	}
-	manager->currentRenderTargets.clear();
+	manager->mCurrentRenderTargets.clear();
 
 	RenderTargetTexture* tex = manager->GetRenderTargetTexture(name);
 
@@ -52,14 +53,14 @@ void RenderTarget::SetToTexture(std::string name)
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = tex->GetRTVHandle();
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = tex->GetDSVHandle();
 	RDirectX::GetCommandList()->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
-	manager->currentRenderTargets.push_back(name);
+	manager->mCurrentRenderTargets.push_back(name);
 }
 
 void RenderTarget::SetToTexture(std::vector<std::string> names)
 {
 	RenderTarget* manager = GetInstance();
 
-	for (std::string name : manager->currentRenderTargets) {
+	for (std::string name : manager->mCurrentRenderTargets) {
 		if (name.empty()) {
 			RDirectX::CloseResourceBarrier(RDirectX::GetCurrentBackBufferResource());
 			continue;
@@ -68,7 +69,7 @@ void RenderTarget::SetToTexture(std::vector<std::string> names)
 		RenderTargetTexture* tex = manager->GetRenderTargetTexture(name);
 		if (tex != nullptr) tex->CloseResourceBarrier();
 	}
-	manager->currentRenderTargets.clear();
+	manager->mCurrentRenderTargets.clear();
 
 	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> rtvHandles;
 	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> dsvHandles;
@@ -87,13 +88,13 @@ void RenderTarget::SetToTexture(std::vector<std::string> names)
 		tex->OpenResourceBarrier();
 		rtvHandles.push_back(tex->GetRTVHandle());
 		dsvHandles.push_back(tex->GetDSVHandle());
-		manager->currentRenderTargets.push_back(name);
+		manager->mCurrentRenderTargets.push_back(name);
 	}
 
 	RDirectX::GetCommandList()->OMSetRenderTargets((UINT)names.size(), &rtvHandles[0], false, &dsvHandles[0]);
 }
 
-void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_t height, const Color clearColor, TextureHandle name)
+RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_t height, const Color clearColor, TextureHandle name)
 {
 	RenderTarget* manager = GetInstance();
 
@@ -101,6 +102,38 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 
 	RenderTargetTexture renderTarget;
 	Texture texture = Texture(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+	uint32_t useIndex = UINT32_MAX;
+
+	std::unique_lock<std::recursive_mutex> lock(manager->mMutex);
+	auto itr = manager->mRenderTargetMap.find(name);
+	if (itr != manager->mRenderTargetMap.end()) {
+		useIndex = itr->second.mHeapIndex;
+	}
+	else {
+		for (uint32_t i = 0; i < sNUM_DESCRIPTORS; i++) {
+			bool ok = true;
+			for (std::pair<const std::string, RenderTargetTexture>& p : manager->mRenderTargetMap) {
+				if (p.second.mHeapIndex == i) {
+					ok = false;
+					break;
+				}
+			}
+
+			if (ok) {
+				useIndex = i;
+				break;
+			}
+		}
+	}
+	lock.unlock();
+
+	if (useIndex == UINT32_MAX) {
+		//Over.
+		return nullptr;
+	}
+
+	renderTarget.mHeapIndex = useIndex;
 
 	// テクスチャバッファ
 	// ヒープ設定
@@ -159,42 +192,17 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 	);
 	assert(SUCCEEDED(result));
 
+	if (name.empty()) {
+		name = "NoNameRenderTargetTex_Index" + std::to_string(useIndex);
+	}
+
 	TextureHandle texHandle = "RenderTargetTex_" + name;
+	if (texHandle == "RenderTargetTex_") texHandle += "NoName";
 	TextureManager::Register(texture, texHandle);
 
 	renderTarget.mName = name;
 	renderTarget.mTexHandle = texHandle;
 	renderTarget.mClearColor = clearColor;
-
-	uint32_t useIndex = UINT32_MAX;
-
-	auto itr = manager->renderTargetMap.find(name);
-	if (itr != manager->renderTargetMap.end()) {
-		useIndex = itr->second.mHeapIndex;
-	}
-	else {
-		for (uint32_t i = 0; i < numDescriptors; i++) {
-			bool ok = true;
-			for (std::pair<const std::string, RenderTargetTexture>& p : manager->renderTargetMap) {
-				if (p.second.mHeapIndex == i) {
-					ok = false;
-					break;
-				}
-			}
-
-			if (ok) {
-				useIndex = i;
-				break;
-			}
-		}
-	}
-
-	if (useIndex == UINT32_MAX) {
-		//Over.
-		return;
-	}
-
-	renderTarget.mHeapIndex = useIndex;
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -210,23 +218,27 @@ void RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 
 	size_t dsvincrementSize = RDirectX::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHeapHandle = manager->dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHeapHandle = manager->mDsvHeap->GetCPUDescriptorHandleForHeapStart();
 	dsvHeapHandle.ptr += useIndex * dsvincrementSize;
 	RDirectX::GetDevice()->CreateRenderTargetView(texture.mResource.Get(), &rtvDesc, rtvHeapHandle);
 
 	RDirectX::GetDevice()->CreateDepthStencilView(renderTarget.mDepthBuff.Get(), &dsvDesc, dsvHeapHandle);
 
-	manager->renderTargetMap[name] = renderTarget;
+	lock.lock();
+	manager->mRenderTargetMap[name] = renderTarget;
+	return &manager->mRenderTargetMap[name];
 }
 
 RenderTargetTexture* RenderTarget::GetRenderTargetTexture(std::string name) {
 	RenderTarget* manager = GetInstance();
-	auto itr = manager->renderTargetMap.find(name);
-	if (itr != manager->renderTargetMap.end()) {
+	std::lock_guard<std::recursive_mutex> lock(manager->mMutex);
+	auto itr = manager->mRenderTargetMap.find(name);
+	if (itr != manager->mRenderTargetMap.end()) {
 		return &itr->second;
 	}
 
 	//ないよ
+	Util::DebugLog("RKEngine ERROR : RenderTarget::GetRenderTargetTexture() : Failed find from map.");
 	return nullptr;
 }
 
@@ -245,7 +257,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetDSVHandle(uint32_t index)
 	RenderTarget* manager = RenderTarget::GetInstance();
 
 	size_t dsvincrementSize = RDirectX::GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHeapHandle = manager->dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHeapHandle = manager->mDsvHeap->GetCPUDescriptorHandleForHeapStart();
 	dsvHeapHandle.ptr += index * dsvincrementSize;
 	return dsvHeapHandle;
 }
@@ -256,16 +268,16 @@ void RenderTarget::CreateHeaps()
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc{};
 	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvHeapDesc.NumDescriptors = numDescriptors;
+	rtvHeapDesc.NumDescriptors = sNUM_DESCRIPTORS;
 
 	result = RDirectX::GetDevice()->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&mRtvHeap));
 	assert(SUCCEEDED(result));
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc{};
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	dsvHeapDesc.NumDescriptors = numDescriptors;
+	dsvHeapDesc.NumDescriptors = sNUM_DESCRIPTORS;
 
-	result = RDirectX::GetDevice()->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
+	result = RDirectX::GetDevice()->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&mDsvHeap));
 	assert(SUCCEEDED(result));
 }
 

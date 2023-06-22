@@ -113,6 +113,7 @@
     <ClCompile Include="Engine\Base\IndexBuffer.cpp" />
     <ClCompile Include="Engine\Math\Float4.cpp" />
     <ClCompile Include="Engine\PostEffect\Bloom.cpp" />
+    <ClCompile Include="Engine\PostEffect\CrossFilter.cpp" />
     <ClCompile Include="Engine\Renderer\BackSpriteRenderStage.cpp" />
     <ClCompile Include="Engine\Renderer\FinalRenderStage.cpp" />
     <ClCompile Include="Engine\Renderer\OpaqueRenderStage.cpp" />
@@ -234,6 +235,18 @@
     <FxCompile Include="Shader\GridPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\LinearBlurPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shader\LinearBlurVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shader\NoneShadingPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -360,6 +373,7 @@
     <ClInclude Include="Engine\Light\DirectionalLight.h" />
     <ClInclude Include="Engine\Math\Float4.h" />
     <ClInclude Include="Engine\PostEffect\Bloom.h" />
+    <ClInclude Include="Engine\PostEffect\CrossFilter.h" />
     <ClInclude Include="Engine\Renderer\BackSpriteRenderStage.h" />
     <ClInclude Include="Engine\Renderer\FinalRenderStage.h" />
     <ClInclude Include="Engine\Renderer\OpaqueRenderStage.h" />
@@ -423,6 +437,7 @@
     <None Include="Shader\Final.hlsli" />
     <None Include="Shader\GaussianBlur.hlsli" />
     <None Include="Shader\Grid.hlsli" />
+    <None Include="Shader\LinearBlur.hlsli" />
     <None Include="Shader\NoneShading.hlsli" />
     <None Include="Shader\PostEffect.hlsli" />
     <None Include="Shader\Simple.hlsli" />

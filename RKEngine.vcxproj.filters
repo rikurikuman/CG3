@@ -297,6 +297,9 @@
     <ClCompile Include="Engine\Math\Float4.cpp">
       <Filter>ソース ファイル\Engine\Math</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\PostEffect\CrossFilter.cpp">
+      <Filter>ソース ファイル\Engine\PostEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\TestVS.hlsl">
@@ -387,6 +390,12 @@
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Shader\SimpleMeshVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\LinearBlurPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\LinearBlurVS.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
   </ItemGroup>
@@ -607,6 +616,9 @@
     <ClInclude Include="Engine\Math\Float4.h">
       <Filter>ヘッダー ファイル\Engine\Math</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\PostEffect\CrossFilter.h">
+      <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli">
@@ -649,6 +661,9 @@
       <Filter>シェーダー ファイル</Filter>
     </None>
     <None Include="Shader\SimpleMesh.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\LinearBlur.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
   </ItemGroup>

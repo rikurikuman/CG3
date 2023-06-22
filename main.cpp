@@ -170,14 +170,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			if (buffUsingSize < 1024Ui64 * 1024Ui64 - 1) {
 				buffUsingSizeStr = Util::StringFormat("%.2fKB", buffUsingSize / 1024.0f);
 			}
-			else {
+			else if (buffUsingSize < 1024Ui64 * 1024Ui64 * 1024Ui64 - 1) {
 				buffUsingSizeStr = Util::StringFormat("%.2fMB", buffUsingSize / 1024.0f / 1024.0f);
+			}
+			else {
+				buffUsingSizeStr = Util::StringFormat("%.2fGB", buffUsingSize / 1024.0f / 1024.0f / 1024.0f);
 			}
 			if (buffTotalSize < 1024Ui64 * 1024Ui64 - 1) {
 				buffTotalSizeStr = Util::StringFormat("%.2fKB", buffTotalSize / 1024.0f);
 			}
-			else {
+			else if (buffTotalSize < 1024Ui64 * 1024Ui64 * 1024Ui64 - 1) {
 				buffTotalSizeStr = Util::StringFormat("%.2fMB", buffTotalSize / 1024.0f / 1024.0f);
+			}
+			else {
+				buffTotalSizeStr = Util::StringFormat("%.2fGB", buffTotalSize / 1024.0f / 1024.0f / 1024.0f);
 			}
 			ImGui::Text("SRBuffer");
 			ImGui::Text(("Using : " + buffUsingSizeStr + " / " + buffTotalSizeStr + "(%.2lf%%)").c_str(), static_cast<double>(buffUsingSize) / buffTotalSize * 100);

@@ -55,10 +55,13 @@ void MainTestScene::Update()
 		if(ImGui::Button("Reset")) {
 			useBloom = true;
 			bloom.mSetting.sigma = 0.002f;
+			bloom.mLevel = 3;
 		}
+
 		ImGui::Separator();
+
 		ImGui::Text("Bloom");
-		ImGui::Checkbox("Enable", &useBloom);
+		ImGui::Checkbox("Enable##Bloom", &useBloom);
 		static int32_t bloomstep = 3;
 		const char* steps[] = { "None", "HighLumiExtract", "Blur", "Bloom" };
 		ImGui::Combo("BloomStep##SceneNumCombo", &bloomstep, steps, IM_ARRAYSIZE(steps));
@@ -77,8 +80,21 @@ void MainTestScene::Update()
 			break;
 		}
 		ImGui::SliderFloat("Sigma", &bloom.mSetting.sigma, 0, 0.05f);
+
+		ImGui::Separator();
+
+		ImGui::Text("CrossFilter");
+		ImGui::Checkbox("Enable##CrossFilter", &useCross);
+		ImGui::SliderFloat3("Angle", &crossFilterAngle.x, 0, 360);
+		ImGui::SliderFloat("PickRange", &crossFilterA.mSetting.pickRange, 0, 0.2f);
 		ImGui::End();
 	}
+
+	crossFilterB.mSetting.pickRange = crossFilterA.mSetting.pickRange;
+	crossFilterC.mSetting.pickRange = crossFilterA.mSetting.pickRange;
+	crossFilterA.mSetting.angle = Util::AngleToRadian(crossFilterAngle.x);
+	crossFilterB.mSetting.angle = Util::AngleToRadian(crossFilterAngle.y);
+	crossFilterC.mSetting.angle = Util::AngleToRadian(crossFilterAngle.z);
 
 	light.Update();
 	camera.Update();
@@ -98,4 +114,10 @@ void MainTestScene::Draw()
 	sprite2.Draw();
 
 	if(useBloom) bloom.Draw();
+
+	if (useCross) {
+		crossFilterA.Draw();
+		crossFilterB.Draw();
+		crossFilterC.Draw();
+	}
 }

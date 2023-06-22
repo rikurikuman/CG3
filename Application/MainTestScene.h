@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "SRConstBuffer.h"
 #include <Bloom.h>
+#include <CrossFilter.h>
 
 class MainTestScene : public IScene
 {
@@ -27,6 +28,12 @@ private:
 
 	Bloom bloom;
 	bool useBloom = true;
+
+	CrossFilter crossFilterA;
+	CrossFilter crossFilterB;
+	CrossFilter crossFilterC;
+	bool useCross = false;
+	Vector3 crossFilterAngle;
 
 	float timer = 0;
 };
