@@ -7,6 +7,7 @@
 #include "SRConstBuffer.h"
 #include <Bloom.h>
 #include <CrossFilter.h>
+#include <DepthTest.h>
 
 class MainTestScene : public IScene
 {
@@ -34,6 +35,9 @@ private:
 	CrossFilter crossFilterC;
 	bool useCross = false;
 	Vector3 crossFilterAngle;
+
+	bool useDepthTest = false;
+	DepthTest depthTest;
 
 	float timer = 0;
 };

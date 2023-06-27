@@ -102,6 +102,7 @@ RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t widt
 
 	RenderTargetTexture renderTarget;
 	Texture texture = Texture(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	Texture depthTexture = Texture(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
 	uint32_t useIndex = UINT32_MAX;
 
@@ -172,7 +173,7 @@ RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t widt
 	depthResDesc.Width = width;
 	depthResDesc.Height = height;
 	depthResDesc.DepthOrArraySize = 1;
-	depthResDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	depthResDesc.Format = DXGI_FORMAT_R32_TYPELESS;
 	depthResDesc.SampleDesc.Count = 1;
 	depthResDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; //デプスステンシル
 
@@ -188,7 +189,7 @@ RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t widt
 		&depthResDesc,
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&depthClearValue,
-		IID_PPV_ARGS(&renderTarget.mDepthBuff)
+		IID_PPV_ARGS(&depthTexture.mResource)
 	);
 	assert(SUCCEEDED(result));
 
@@ -196,12 +197,16 @@ RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t widt
 		name = "NoNameRenderTargetTex_Index" + std::to_string(useIndex);
 	}
 
-	TextureHandle texHandle = "RenderTargetTex_" + name;
-	if (texHandle == "RenderTargetTex_") texHandle += "NoName";
-	TextureManager::Register(texture, texHandle);
+	TextureHandle texHandleA = "RenderTargetTex_" + name;
+	TextureHandle texHandleB = "DepthTex_" + name;
+	if (texHandleA == "RenderTargetTex_") texHandleA += "NoName";
+	if (texHandleB == "DepthTex_") texHandleB += "NoName";
+	TextureManager::Register(texture, texHandleA);
+	TextureManager::Register(depthTexture, texHandleB);
 
 	renderTarget.mName = name;
-	renderTarget.mTexHandle = texHandle;
+	renderTarget.mTexHandle = texHandleA;
+	renderTarget.mDepthTexHandle = texHandleB;
 	renderTarget.mClearColor = clearColor;
 
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
@@ -222,7 +227,7 @@ RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t widt
 	dsvHeapHandle.ptr += useIndex * dsvincrementSize;
 	RDirectX::GetDevice()->CreateRenderTargetView(texture.mResource.Get(), &rtvDesc, rtvHeapHandle);
 
-	RDirectX::GetDevice()->CreateDepthStencilView(renderTarget.mDepthBuff.Get(), &dsvDesc, dsvHeapHandle);
+	RDirectX::GetDevice()->CreateDepthStencilView(depthTexture.mResource.Get(), &dsvDesc, dsvHeapHandle);
 
 	lock.lock();
 	manager->mRenderTargetMap[name] = renderTarget;
@@ -294,11 +299,13 @@ D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetTexture::GetDSVHandle()
 void RenderTargetTexture::OpenResourceBarrier()
 {
 	GetTexture().ChangeResourceState(D3D12_RESOURCE_STATE_RENDER_TARGET);
+	GetDepthTexture().ChangeResourceState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 }
 
 void RenderTargetTexture::CloseResourceBarrier()
 {
 	GetTexture().ChangeResourceState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	GetDepthTexture().ChangeResourceState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
 void RenderTargetTexture::ClearRenderTarget()

@@ -300,11 +300,11 @@
     <ClCompile Include="Engine\PostEffect\CrossFilter.cpp">
       <Filter>ソース ファイル\Engine\PostEffect</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\PostEffect\DepthTest.cpp">
+      <Filter>ソース ファイル\Engine\PostEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shader\TestVS.hlsl">
-      <Filter>シェーダー ファイル</Filter>
-    </FxCompile>
     <FxCompile Include="Shader\BasicPS.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
@@ -327,12 +327,6 @@
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Shader\SpriteVS.hlsl">
-      <Filter>シェーダー ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\TestGS.hlsl">
-      <Filter>シェーダー ファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="Shader\TestPS.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Shader\PostEffectPS.hlsl">
@@ -396,6 +390,12 @@
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Shader\LinearBlurVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DepthTestPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DepthTestVS.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
   </ItemGroup>
@@ -619,6 +619,9 @@
     <ClInclude Include="Engine\PostEffect\CrossFilter.h">
       <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\PostEffect\DepthTest.h">
+      <Filter>ヘッダー ファイル\Engine\PostEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli">
@@ -631,9 +634,6 @@
       <Filter>シェーダー ファイル</Filter>
     </None>
     <None Include="Shader\Sprite.hlsli">
-      <Filter>シェーダー ファイル</Filter>
-    </None>
-    <None Include="Shader\Test.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
     <None Include="Shader\PostEffect.hlsli">
@@ -664,6 +664,9 @@
       <Filter>シェーダー ファイル</Filter>
     </None>
     <None Include="Shader\LinearBlur.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\DepthTest.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
   </ItemGroup>

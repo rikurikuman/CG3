@@ -7,8 +7,8 @@ class RenderTargetTexture
 public:
 	std::string mName;
 	TextureHandle mTexHandle;
+	TextureHandle mDepthTexHandle;
 	Color mClearColor;
-	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthBuff;
 	uint32_t mHeapIndex = UINT32_MAX;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetRTVHandle();
@@ -26,6 +26,13 @@ public:
 	Texture& GetTexture() {
 		return TextureManager::Get(mTexHandle);
 	}
+
+	Texture& GetDepthTexture() {
+		return TextureManager::Get(mDepthTexHandle);
+	}
+
+private:
+	bool mFlagDepthOpen = false;
 };
 
 class RenderTarget

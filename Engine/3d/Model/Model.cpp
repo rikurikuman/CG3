@@ -495,7 +495,7 @@ ModelHandle Model::LoadWithAIL(std::string directoryPath, std::string filename, 
 
                         for (uint32_t i = 0; i < embedTex->mWidth * embedTex->mHeight; i++) {
                             aiTexel texel = embedTex->pcData[i];
-                            //data[i] = Color(texel.r, texel.g, texel.b, texel.a);
+                            data[i] = Color(texel.r, texel.g, texel.b, texel.a);
                         }
 
                         material.mTexture = TextureManager::Create(&data[0], embedTex->mWidth, embedTex->mHeight, path, texHandle);

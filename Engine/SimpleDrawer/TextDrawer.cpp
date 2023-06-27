@@ -207,7 +207,7 @@ TextureHandle TextDrawer::CreateStringTexture(std::string text, std::string font
 	Texture texture = Texture(D3D12_RESOURCE_STATE_GENERIC_READ);
 
 	// テクスチャバッファ
-	// ヒープ設定
+	// ヒープ設定s
 	D3D12_HEAP_PROPERTIES textureHeapProp{};
 	textureHeapProp.Type = D3D12_HEAP_TYPE_CUSTOM;
 	textureHeapProp.CPUPageProperty =

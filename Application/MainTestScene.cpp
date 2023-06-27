@@ -87,6 +87,11 @@ void MainTestScene::Update()
 		ImGui::Checkbox("Enable##CrossFilter", &useCross);
 		ImGui::SliderFloat3("Angle", &crossFilterAngle.x, 0, 360);
 		ImGui::SliderFloat("PickRange", &crossFilterA.mSetting.pickRange, 0, 0.2f);
+
+		ImGui::Separator();
+
+		ImGui::Text("DepthTest");
+		ImGui::Checkbox("Enable##DepthTest", &useDepthTest);
 		ImGui::End();
 	}
 
@@ -113,11 +118,15 @@ void MainTestScene::Draw()
 	sprite.Draw();
 	sprite2.Draw();
 
-	if(useBloom) bloom.Draw();
+	if (useBloom) bloom.Draw();
 
 	if (useCross) {
 		crossFilterA.Draw();
 		crossFilterB.Draw();
 		crossFilterC.Draw();
+	}
+
+	if (useDepthTest) {
+		depthTest.Draw();
 	}
 }

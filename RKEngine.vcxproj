@@ -114,6 +114,7 @@
     <ClCompile Include="Engine\Math\Float4.cpp" />
     <ClCompile Include="Engine\PostEffect\Bloom.cpp" />
     <ClCompile Include="Engine\PostEffect\CrossFilter.cpp" />
+    <ClCompile Include="Engine\PostEffect\DepthTest.cpp" />
     <ClCompile Include="Engine\Renderer\BackSpriteRenderStage.cpp" />
     <ClCompile Include="Engine\Renderer\FinalRenderStage.cpp" />
     <ClCompile Include="Engine\Renderer\OpaqueRenderStage.cpp" />
@@ -199,6 +200,18 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shader\BrightCutVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shader\DepthTestPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shader\DepthTestVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
@@ -334,24 +347,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Shader\TestGS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Shader\TestPS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Shader\TestVS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Base\Rect.h" />
@@ -374,6 +369,7 @@
     <ClInclude Include="Engine\Math\Float4.h" />
     <ClInclude Include="Engine\PostEffect\Bloom.h" />
     <ClInclude Include="Engine\PostEffect\CrossFilter.h" />
+    <ClInclude Include="Engine\PostEffect\DepthTest.h" />
     <ClInclude Include="Engine\Renderer\BackSpriteRenderStage.h" />
     <ClInclude Include="Engine\Renderer\FinalRenderStage.h" />
     <ClInclude Include="Engine\Renderer\OpaqueRenderStage.h" />
@@ -434,6 +430,7 @@
     </None>
     <None Include="Shader\Bloom.hlsli" />
     <None Include="Shader\BrightCut.hlsli" />
+    <None Include="Shader\DepthTest.hlsli" />
     <None Include="Shader\Final.hlsli" />
     <None Include="Shader\GaussianBlur.hlsli" />
     <None Include="Shader\Grid.hlsli" />
@@ -445,7 +442,6 @@
     <None Include="Shader\SimpleLine.hlsli" />
     <None Include="Shader\SimpleMesh.hlsli" />
     <None Include="Shader\Sprite.hlsli" />
-    <None Include="Shader\Test.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Lib\assimp\code\assimp.vcxproj">
