@@ -45,7 +45,7 @@ void MainTestScene::Init()
 void MainTestScene::Update()
 {
 	{
-		ImGui::SetNextWindowSize({ 400, 450 });
+		ImGui::SetNextWindowSize({ 400, 270 });
 		ImGui::SetNextWindowPos({ 800, 100 });
 
 		ImGuiWindowFlags window_flags = 0;
@@ -56,6 +56,9 @@ void MainTestScene::Update()
 			useBloom = true;
 			bloom.mSetting.sigma = 0.002f;
 			bloom.mLevel = 3;
+			useCross = false;
+			crossFilterAngle = { 0, 45, 135 };
+			crossFilterA.mSetting.pickRange = 0.06f;
 		}
 
 		ImGui::Separator();
@@ -87,11 +90,6 @@ void MainTestScene::Update()
 		ImGui::Checkbox("Enable##CrossFilter", &useCross);
 		ImGui::SliderFloat3("Angle", &crossFilterAngle.x, 0, 360);
 		ImGui::SliderFloat("PickRange", &crossFilterA.mSetting.pickRange, 0, 0.2f);
-
-		ImGui::Separator();
-
-		ImGui::Text("DepthTest");
-		ImGui::Checkbox("Enable##DepthTest", &useDepthTest);
 		ImGui::End();
 	}
 
@@ -124,9 +122,5 @@ void MainTestScene::Draw()
 		crossFilterA.Draw();
 		crossFilterB.Draw();
 		crossFilterC.Draw();
-	}
-
-	if (useDepthTest) {
-		depthTest.Draw();
 	}
 }

@@ -20,6 +20,7 @@
 #include "SimpleSceneTransition.h"
 #include "RImGui.h"
 #include "MainTestScene.h"
+#include "DepthTestScene.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -191,7 +192,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int32_t sceneNum = 0;
-			const char* scenes[] = { "MainTest" };
+			const char* scenes[] = { "MainTest", "DepthTest" };
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
@@ -199,6 +200,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 					switch (sceneNum) {
 					case 0:
 						SceneManager::Change<MainTestScene, SimpleSceneTransition>();
+						break;
+					case 1:
+						SceneManager::Change<DepthTestScene, SimpleSceneTransition>();
 						break;
 					}
 				}

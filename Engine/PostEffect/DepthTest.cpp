@@ -40,13 +40,15 @@ void DepthTest::Draw()
 	orderA.anchorPoint = Vector3(0, 0, 0);
 	orderA.mRootSignature = GetRootSignatureA().mPtr.Get();
 	orderA.pipelineState = GetGraphicsPipelineA().mPtr.Get();
-	orderA.renderTargets = { tex->mName };
+	orderA.renderTargets = { "RenderingImage" };
 	orderA.rootData = {
-		{ RenderTarget::GetRenderTargetTexture("RenderingImage")->GetTexture().mGpuHandle },
-		{ RenderTarget::GetRenderTargetTexture("RenderingImage")->GetDepthTexture().mGpuHandle }
+		{ tex->GetTexture().mGpuHandle },
+		{ tex->GetDepthTexture().mGpuHandle },
+		{ RootDataType::SRBUFFER_CBV, mConstBuff.mBuff }
 	};
-	orderA.postCommand = [&] {
-		tex->GetTexture().Copy(&RenderTarget::GetRenderTargetTexture("RenderingImage")->GetTexture(), RRect(0, 1280, 0, 720));
+	orderA.preCommand = [&] {
+		RenderTarget::GetRenderTargetTexture("RenderingImage")->GetTexture().Copy(&tex->GetTexture(), RRect(0, 1280, 0, 720));
+		RenderTarget::GetRenderTargetTexture("RenderingImage")->GetDepthTexture().Copy(&tex->GetDepthTexture(), RRect(0, 1280, 0, 720));
 	};
 	Renderer::DrawCall("PostEffect", orderA);
 
@@ -86,13 +88,17 @@ RootSignature& DepthTest::GetRootSignatureA()
 	descriptorRangeB.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 
-	RootParamaters rootParams(2);
+	RootParamaters rootParams(3);
 	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; //デスクリプタテーブル
 	rootParams[0].DescriptorTable = DescriptorRanges{ descriptorRange };
 	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL; //全シェーダから見える
 	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE; //デスクリプタテーブル
 	rootParams[1].DescriptorTable = DescriptorRanges{ descriptorRangeB };
 	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL; //全シェーダから見える
+	rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //デスクリプタテーブル
+	rootParams[2].Constants.RegisterSpace = 0;
+	rootParams[2].Constants.ShaderRegister = 0;
+	rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL; //全シェーダから見える
 	desc.RootParamaters = rootParams;
 
 	StaticSamplerDesc samplerDesc{};

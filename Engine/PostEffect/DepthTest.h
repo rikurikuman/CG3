@@ -10,18 +10,20 @@
 class DepthTest
 {
 public:
-	struct BlurSetting {
-		float angle = 0;
-		float pickRange = 0.06f;
+	struct Setting {
+		float useDepthColor = false;
+		float focusDepth = 0.95f;
+		float nearFocusWidth = 0.02f;
+		float farFocusWidth = 0.04f;
 	};
 
 	TextureHandle mTexture;
 
 	SRVertexBuffer mVertBuff;
 	SRIndexBuffer mIndexBuff;
-	SRConstBuffer<BlurSetting> mConstBuff;
+	SRConstBuffer<Setting> mConstBuff;
 
-	BlurSetting mSetting{};
+	Setting mSetting{};
 
 	DepthTest();
 

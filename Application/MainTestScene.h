@@ -34,10 +34,5 @@ private:
 	CrossFilter crossFilterB;
 	CrossFilter crossFilterC;
 	bool useCross = false;
-	Vector3 crossFilterAngle;
-
-	bool useDepthTest = false;
-	DepthTest depthTest;
-
-	float timer = 0;
+	Vector3 crossFilterAngle = { 0, 45, 135 };
 };

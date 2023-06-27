@@ -29,7 +29,7 @@ public:
 
 	float mFov = Util::AngleToRadian(45); //画角(Rad)
 	float mAspect = 1; //アスペクト比(横/縦)
-	float mNearclip = 0.1f; //ニアクリップ距離
+	float mNearclip = 0.3f; //ニアクリップ距離
 	float mFarclip = 1000; //ファークリップ距離
 
 	//メンバ変数の情報で各行列を生成する

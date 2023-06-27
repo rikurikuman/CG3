@@ -98,6 +98,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Application\DepthTestScene.cpp" />
     <ClCompile Include="Engine\Base\RenderTarget.cpp" />
     <ClCompile Include="Engine\Base\SRIndexBuffer.cpp" />
     <ClCompile Include="Engine\Collision\Colliders.cpp" />
@@ -349,6 +350,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\DepthTestScene.h" />
     <ClInclude Include="Engine\Base\Rect.h" />
     <ClInclude Include="Engine\Base\RenderTarget.h" />
     <ClInclude Include="Engine\Base\SRConstBuffer.h" />

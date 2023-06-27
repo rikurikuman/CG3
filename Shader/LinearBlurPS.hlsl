@@ -21,7 +21,7 @@ float4 main(OutputVS i) : SV_TARGET
     float4 col;
     
     [loop]
-    for (float j = -pickrange; j <= pickrange; j += 0.005)
+    for (float j = -pickrange; j <= pickrange; j += 0.0005)
     {
         float x = cos(angle) * j;
         float y = sin(angle) * j;
