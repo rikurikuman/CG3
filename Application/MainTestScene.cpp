@@ -9,6 +9,7 @@
 
 MainTestScene::MainTestScene()
 {
+	skydome = ModelObj(Model::Load("./Resources/Model/Skydome/", "Skydome.obj", "Skydome", true));
 	sphere = ModelObj(Model::Load("./Resources/Model/", "Sphere.obj", "Sphere", true));
 
 	sphere.mTransform.position = { 0, 0, 0 };
@@ -18,6 +19,12 @@ MainTestScene::MainTestScene()
 
 	sphere2.mTransform.position = { 1.5f, 0, -1 };
 	sphere2.mTransform.UpdateMatrix();
+
+	cube = ModelObj(Model::Load("./Resources/Model/", "Cube.obj", "Cube", false));
+	cube.mTransform.position = { 0, -5, 0 };
+	cube.mTransform.scale = { 20, 1, 20 };
+	cube.mTransform.UpdateMatrix();
+	cube.mTuneMaterial.mColor = { 1, 0, 0, 1 };
 
 	sprite.SetTexture("");
 	sprite.SetAnchor({ 0, 0 });
@@ -53,74 +60,45 @@ void MainTestScene::Update()
 		ImGui::Begin("Scene", NULL, window_flags);
 
 		if(ImGui::Button("Reset")) {
-			useBloom = true;
-			bloom.mSetting.sigma = 0.002f;
-			bloom.mLevel = 3;
-			useCross = false;
-			crossFilterAngle = { 0, 45, 135 };
-			crossFilterA.mSetting.pickRange = 0.06f;
+
 		}
 
 		ImGui::Separator();
 
-		ImGui::Text("Bloom");
-		ImGui::Checkbox("Enable##Bloom", &useBloom);
-		static int32_t bloomstep = 3;
-		const char* steps[] = { "None", "HighLumiExtract", "Blur", "Bloom" };
-		ImGui::Combo("BloomStep##SceneNumCombo", &bloomstep, steps, IM_ARRAYSIZE(steps));
-		switch (bloomstep) {
-		case 0:
-			bloom.mLevel = 0;
-			break;
-		case 1:
-			bloom.mLevel = 1;
-			break;
-		case 2:
-			bloom.mLevel = 2;
-			break;
-		case 3:
-			bloom.mLevel = 3;
-			break;
-		}
-		ImGui::SliderFloat("Sigma", &bloom.mSetting.sigma, 0, 0.05f);
-
-		ImGui::Separator();
-
-		ImGui::Text("CrossFilter");
-		ImGui::Checkbox("Enable##CrossFilter", &useCross);
-		ImGui::SliderFloat3("Angle", &crossFilterAngle.x, 0, 360);
-		ImGui::SliderFloat("PickRange", &crossFilterA.mSetting.pickRange, 0, 0.2f);
+		ImGui::Text("MultiRenderTest");
+		ImGui::Checkbox("Enable##MultiRender", &useMultiRender);
+		
 		ImGui::End();
 	}
-
-	crossFilterB.mSetting.pickRange = crossFilterA.mSetting.pickRange;
-	crossFilterC.mSetting.pickRange = crossFilterA.mSetting.pickRange;
-	crossFilterA.mSetting.angle = Util::AngleToRadian(crossFilterAngle.x);
-	crossFilterB.mSetting.angle = Util::AngleToRadian(crossFilterAngle.y);
-	crossFilterC.mSetting.angle = Util::AngleToRadian(crossFilterAngle.z);
 
 	light.Update();
 	camera.Update();
 
+	skydome.TransferBuffer(camera.mViewProjection);
 	sphere.TransferBuffer(camera.mViewProjection);
 	sphere2.TransferBuffer(camera.mViewProjection);
+	cube.TransferBuffer(camera.mViewProjection);
 	sprite.TransferBuffer();
 	sprite2.TransferBuffer();
 }
 
 void MainTestScene::Draw()
 {
+	skydome.Draw();
 	sphere.Draw();
 	sphere2.Draw();
+	cube.Draw();
 
-	sprite.Draw();
-	sprite2.Draw();
+	SimpleDrawer::DrawBox(100, 100, 200, 200, 0, { 1, 1, 1, 1 }, true);
+	SimpleDrawer::DrawBox(120, 120, 220, 220, 0, { 1, 0, 0, 0.5f }, true);
 
-	if (useBloom) bloom.Draw();
+	SimpleDrawer::DrawCircle(RWindow::GetWidth() - 30, 710, 5, 0, { 1, 0, 0, 1 }, true);
+	SimpleDrawer::DrawCircle(RWindow::GetWidth() - 20, 710, 5, 0, { 0, 1, 0, 1 }, true);
+	SimpleDrawer::DrawCircle(RWindow::GetWidth() - 10, 710, 5, 0, { 0, 0, 1, 1 }, true);
+	SimpleDrawer::DrawCircle(RWindow::GetWidth() - 60, 710, 5, 0, { 1, 0, 0, 1 }, false);
+	SimpleDrawer::DrawCircle(RWindow::GetWidth() - 50, 710, 5, 0, { 0, 1, 0, 1 }, false);
+	SimpleDrawer::DrawCircle(RWindow::GetWidth() - 40, 710, 5, 0, { 0, 0, 1, 1 }, false);
+	SimpleDrawer::DrawBox(RWindow::GetWidth() - 80, 705, RWindow::GetWidth() - 70, 715, 0, { 1, 0, 0, 1 }, false, 2);
 
-	if (useCross) {
-		crossFilterA.Draw();
-		crossFilterB.Draw();
-		crossFilterC.Draw();
-	}
+	if (useMultiRender) multiRenderTest.Draw();
 }

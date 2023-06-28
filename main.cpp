@@ -34,6 +34,7 @@
 #include <Renderer.h>
 #include <TestRenderStage.h>
 #include <SRBuffer.h>
+#include <BloomTestScene.h>
 
 using namespace std;
 using namespace DirectX;
@@ -192,7 +193,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int32_t sceneNum = 0;
-			const char* scenes[] = { "MainTest", "DepthTest" };
+			const char* scenes[] = { "MainTest", "BloomTest", "DepthTest" };
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
@@ -202,6 +203,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 						SceneManager::Change<MainTestScene, SimpleSceneTransition>();
 						break;
 					case 1:
+						SceneManager::Change<BloomTestScene, SimpleSceneTransition>();
+						break;
+					case 2:
 						SceneManager::Change<DepthTestScene, SimpleSceneTransition>();
 						break;
 					}

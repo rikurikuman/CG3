@@ -5,28 +5,33 @@
 #include "ModelObj.h"
 #include "Sprite.h"
 #include "SRConstBuffer.h"
-#include <MultiRenderTest.h>
+#include <Bloom.h>
+#include <CrossFilter.h>
 
-class MainTestScene : public IScene
+class BloomTestScene : public IScene
 {
 public:
-	MainTestScene();
+	BloomTestScene();
 
 	void Init() override;
 	void Update() override;
 	void Draw() override;
 
 private:
-	DebugCamera camera = DebugCamera({0, 0, -5});
+	DebugCamera camera = DebugCamera({ 0, 0, -5 });
 	LightGroup light;
 
-	ModelObj skydome;
 	ModelObj sphere;
 	ModelObj sphere2;
-	ModelObj cube;
 	Sprite sprite;
 	Sprite sprite2;
 
-	MultiRenderTest multiRenderTest;
-	bool useMultiRender = false;
+	Bloom bloom;
+	bool useBloom = true;
+
+	CrossFilter crossFilterA;
+	CrossFilter crossFilterB;
+	CrossFilter crossFilterC;
+	bool useCross = false;
+	Vector3 crossFilterAngle = { 0, 45, 135 };
 };
