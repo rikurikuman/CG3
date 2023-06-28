@@ -312,6 +312,12 @@
     <ClCompile Include="Application\BloomTestScene.cpp">
       <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\JsonWrapper.cpp">
+      <Filter>ソース ファイル\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\LevelLoader.cpp">
+      <Filter>ソース ファイル\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BasicPS.hlsl">
@@ -651,6 +657,12 @@
     </ClInclude>
     <ClInclude Include="Application\BloomTestScene.h">
       <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\JsonWrapper.h">
+      <Filter>ヘッダー ファイル\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\LevelLoader.h">
+      <Filter>ヘッダー ファイル\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

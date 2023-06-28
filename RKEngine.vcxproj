@@ -113,6 +113,8 @@
     <ClCompile Include="Engine\Base\GraphicsPipeline.cpp" />
     <ClCompile Include="Engine\3d\Image3D.cpp" />
     <ClCompile Include="Engine\Base\IndexBuffer.cpp" />
+    <ClCompile Include="Engine\JsonWrapper.cpp" />
+    <ClCompile Include="Engine\LevelLoader.cpp" />
     <ClCompile Include="Engine\Math\Float4.cpp" />
     <ClCompile Include="Engine\PostEffect\Bloom.cpp" />
     <ClCompile Include="Engine\PostEffect\CrossFilter.cpp" />
@@ -394,6 +396,8 @@
     <ClInclude Include="Engine\Base\GraphicsPipeline.h" />
     <ClInclude Include="Engine\3d\Image3D.h" />
     <ClInclude Include="Engine\Base\IndexBuffer.h" />
+    <ClInclude Include="Engine\JsonWrapper.h" />
+    <ClInclude Include="Engine\LevelLoader.h" />
     <ClInclude Include="Engine\Light\DirectionalLight.h" />
     <ClInclude Include="Engine\Math\Float4.h" />
     <ClInclude Include="Engine\PostEffect\Bloom.h" />

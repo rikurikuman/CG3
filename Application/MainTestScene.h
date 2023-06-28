@@ -5,7 +5,7 @@
 #include "ModelObj.h"
 #include "Sprite.h"
 #include "SRConstBuffer.h"
-#include <MultiRenderTest.h>
+#include "LevelLoader.h"
 
 class MainTestScene : public IScene
 {
@@ -20,13 +20,8 @@ private:
 	DebugCamera camera = DebugCamera({0, 0, -5});
 	LightGroup light;
 
-	ModelObj skydome;
-	ModelObj sphere;
-	ModelObj sphere2;
-	ModelObj cube;
-	Sprite sprite;
-	Sprite sprite2;
+	LevelLoader::LevelData levelData;
 
-	MultiRenderTest multiRenderTest;
-	bool useMultiRender = false;
+	std::vector<ModelObj> objects;
+	void ConstructObjectFromLevelData(LevelLoader::LevelObject& obj);
 };
