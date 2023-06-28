@@ -16,8 +16,8 @@ void Renderer::Execute()
 {
 	Renderer* instance = GetInstance();
 	RenderTarget::SetToTexture("RenderingImage");
-	RenderTarget::GetRenderTargetTexture("RenderingImage")->ClearRenderTarget();
-	RenderTarget::GetRenderTargetTexture("RenderingImage")->ClearDepthStencil();
+	RenderTarget::GetRenderTexture("RenderingImage")->ClearRenderTarget();
+	RenderTarget::GetRenderTexture("RenderingImage")->ClearDepthStencil();
 	for (auto itr = instance->mStages.begin(); itr != instance->mStages.end(); itr++) {
 		IRenderStage* stage = itr->get();
 		if (stage->mFlagEnabled) stage->Render();
@@ -152,7 +152,7 @@ void Renderer::SetAllParamaterToAuto()
 
 void Renderer::Init()
 {
-	RenderTarget::CreateRenderTargetTexture(RWindow::GetWidth(), RWindow::GetHeight(), { 0, 0, 0, 1 }, "RenderingImage");
+	RenderTarget::CreateRenderTexture(RWindow::GetWidth(), RWindow::GetHeight(), { 0, 0, 0, 1 }, "RenderingImage");
 	
 	AddDefRenderStageBack<BackSpriteRenderStage>();
 	AddDefRenderStageBack<OpaqueRenderStage>();

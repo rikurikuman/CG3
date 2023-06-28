@@ -22,8 +22,8 @@ CrossFilter::CrossFilter()
 	mVertBuff.Init(vertices, _countof(vertices));
 	mIndexBuff.Init(indices, _countof(indices));
 
-	texA = RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "");
-	texB = RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "");
+	texA = RenderTarget::CreateRenderTexture(1280, 720, 0x000000, "");
+	texB = RenderTarget::CreateRenderTexture(1280, 720, 0x000000, "");
 }
 
 void CrossFilter::Draw()
@@ -45,7 +45,7 @@ void CrossFilter::Draw()
 	orderA.pipelineState = GetGraphicsPipelineA().mPtr.Get();
 	orderA.renderTargets = { texA->mName };
 	orderA.rootData = {
-		{ RenderTarget::GetRenderTargetTexture("RenderingImage")->GetTexture().mGpuHandle }
+		{ RenderTarget::GetRenderTexture("RenderingImage")->GetTexture().mGpuHandle }
 	};
 	Renderer::DrawCall("PostEffect", orderA);
 

@@ -22,8 +22,8 @@ MultiRenderTest::MultiRenderTest()
 	mVertBuff.Init(vertices, _countof(vertices));
 	mIndexBuff.Init(indices, _countof(indices));
 
-	texA = RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "MultiRenderTestA");
-	texB = RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "MultiRenderTestB");
+	texA = RenderTarget::CreateRenderTexture(1280, 720, 0x000000, "MultiRenderTestA");
+	texB = RenderTarget::CreateRenderTexture(1280, 720, 0x000000, "MultiRenderTestB");
 }
 
 void MultiRenderTest::Draw()
@@ -53,7 +53,7 @@ void MultiRenderTest::Draw()
 	};
 	orderA.renderTargets = { texA->mName, texB->mName };
 	orderA.rootData = {
-		{ RenderTarget::GetRenderTargetTexture("RenderingImage")->GetTexture().mGpuHandle },
+		{ RenderTarget::GetRenderTexture("RenderingImage")->GetTexture().mGpuHandle },
 	};
 	Renderer::DrawCall("PostEffect", orderA);
 

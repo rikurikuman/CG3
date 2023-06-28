@@ -22,7 +22,7 @@ DepthTest::DepthTest()
 	mVertBuff.Init(vertices, _countof(vertices));
 	mIndexBuff.Init(indices, _countof(indices));
 
-	tex = RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "");
+	tex = RenderTarget::CreateRenderTexture(1280, 720, 0x000000, "");
 }
 
 void DepthTest::Draw()
@@ -47,8 +47,8 @@ void DepthTest::Draw()
 		{ RootDataType::SRBUFFER_CBV, mConstBuff.mBuff }
 	};
 	orderA.preCommand = [&] {
-		RenderTarget::GetRenderTargetTexture("RenderingImage")->GetTexture().Copy(&tex->GetTexture(), RRect(0, 1280, 0, 720));
-		RenderTarget::GetRenderTargetTexture("RenderingImage")->GetDepthTexture().Copy(&tex->GetDepthTexture(), RRect(0, 1280, 0, 720));
+		RenderTarget::GetRenderTexture("RenderingImage")->GetTexture().Copy(&tex->GetTexture(), RRect(0, 1280, 0, 720));
+		RenderTarget::GetRenderTexture("RenderingImage")->GetDepthTexture().Copy(&tex->GetDepthTexture(), RRect(0, 1280, 0, 720));
 	};
 	Renderer::DrawCall("PostEffect", orderA);
 

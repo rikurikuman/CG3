@@ -22,18 +22,18 @@ Bloom::Bloom()
 	mVertBuff.Init(vertices, _countof(vertices));
 	mIndexBuff.Init(indices, _countof(indices));
 
-	RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "BloomA");
-	RenderTarget::CreateRenderTargetTexture(1280, 720, 0x000000, "BloomB");
+	RenderTarget::CreateRenderTexture(1280, 720, 0x000000, "BloomA");
+	RenderTarget::CreateRenderTexture(1280, 720, 0x000000, "BloomB");
 }
 
 void Bloom::Draw()
 {
 	*mConstBuff.Get() = mSetting;
 
-	RenderTarget::GetRenderTargetTexture("BloomA")->ClearRenderTarget();
-	RenderTarget::GetRenderTargetTexture("BloomA")->ClearDepthStencil();
-	RenderTarget::GetRenderTargetTexture("BloomB")->ClearRenderTarget();
-	RenderTarget::GetRenderTargetTexture("BloomB")->ClearDepthStencil();
+	RenderTarget::GetRenderTexture("BloomA")->ClearRenderTarget();
+	RenderTarget::GetRenderTexture("BloomA")->ClearDepthStencil();
+	RenderTarget::GetRenderTexture("BloomB")->ClearRenderTarget();
+	RenderTarget::GetRenderTexture("BloomB")->ClearDepthStencil();
 
 	RenderOrder orderA;
 	orderA.primitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
@@ -45,12 +45,12 @@ void Bloom::Draw()
 	orderA.pipelineState = GetGraphicsPipelineA().mPtr.Get();
 	orderA.renderTargets = { "BloomA" };
 	orderA.rootData = {
-		{ TextureManager::Get(RenderTarget::GetRenderTargetTexture("RenderingImage")->mTexHandle).mGpuHandle }
+		{ TextureManager::Get(RenderTarget::GetRenderTexture("RenderingImage")->mTexHandle).mGpuHandle }
 	};
 	if (mLevel == 1) {
 		orderA.postCommand = [&] {
-			Texture& texSrc = RenderTarget::GetRenderTargetTexture("BloomA")->GetTexture();
-			Texture& texDest = RenderTarget::GetRenderTargetTexture("RenderingImage")->GetTexture();
+			Texture& texSrc = RenderTarget::GetRenderTexture("BloomA")->GetTexture();
+			Texture& texDest = RenderTarget::GetRenderTexture("RenderingImage")->GetTexture();
 
 			texSrc.Copy(&texDest, RRect(0, 1280, 0, 720));
 		};
@@ -67,14 +67,14 @@ void Bloom::Draw()
 	orderB.pipelineState = GetGraphicsPipelineB().mPtr.Get();
 	orderB.renderTargets = { "BloomB" };
 	orderB.rootData = {
-		{ TextureManager::Get(RenderTarget::GetRenderTargetTexture("BloomA")->mTexHandle).mGpuHandle},
+		{ TextureManager::Get(RenderTarget::GetRenderTexture("BloomA")->mTexHandle).mGpuHandle},
 		{ RootDataType::SRBUFFER_CBV, mConstBuff.mBuff }
 	};
 	if (mLevel >= 2) {
 		if (mLevel == 2) {
 			orderB.postCommand = [&] {
-				Texture& texSrc = RenderTarget::GetRenderTargetTexture("BloomB")->GetTexture();
-				Texture& texDest = RenderTarget::GetRenderTargetTexture("RenderingImage")->GetTexture();
+				Texture& texSrc = RenderTarget::GetRenderTexture("BloomB")->GetTexture();
+				Texture& texDest = RenderTarget::GetRenderTexture("RenderingImage")->GetTexture();
 
 				texSrc.Copy(&texDest, RRect(0, 1280, 0, 720));
 			};
@@ -92,7 +92,7 @@ void Bloom::Draw()
 	orderC.pipelineState = GetGraphicsPipelineC().mPtr.Get();
 	orderC.renderTargets = { "RenderingImage" };
 	orderC.rootData = {
-		{ TextureManager::Get(RenderTarget::GetRenderTargetTexture("BloomB")->mTexHandle).mGpuHandle}
+		{ TextureManager::Get(RenderTarget::GetRenderTexture("BloomB")->mTexHandle).mGpuHandle}
 	};
 	if (mLevel >= 3) {
 		Renderer::DrawCall("PostEffect", orderC);

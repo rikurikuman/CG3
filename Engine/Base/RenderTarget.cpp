@@ -12,7 +12,7 @@ void RenderTarget::SetToBackBuffer()
 			continue;
 		}
 
-		RenderTargetTexture* tex = manager->GetRenderTargetTexture(name);
+		RenderTexture* tex = manager->GetRenderTexture(name);
 		if (tex != nullptr) tex->CloseResourceBarrier();
 	}
 	manager->mCurrentRenderTargets.clear();
@@ -34,12 +34,12 @@ void RenderTarget::SetToTexture(std::string name)
 			continue;
 		}
 
-		RenderTargetTexture* tex = manager->GetRenderTargetTexture(current);
+		RenderTexture* tex = manager->GetRenderTexture(current);
 		if (tex != nullptr) tex->CloseResourceBarrier();
 	}
 	manager->mCurrentRenderTargets.clear();
 
-	RenderTargetTexture* tex = manager->GetRenderTargetTexture(name);
+	RenderTexture* tex = manager->GetRenderTexture(name);
 
 	if (tex == nullptr) {
 		//‚È‚¢‚æ
@@ -66,7 +66,7 @@ void RenderTarget::SetToTexture(std::vector<std::string> names)
 			continue;
 		}
 
-		RenderTargetTexture* tex = manager->GetRenderTargetTexture(name);
+		RenderTexture* tex = manager->GetRenderTexture(name);
 		if (tex != nullptr) tex->CloseResourceBarrier();
 	}
 	manager->mCurrentRenderTargets.clear();
@@ -75,7 +75,7 @@ void RenderTarget::SetToTexture(std::vector<std::string> names)
 	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> dsvHandles;
 
 	for (std::string& name : names) {
-		RenderTargetTexture* tex = manager->GetRenderTargetTexture(name);
+		RenderTexture* tex = manager->GetRenderTexture(name);
 
 		if (tex == nullptr) {
 			//‚È‚¢‚æ
@@ -94,13 +94,13 @@ void RenderTarget::SetToTexture(std::vector<std::string> names)
 	RDirectX::GetCommandList()->OMSetRenderTargets((UINT)names.size(), &rtvHandles[0], false, &dsvHandles[0]);
 }
 
-RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t width, const uint32_t height, const Color clearColor, TextureHandle name)
+RenderTexture* RenderTarget::CreateRenderTexture(const uint32_t width, const uint32_t height, const Color clearColor, TextureHandle name)
 {
 	RenderTarget* manager = GetInstance();
 
 	HRESULT result;
 
-	RenderTargetTexture renderTarget;
+	RenderTexture renderTarget;
 	Texture texture = Texture(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	Texture depthTexture = Texture(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
@@ -114,7 +114,7 @@ RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t widt
 	else {
 		for (uint32_t i = 0; i < sNUM_DESCRIPTORS; i++) {
 			bool ok = true;
-			for (std::pair<const std::string, RenderTargetTexture>& p : manager->mRenderTargetMap) {
+			for (std::pair<const std::string, RenderTexture>& p : manager->mRenderTargetMap) {
 				if (p.second.mHeapIndex == i) {
 					ok = false;
 					break;
@@ -234,7 +234,7 @@ RenderTargetTexture* RenderTarget::CreateRenderTargetTexture(const uint32_t widt
 	return &manager->mRenderTargetMap[name];
 }
 
-RenderTargetTexture* RenderTarget::GetRenderTargetTexture(std::string name) {
+RenderTexture* RenderTarget::GetRenderTexture(std::string name) {
 	RenderTarget* manager = GetInstance();
 	std::lock_guard<std::recursive_mutex> lock(manager->mMutex);
 	auto itr = manager->mRenderTargetMap.find(name);
@@ -243,7 +243,7 @@ RenderTargetTexture* RenderTarget::GetRenderTargetTexture(std::string name) {
 	}
 
 	//‚È‚¢‚æ
-	Util::DebugLog("RKEngine ERROR : RenderTarget::GetRenderTargetTexture() : Failed find from map.");
+	Util::DebugLog("RKEngine ERROR : RenderTarget::GetRenderTexture() : Failed find from map.");
 	return nullptr;
 }
 
@@ -286,29 +286,29 @@ void RenderTarget::CreateHeaps()
 	assert(SUCCEEDED(result));
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetTexture::GetRTVHandle()
+D3D12_CPU_DESCRIPTOR_HANDLE RenderTexture::GetRTVHandle()
 {
 	return RenderTarget::GetRTVHandle(mHeapIndex);
 }
 
-D3D12_CPU_DESCRIPTOR_HANDLE RenderTargetTexture::GetDSVHandle()
+D3D12_CPU_DESCRIPTOR_HANDLE RenderTexture::GetDSVHandle()
 {
 	return RenderTarget::GetDSVHandle(mHeapIndex);
 }
 
-void RenderTargetTexture::OpenResourceBarrier()
+void RenderTexture::OpenResourceBarrier()
 {
 	GetTexture().ChangeResourceState(D3D12_RESOURCE_STATE_RENDER_TARGET);
 	GetDepthTexture().ChangeResourceState(D3D12_RESOURCE_STATE_DEPTH_WRITE);
 }
 
-void RenderTargetTexture::CloseResourceBarrier()
+void RenderTexture::CloseResourceBarrier()
 {
 	GetTexture().ChangeResourceState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	GetDepthTexture().ChangeResourceState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
-void RenderTargetTexture::ClearRenderTarget()
+void RenderTexture::ClearRenderTarget()
 {
 	OpenResourceBarrier();
 	FLOAT color[] = { mClearColor.r, mClearColor.g, mClearColor.b, mClearColor.a };
@@ -316,7 +316,7 @@ void RenderTargetTexture::ClearRenderTarget()
 	CloseResourceBarrier();
 }
 
-void RenderTargetTexture::ClearDepthStencil()
+void RenderTexture::ClearDepthStencil()
 {
 	OpenResourceBarrier();
 	RDirectX::GetCommandList()->ClearDepthStencilView(

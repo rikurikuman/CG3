@@ -28,8 +28,8 @@ public:
 	void Draw();
 
 protected:
-	RenderTargetTexture* texA;
-	RenderTargetTexture* texB;
+	RenderTexture* texA;
+	RenderTexture* texB;
 
 	static RootSignature& GetRootSignatureA();
 	static RootSignature& GetRootSignatureB();

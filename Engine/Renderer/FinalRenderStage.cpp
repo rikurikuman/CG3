@@ -96,6 +96,6 @@ void FinalRenderStage::Render()
 	RDirectX::GetCommandList()->IASetVertexBuffers(0, 1, &mVertBuff.mView);
 	RDirectX::GetCommandList()->IASetIndexBuffer(&mIndexBuff.mView);
 
-	RDirectX::GetCommandList()->SetGraphicsRootDescriptorTable(0, TextureManager::Get(RenderTarget::GetRenderTargetTexture("RenderingImage")->mTexHandle).mGpuHandle);
+	RDirectX::GetCommandList()->SetGraphicsRootDescriptorTable(0, TextureManager::Get(RenderTarget::GetRenderTexture("RenderingImage")->mTexHandle).mGpuHandle);
 	RDirectX::GetCommandList()->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }

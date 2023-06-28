@@ -30,7 +30,7 @@ public:
 	void Draw();
 
 protected:
-	RenderTargetTexture* tex;
+	RenderTexture* tex;
 
 	static RootSignature& GetRootSignatureA();
 	static GraphicsPipeline& GetGraphicsPipelineA();
