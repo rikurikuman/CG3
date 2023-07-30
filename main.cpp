@@ -22,9 +22,6 @@
 #include "MainTestScene.h"
 #include "DepthTestScene.h"
 
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-
 #define _CRTDBG_MAP_ALLOC
 #include <cstdlib>
 #include <crtdbg.h>
