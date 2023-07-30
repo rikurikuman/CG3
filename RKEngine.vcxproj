@@ -100,6 +100,8 @@
   <ItemGroup>
     <ClCompile Include="Application\BloomTestScene.cpp" />
     <ClCompile Include="Application\DepthTestScene.cpp" />
+    <ClCompile Include="Application\DissolveModel.cpp" />
+    <ClCompile Include="Application\PerlinNoise.cpp" />
     <ClCompile Include="Engine\Base\RenderTarget.cpp" />
     <ClCompile Include="Engine\Base\SRIndexBuffer.cpp" />
     <ClCompile Include="Engine\Collision\Colliders.cpp" />
@@ -220,6 +222,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\DissolveObjPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shader\DissolveObjVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Shader\FinalVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -300,6 +314,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
+    <FxCompile Include="Shader\PerlinNoisePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Shader\PerlinNoiseVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Shader\PostEffectPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -378,6 +404,8 @@
   <ItemGroup>
     <ClInclude Include="Application\BloomTestScene.h" />
     <ClInclude Include="Application\DepthTestScene.h" />
+    <ClInclude Include="Application\DissolveModel.h" />
+    <ClInclude Include="Application\PerlinNoise.h" />
     <ClInclude Include="Engine\Base\Rect.h" />
     <ClInclude Include="Engine\Base\RenderTarget.h" />
     <ClInclude Include="Engine\Base\SRConstBuffer.h" />
@@ -461,12 +489,14 @@
     <None Include="Shader\Bloom.hlsli" />
     <None Include="Shader\BrightCut.hlsli" />
     <None Include="Shader\DepthTest.hlsli" />
+    <None Include="Shader\DissolveObj.hlsli" />
     <None Include="Shader\Final.hlsli" />
     <None Include="Shader\GaussianBlur.hlsli" />
     <None Include="Shader\Grid.hlsli" />
     <None Include="Shader\LinearBlur.hlsli" />
     <None Include="Shader\MultiRenderTest.hlsli" />
     <None Include="Shader\NoneShading.hlsli" />
+    <None Include="Shader\PerlinNoise.hlsli" />
     <None Include="Shader\PostEffect.hlsli" />
     <None Include="Shader\Simple.hlsli" />
     <None Include="Shader\SimpleInstance.hlsli" />

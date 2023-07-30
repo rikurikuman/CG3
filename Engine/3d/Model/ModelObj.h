@@ -6,8 +6,7 @@
 #include "RConstBuffer.h"
 #include "SRConstBuffer.h"
 #include <map>
-
-struct RenderOrder;
+#include <Renderer.h>
 
 class ModelObj : public Obj3D
 {
@@ -20,7 +19,7 @@ public:
 	SRConstBuffer<ViewProjectionBuffer> mViewProjectionBuff;
 
 	ModelObj() {};
-	~ModelObj() {}
+	virtual ~ModelObj() override {}
 	ModelObj(Model* model) : mModel(model) {};
 	ModelObj(ModelHandle handle) : mModel(ModelManager::Get(handle)) {};
 
@@ -28,6 +27,6 @@ public:
 	void TransferBuffer(ViewProjection viewprojection) override;
 
 	//ï`âÊóvãÅÇRendererÇ÷
-	void Draw();
+	void Draw() override;
 };
 

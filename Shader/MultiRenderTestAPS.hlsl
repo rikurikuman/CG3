@@ -9,7 +9,7 @@ struct PSOutput
     float4 target1 : SV_Target1;
 };
 
-PSOutput main(OutputVS i) : SV_TARGET
+PSOutput main(OutputVS i)
 {
     PSOutput output;
     

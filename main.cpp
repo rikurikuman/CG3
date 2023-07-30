@@ -193,7 +193,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			ImGui::NewLine();
 			ImGui::Text("SceneManager");
 			static int32_t sceneNum = 0;
-			const char* scenes[] = { "MainTest", "BloomTest", "DepthTest" };
+			const char* scenes[] = { "MainTest" };
 			ImGui::Combo("##SceneNumCombo", &sceneNum, scenes, IM_ARRAYSIZE(scenes));
 			ImGui::SameLine();
 			if (ImGui::Button("Go!!!")) {
@@ -201,12 +201,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 					switch (sceneNum) {
 					case 0:
 						SceneManager::Change<MainTestScene, SimpleSceneTransition>();
-						break;
-					case 1:
-						SceneManager::Change<BloomTestScene, SimpleSceneTransition>();
-						break;
-					case 2:
-						SceneManager::Change<DepthTestScene, SimpleSceneTransition>();
 						break;
 					}
 				}

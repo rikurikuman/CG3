@@ -6,6 +6,8 @@
 #include "Sprite.h"
 #include "SRConstBuffer.h"
 #include <MultiRenderTest.h>
+#include <DissolveModel.h>
+#include <PerlinNoise.h>
 
 class MainTestScene : public IScene
 {
@@ -21,12 +23,7 @@ private:
 	LightGroup light;
 
 	ModelObj skydome;
-	ModelObj sphere;
-	ModelObj sphere2;
-	ModelObj cube;
-	Sprite sprite;
-	Sprite sprite2;
 
-	MultiRenderTest multiRenderTest;
-	bool useMultiRender = false;
+	PerlinNoise noise;
+	DissolveModel obj;
 };

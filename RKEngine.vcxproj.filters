@@ -312,6 +312,12 @@
     <ClCompile Include="Application\BloomTestScene.cpp">
       <Filter>ソース ファイル\Application</Filter>
     </ClCompile>
+    <ClCompile Include="Application\DissolveModel.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\PerlinNoise.cpp">
+      <Filter>ソース ファイル\Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\BasicPS.hlsl">
@@ -417,6 +423,18 @@
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Shader\MultiRenderTestBVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DissolveObjVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\DissolveObjPS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PerlinNoiseVS.hlsl">
+      <Filter>シェーダー ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader\PerlinNoisePS.hlsl">
       <Filter>シェーダー ファイル</Filter>
     </FxCompile>
   </ItemGroup>
@@ -652,6 +670,12 @@
     <ClInclude Include="Application\BloomTestScene.h">
       <Filter>ヘッダー ファイル\Application</Filter>
     </ClInclude>
+    <ClInclude Include="Application\DissolveModel.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\PerlinNoise.h">
+      <Filter>ヘッダー ファイル\Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\Basic.hlsli">
@@ -700,6 +724,12 @@
       <Filter>シェーダー ファイル</Filter>
     </None>
     <None Include="Shader\MultiRenderTest.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\DissolveObj.hlsli">
+      <Filter>シェーダー ファイル</Filter>
+    </None>
+    <None Include="Shader\PerlinNoise.hlsli">
       <Filter>シェーダー ファイル</Filter>
     </None>
   </ItemGroup>

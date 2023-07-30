@@ -1,6 +1,5 @@
 #include "ModelObj.h"
 #include "LightGroup.h"
-#include <Renderer.h>
 
 void ModelObj::TransferBuffer(ViewProjection viewprojection)
 {
