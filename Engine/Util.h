@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <list>
 #include <stdexcept>
 #include <random>
 #include <chrono>
@@ -92,6 +93,13 @@ namespace Util {
             }
         }
         return false;
+    }
+
+    //std::listにsearchが含まれているか調べる
+    template <class T>
+    bool Contains(std::list<T> list, T search) {
+        auto itr = std::find(list.begin(), list.end(), search);
+        return itr != list.end();
     }
 
     //std::vectorにsearchがいるならそのインデックスを得る

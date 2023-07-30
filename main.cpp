@@ -122,11 +122,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 		if (Util::instanceof<DebugCamera>(*Camera::sNowCamera)
 			&& GetForegroundWindow() == RWindow::GetWindowHandle()
 			&& !dynamic_cast<DebugCamera*>(Camera::sNowCamera)->mFreeFlag) {
-			RWindow::SetMouseHideFlag(true);
+			RWindow::SetMouseLock(true);
 			RWindow::SetMousePos(RWindow::GetWidth() / 2, RWindow::GetHeight() / 2);
 		}
 		else {
-			RWindow::SetMouseHideFlag(false);
+			RWindow::SetMouseLock(false);
 		}
 
 		if (RInput::GetKeyDown(DIK_F5)) {

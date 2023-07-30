@@ -5,13 +5,14 @@
 #include <map>
 #include <string>
 #include <memory>
-#include <vector>
+#include <list>
 #include <mutex>
 #include "Util.h"
 
 #pragma comment(lib,"xaudio2.lib")
 
 typedef std::string AudioHandle;
+typedef std::string PlayingAudioHandle;
 
 struct ChunkHeader
 {
@@ -38,6 +39,10 @@ enum class AudioType {
 struct AudioData {
 	std::string filepath;
 	AudioType type{};
+	uint32_t samplePlayBegin = 0;
+	uint32_t samplePlayLength = 0;
+	uint32_t sampleLoopBegin = 0;
+	uint32_t sampleLoopLength = 0;
 };
 
 struct WaveAudio : public AudioData
@@ -59,13 +64,24 @@ public:
 		GetInstance()->InitInternal();
 	}
 
+	static void Update();
+
 	static void Final() {
 		GetInstance()->FinalInternal();
 	}
 
 	static AudioHandle Load(const std::string filepath, std::string handle = "");
-	static void Play(AudioHandle handle, const float volume = 1.0f, const float pitch = 1.0f, const bool loop = false);
+	static void Play(AudioHandle handle, float volume = 1.0f, float pitch = 1.0f, bool loop = false);
 	static void Stop(AudioHandle handle);
+	static bool IsPlaying(AudioHandle handle);
+	static float GetCurrentPosition(AudioHandle handle);
+
+	static void SetPlayRange(AudioHandle handle, float startPos, float endPos);
+	static void SetLoopRange(AudioHandle handle, float startPos, float endPos);
+
+	static size_t GetPlayingSoundCount() {
+		return GetInstance()->mPlayingList.size();
+	}
 
 private:
 	Microsoft::WRL::ComPtr<IXAudio2> mXAudio2;
@@ -73,12 +89,14 @@ private:
 
 	std::recursive_mutex mMutex;
 	std::map<AudioHandle, std::shared_ptr<AudioData>> mAudioMap;
+	std::map<PlayingAudioHandle, std::shared_ptr<AudioData>> mPlayingAudioMap;
 
 	struct PlayingInfo {
 		AudioHandle handle;
 		IXAudio2SourceVoice* pSource;
+		bool loop = false;
 	};
-	std::vector<PlayingInfo> mPlayingList;
+	std::list<PlayingInfo> mPlayingList;
 
 	RAudio() {};
 	~RAudio() = default;
